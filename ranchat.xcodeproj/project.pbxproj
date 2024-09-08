@@ -14,6 +14,8 @@
 		499584B62C8DEBDD00A77646 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 499584B52C8DEBDD00A77646 /* Preview Assets.xcassets */; };
 		499584BF2C8DF1C000A77646 /* DungGeunMo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 499584BE2C8DF1C000A77646 /* DungGeunMo.ttf */; };
 		499584C12C8DF29C00A77646 /* Font+DungGeunMo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584C02C8DF29C00A77646 /* Font+DungGeunMo.swift */; };
+		499584C42C8DF57F00A77646 /* MainButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584C32C8DF57F00A77646 /* MainButtonView.swift */; };
+		499584C72C8DF9AF00A77646 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584C62C8DF9AF00A77646 /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		499584BD2C8DF03A00A77646 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		499584BE2C8DF1C000A77646 /* DungGeunMo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = DungGeunMo.ttf; sourceTree = "<group>"; };
 		499584C02C8DF29C00A77646 /* Font+DungGeunMo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+DungGeunMo.swift"; sourceTree = "<group>"; };
+		499584C32C8DF57F00A77646 /* MainButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButtonView.swift; sourceTree = "<group>"; };
+		499584C62C8DF9AF00A77646 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,7 +67,9 @@
 				499584AC2C8DEBDB00A77646 /* ranchatApp.swift */,
 				499584AE2C8DEBDB00A77646 /* ContentView.swift */,
 				499584B02C8DEBDB00A77646 /* Item.swift */,
+				499584C52C8DF58200A77646 /* Common */,
 				499584C22C8DF2A000A77646 /* Extension */,
+				499584C82C8DF9B400A77646 /* Home */,
 				499584B22C8DEBDC00A77646 /* Assets.xcassets */,
 				499584B42C8DEBDD00A77646 /* Preview Content */,
 			);
@@ -84,6 +90,22 @@
 				499584C02C8DF29C00A77646 /* Font+DungGeunMo.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		499584C52C8DF58200A77646 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				499584C32C8DF57F00A77646 /* MainButtonView.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		499584C82C8DF9B400A77646 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				499584C62C8DF9AF00A77646 /* HomeView.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -159,6 +181,8 @@
 			files = (
 				499584AF2C8DEBDB00A77646 /* ContentView.swift in Sources */,
 				499584B12C8DEBDB00A77646 /* Item.swift in Sources */,
+				499584C42C8DF57F00A77646 /* MainButtonView.swift in Sources */,
+				499584C72C8DF9AF00A77646 /* HomeView.swift in Sources */,
 				499584AD2C8DEBDB00A77646 /* ranchatApp.swift in Sources */,
 				499584C12C8DF29C00A77646 /* Font+DungGeunMo.swift in Sources */,
 			);

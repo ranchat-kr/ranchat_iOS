@@ -9,5 +9,8 @@ import Foundation
 import SwiftUI
 
 extension Font {
+    static let dungGeunMo12: Font = .custom("DungGeunMo", size: 12)
     static let dungGeunMo16: Font = .custom("DungGeunMo", size: 16)
+    static let dungGeunMo30: Font = .custom("DungGeunMo", size: 30)
+    static let dungGeunMo80: Font = .custom("DungGeunMo", size: 80)
 }
