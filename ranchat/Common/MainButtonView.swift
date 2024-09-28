@@ -16,7 +16,7 @@ struct MainButtonView: View {
             action()
         } label: {
             Text(text)
-                .font(.dungGeunMo30)
+                .font(.dungGeunMo32)
                 .foregroundStyle(.white)
                 .overlay {
                     Rectangle()

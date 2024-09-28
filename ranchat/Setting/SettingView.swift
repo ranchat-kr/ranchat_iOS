@@ -8,11 +8,43 @@
 import SwiftUI
 
 struct SettingView: View {
+    @Environment(\.dismiss) var dismiss
+    @Binding var nickName: String
+    @State var editNickName = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            VStack {
+                Text(nickName)
+                    .font(.dungGeunMo24)
+                
+                DosStyleTextField(hint: " 바꿀 닉네임을 입력해주세요.", text: $editNickName, cursorWidth: 8.0)
+                    .padding()
+                    .font(.dungGeunMo24)
+                
+
+                
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                    }
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    Text("Setting")
+                        .font(.dungGeunMo20)
+                }
+            }
+        }
+        .navigationBarBackButtonHidden()
+        .tint(.white)
     }
 }
 
 #Preview {
-    SettingView()
+    SettingView(nickName: .constant("닉네임"))
 }

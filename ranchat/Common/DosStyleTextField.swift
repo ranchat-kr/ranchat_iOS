@@ -11,7 +11,8 @@ struct DosStyleTextField: View {
     let hint: String
     @Binding var text: String
     @State private var textFieldHeight: CGFloat = 0
-    @State private var isVisible = false
+    @State private var isVisible = true
+    @FocusState private var isTextFieldFocused: Bool
     private var cursorWidth: CGFloat
     private var cursorHeight: CGFloat?
     private var cursorColor: Color?
@@ -41,51 +42,47 @@ struct DosStyleTextField: View {
     
     var body: some View {
         ZStack (alignment: .leading) {
-
-                TextField("dd", text: $text)
-                    .background(GeometryReader {proxy in
-                        Color.clear
-                            .onAppear {
-                                textFieldHeight = proxy.size.height
-                            }
-                    })
-    
-            if let height = cursorHeight, let color = cursorColor {
-                Rectangle()
-                    .fill(isVisible ? color : .clear)
-                    .frame(width: 5, height: height)
-                    .onReceive(timer) { _ in
-
+            
+            TextField("dd", text: $text)
+                .focused($isTextFieldFocused)
+                .focusEffectDisabled()
+                .background(GeometryReader {proxy in
+                    Color.clear
+                        .onAppear {
+                            textFieldHeight = proxy.size.height
+                        }
+                })
+            
+            if isTextFieldFocused == true {
+                if let height = cursorHeight, let color = cursorColor {
+                    Rectangle()
+                        .fill(isVisible ? color : .clear)
+                        .frame(width: 5, height: height)
+                        .onReceive(timer) { _ in
                             isVisible.toggle()
-
-                    }
-            } else if let height = cursorHeight {
-                Rectangle()
-                    .fill(isVisible ? .white : .clear)
-                    .frame(width: 5, height: height)
-                    .onReceive(timer) { _ in
-                       
+                        }
+                } else if let height = cursorHeight {
+                    Rectangle()
+                        .fill(isVisible ? .white : .clear)
+                        .frame(width: 5, height: height)
+                        .onReceive(timer) { _ in
                             isVisible.toggle()
-                       
-                    }
-            } else if let color = cursorColor {
-                Rectangle()
-                    .fill(isVisible ? color : .clear)
-                    .frame(width: 5, height: textFieldHeight)
-                    .onReceive(timer) { _ in
-                       
+                        }
+                } else if let color = cursorColor {
+                    Rectangle()
+                        .fill(isVisible ? color : .clear)
+                        .frame(width: 5, height: textFieldHeight)
+                        .onReceive(timer) { _ in
                             isVisible.toggle()
-                       
-                    }
-            } else {
-                Rectangle()
-                    .fill(isVisible ? .white : .clear)
-                    .frame(width: 5, height: textFieldHeight)
-                    .onReceive(timer) { _ in
-                        
+                        }
+                } else {
+                    Rectangle()
+                        .fill(isVisible ? .white : .clear)
+                        .frame(width: 5, height: textFieldHeight)
+                        .onReceive(timer) { _ in
                             isVisible.toggle()
-                        
-                    }
+                        }
+                }
             }
         }
     }

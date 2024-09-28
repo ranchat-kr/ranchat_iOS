@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		491E75822C9571EE00234650 /* ApiHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E75812C9571EE00234650 /* ApiHelper.swift */; };
+		491E75862C95728600234650 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 491E75852C95728600234650 /* Alamofire */; };
+		491E75882C95728600234650 /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 491E75872C95728600234650 /* AlamofireDynamic */; };
+		491E758A2C95732B00234650 /* DefaultData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E75892C95732B00234650 /* DefaultData.swift */; };
+		491E758C2C95769400234650 /* RoomService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E758B2C95769300234650 /* RoomService.swift */; };
+		491E75CA2CA7E2EF00234650 /* DefaultResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E75C92CA7E2EF00234650 /* DefaultResponse.swift */; };
+		491E75CC2CA7E56D00234650 /* RoomData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E75CB2CA7E56D00234650 /* RoomData.swift */; };
+		491E75CF2CA7E86B00234650 /* RoomDataList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E75CE2CA7E86B00234650 /* RoomDataList.swift */; };
 		499584AD2C8DEBDB00A77646 /* ranchatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584AC2C8DEBDB00A77646 /* ranchatApp.swift */; };
 		499584AF2C8DEBDB00A77646 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584AE2C8DEBDB00A77646 /* ContentView.swift */; };
 		499584B12C8DEBDB00A77646 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584B02C8DEBDB00A77646 /* Item.swift */; };
@@ -16,9 +24,18 @@
 		499584C12C8DF29C00A77646 /* Font+DungGeunMo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584C02C8DF29C00A77646 /* Font+DungGeunMo.swift */; };
 		499584C42C8DF57F00A77646 /* MainButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584C32C8DF57F00A77646 /* MainButtonView.swift */; };
 		499584C72C8DF9AF00A77646 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584C62C8DF9AF00A77646 /* HomeView.swift */; };
+		499584CA2C8DFA5300A77646 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584C92C8DFA5300A77646 /* HomeViewModel.swift */; };
+		499584CC2C8DFACF00A77646 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584CB2C8DFACF00A77646 /* SettingView.swift */; };
+		499584CF2C8E012D00A77646 /* DosStyleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499584CE2C8E012D00A77646 /* DosStyleTextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		491E75812C9571EE00234650 /* ApiHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiHelper.swift; sourceTree = "<group>"; };
+		491E75892C95732B00234650 /* DefaultData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultData.swift; sourceTree = "<group>"; };
+		491E758B2C95769300234650 /* RoomService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomService.swift; sourceTree = "<group>"; };
+		491E75C92CA7E2EF00234650 /* DefaultResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultResponse.swift; sourceTree = "<group>"; };
+		491E75CB2CA7E56D00234650 /* RoomData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomData.swift; sourceTree = "<group>"; };
+		491E75CE2CA7E86B00234650 /* RoomDataList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDataList.swift; sourceTree = "<group>"; };
 		499584A92C8DEBDB00A77646 /* ranchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ranchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		499584AC2C8DEBDB00A77646 /* ranchatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ranchatApp.swift; sourceTree = "<group>"; };
 		499584AE2C8DEBDB00A77646 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -30,6 +47,9 @@
 		499584C02C8DF29C00A77646 /* Font+DungGeunMo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+DungGeunMo.swift"; sourceTree = "<group>"; };
 		499584C32C8DF57F00A77646 /* MainButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButtonView.swift; sourceTree = "<group>"; };
 		499584C62C8DF9AF00A77646 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		499584C92C8DFA5300A77646 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		499584CB2C8DFACF00A77646 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		499584CE2C8E012D00A77646 /* DosStyleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DosStyleTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,12 +57,33 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				491E75862C95728600234650 /* Alamofire in Frameworks */,
+				491E75882C95728600234650 /* AlamofireDynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		491E75832C9571F100234650 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				491E75812C9571EE00234650 /* ApiHelper.swift */,
+				491E75892C95732B00234650 /* DefaultData.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		491E75CD2CA7E85A00234650 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				491E75C92CA7E2EF00234650 /* DefaultResponse.swift */,
+				491E75CB2CA7E56D00234650 /* RoomData.swift */,
+				491E75CE2CA7E86B00234650 /* RoomDataList.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		499584A02C8DEBDB00A77646 = {
 			isa = PBXGroup;
 			children = (
@@ -67,11 +108,15 @@
 				499584AC2C8DEBDB00A77646 /* ranchatApp.swift */,
 				499584AE2C8DEBDB00A77646 /* ContentView.swift */,
 				499584B02C8DEBDB00A77646 /* Item.swift */,
+				491E75CD2CA7E85A00234650 /* Model */,
 				499584C52C8DF58200A77646 /* Common */,
 				499584C22C8DF2A000A77646 /* Extension */,
 				499584C82C8DF9B400A77646 /* Home */,
+				499584CD2C8DFAD300A77646 /* Setting */,
+				491E75832C9571F100234650 /* Helper */,
 				499584B22C8DEBDC00A77646 /* Assets.xcassets */,
 				499584B42C8DEBDD00A77646 /* Preview Content */,
+				491E758B2C95769300234650 /* RoomService.swift */,
 			);
 			path = ranchat;
 			sourceTree = "<group>";
@@ -96,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				499584C32C8DF57F00A77646 /* MainButtonView.swift */,
+				499584CE2C8E012D00A77646 /* DosStyleTextField.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -104,8 +150,17 @@
 			isa = PBXGroup;
 			children = (
 				499584C62C8DF9AF00A77646 /* HomeView.swift */,
+				499584C92C8DFA5300A77646 /* HomeViewModel.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		499584CD2C8DFAD300A77646 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				499584CB2C8DFACF00A77646 /* SettingView.swift */,
+			);
+			path = Setting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -124,6 +179,10 @@
 			dependencies = (
 			);
 			name = ranchat;
+			packageProductDependencies = (
+				491E75852C95728600234650 /* Alamofire */,
+				491E75872C95728600234650 /* AlamofireDynamic */,
+			);
 			productName = ranchat;
 			productReference = 499584A92C8DEBDB00A77646 /* ranchat.app */;
 			productType = "com.apple.product-type.application";
@@ -152,6 +211,9 @@
 				Base,
 			);
 			mainGroup = 499584A02C8DEBDB00A77646;
+			packageReferences = (
+				491E75842C95728600234650 /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			productRefGroup = 499584AA2C8DEBDB00A77646 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -181,10 +243,19 @@
 			files = (
 				499584AF2C8DEBDB00A77646 /* ContentView.swift in Sources */,
 				499584B12C8DEBDB00A77646 /* Item.swift in Sources */,
+				491E758A2C95732B00234650 /* DefaultData.swift in Sources */,
+				499584CF2C8E012D00A77646 /* DosStyleTextField.swift in Sources */,
+				499584CA2C8DFA5300A77646 /* HomeViewModel.swift in Sources */,
+				491E75822C9571EE00234650 /* ApiHelper.swift in Sources */,
+				491E758C2C95769400234650 /* RoomService.swift in Sources */,
+				491E75CF2CA7E86B00234650 /* RoomDataList.swift in Sources */,
 				499584C42C8DF57F00A77646 /* MainButtonView.swift in Sources */,
+				491E75CC2CA7E56D00234650 /* RoomData.swift in Sources */,
 				499584C72C8DF9AF00A77646 /* HomeView.swift in Sources */,
+				499584CC2C8DFACF00A77646 /* SettingView.swift in Sources */,
 				499584AD2C8DEBDB00A77646 /* ranchatApp.swift in Sources */,
 				499584C12C8DF29C00A77646 /* Font+DungGeunMo.swift in Sources */,
+				491E75CA2CA7E2EF00234650 /* DefaultResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +463,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		491E75842C95728600234650 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		491E75852C95728600234650 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 491E75842C95728600234650 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		491E75872C95728600234650 /* AlamofireDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 491E75842C95728600234650 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = AlamofireDynamic;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 499584A12C8DEBDB00A77646 /* Project object */;
 }
