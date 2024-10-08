@@ -6,66 +6,106 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(IdHelper.self) var idHelper
+    @Environment(WebSocketHelper.self) var webSocketHelper
+//    @Query private var user: User?
     @State private var isAnimating = false
+    @State private var networkMotinor = NetworkMonitor()
     @State var nickName = "닉네임"
     @Bindable var viewModel = HomeViewModel()
+    
     
     let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
         NavigationStack {
             NavigationView {
-                VStack {
-                    Text("Ran-Talk")
-                        .font(.dungGeunMo80)
-                        .offset(y: isAnimating ? 0 : -screenHeight / 2)
-                        .onAppear {
-                            withAnimation(.easeInOut(duration: 1.0)) {
-                                isAnimating = true
+                ZStack {
+                    VStack {
+                        Text("Ran-Talk")
+                            .font(.dungGeunMo80)
+                            .offset(y: isAnimating ? 0 : -screenHeight / 2)
+                            .onAppear {
+                                withAnimation(.easeInOut(duration: 1.0)) {
+                                    isAnimating = true
+                                }
                             }
+                        
+                        Color.clear.frame(height: 30)
+                        
+                        MainButtonView(text: "START!") {
+                            
                         }
-                    
-                    Color.clear.frame(height: 30)
-                    
-                    MainButtonView(text: "START!") {
-                        Task {
-                            try await ApiHelper.getRooms()
+                        .opacity(isAnimating ? 1.0 : 0.0)
+                        
+                        
+                        Color.clear.frame(height: 10)
+                        
+
+                        MainButtonView(text: "CONTINUE!") {
+                            
                         }
-                    }
-                    .opacity(isAnimating ? 1.0 : 0.0)
-                    
-                    
-                    Color.clear.frame(height: 10)
-                    
-                    MainButtonView(text: "CONTINUE!") {
+                        
+                        .opacity((viewModel.isRoomExist && isAnimating) ? 1.0 : 0.0)
                         
                     }
-                    .opacity(isAnimating ? 1.0 : 0.0)
                     
-                }
-                
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
-                            .font(.dungGeunMo12)
+                    
+                    
+                    .toolbar {
+                        ToolbarItem(placement: .bottomBar) {
+                            Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
+                                .font(.dungGeunMo12)
+                                .opacity(isAnimating ? 1.0 : 0.0)
+                                .animation(.easeInOut(duration: 1.0), value: isAnimating)
+                        }
+                        
+                        
+                        ToolbarItem(placement: .topBarTrailing) {
+                            NavigationLink(destination: {
+                                SettingView(nickName: $nickName)
+                            }, label: {
+                                Image(systemName: "gearshape")
+                                    .tint(.white)
+                            })
                             .opacity(isAnimating ? 1.0 : 0.0)
                             .animation(.easeInOut(duration: 1.0), value: isAnimating)
+                        }
                     }
                     
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink(destination: {
-                            SettingView(nickName: $nickName)
-                        }, label: {
-                            Image(systemName: "gearshape")
-                                .tint(.white)
-                        })
-                        .opacity(isAnimating ? 1.0 : 0.0)
-                        .animation(.easeInOut(duration: 1.0), value: isAnimating)
+                    if viewModel.isLoading {
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
+                        
+                        ProgressView("Loading...")
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .padding()
+                            .background(.gray)
+                            .cornerRadius(10)
+                            .shadow(radius: 10)
                     }
                 }
+            }
+        }
+        .onAppear {
+            viewModel.setUser(idHelper: idHelper, webSocketHelper: webSocketHelper)
+        }
+        
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(
+                title: Text("인터넷 연결 오류"),
+                message: Text("인터넷 연결을 확인해주세요."),
+                dismissButton: .default(Text("확인"))
+            )
+        }
+
+        .onChange(of: networkMotinor.isConnected) { _, isConnected in
+            if !isConnected {
+                viewModel.showAlert = true
             }
         }
     }

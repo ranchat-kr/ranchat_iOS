@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct UserData: Codable {
+    var id: String
+    var name: String
+}

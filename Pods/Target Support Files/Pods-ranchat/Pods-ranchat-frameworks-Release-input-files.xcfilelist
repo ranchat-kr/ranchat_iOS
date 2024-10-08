@@ -1,0 +1,4 @@
+${PODS_ROOT}/Target Support Files/Pods-ranchat/Pods-ranchat-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/SocketRocket/SocketRocket.framework
+${BUILT_PRODUCTS_DIR}/StompClientLib/StompClientLib.framework

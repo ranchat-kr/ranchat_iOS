@@ -18,11 +18,9 @@ struct SettingView: View {
                 Text(nickName)
                     .font(.dungGeunMo24)
                 
-                DosStyleTextField(hint: " 바꿀 닉네임을 입력해주세요.", text: $editNickName, cursorWidth: 8.0)
+                TextField("바꿀 닉네임을 입력해주세요.", text: $editNickName)
                     .padding()
                     .font(.dungGeunMo24)
-                
-
                 
             }
             .toolbar {

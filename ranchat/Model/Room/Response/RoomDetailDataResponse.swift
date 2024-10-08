@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+struct RoomDetailDataResponse: Codable {
+    var status: String
+    var message: String
+    var serverDateTime: String
+    var data: RoomDetailData
+}

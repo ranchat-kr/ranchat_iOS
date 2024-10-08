@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Data: Codable {
+struct RoomDataListResponseData: Codable {
     var items: [RoomData]
     var page: Int
     var size: Int
@@ -20,5 +20,5 @@ struct RoomDataList: Codable {
     var status: String
     var message: String
     var serverDateTime: String
-    var data: Data
+    var data: RoomDataListResponseData
 }

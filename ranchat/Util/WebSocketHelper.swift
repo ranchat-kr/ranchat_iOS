@@ -13,26 +13,31 @@ enum WebSocketHelperError: Error {
     case networkError(String)
     case responseDataError
     case connectError
+    case nilError
 }
 
 @Observable
 class WebSocketHelper {
     private let socketURL = "wss://\(DefaultData.domain)/endpoint"
-    private var userId: String?
-    private var roomId: String?
+    private var idHelper: IdHelper?
     
     var stompClient = StompClientLib()
     
-    func connectToWebSocket() throws {
-        userId = "122190381903821903821038210"
+    func connectToWebSocket(idHelper: IdHelper) throws {
+        self.idHelper = idHelper
+        
         guard let url = URL(string: socketURL) else {
             throw WebSocketHelperError.invalidURLError
+        }
+        
+        guard let userId = idHelper.getUserId() else {
+            throw WebSocketHelperError.nilError
         }
         
         stompClient.openSocketWithURLRequest(
             request: NSURLRequest(url: url),
             delegate: self,
-            connectionHeaders: ["userId": userId!]
+            connectionHeaders: ["userId": userId]
         )
         
     }
@@ -41,7 +46,15 @@ class WebSocketHelper {
         stompClient.disconnect()
     }
     
-    func subscribeToMatchingSuccess() {
+    func subscribeToMatchingSuccess() throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let userId = idHelper.getUserId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
         let matchingSuccessDestination = "/user/\(userId)/queue/v1/matching/success"
         
         stompClient.subscribe(
@@ -49,8 +62,17 @@ class WebSocketHelper {
         )
     }
     
-    func sendMessage(_ message: String) {
+    func sendMessage(_ message: String) throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let roomId = idHelper.getRoomId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
         let sendMessageDestination = "/v1/rooms/\(roomId)/messages/send"
+        
         stompClient.sendMessage(
             message: message,
             toDestination: sendMessageDestination,
@@ -77,7 +99,11 @@ extension WebSocketHelper: StompClientLibDelegate {
     
     func stompClientDidConnect(client: StompClientLib!) {
         print("stompClientDidConnect")
-        subscribeToMatchingSuccess()
+        do {
+            try subscribeToMatchingSuccess()
+        } catch {
+            print("DEBUG: subscribeToMatchingSuccess failed: \(error.localizedDescription)")
+        }
     }
     
     func serverDidSendReceipt(client: StompClientLib!, withReceiptId receiptId: String) {

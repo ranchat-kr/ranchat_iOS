@@ -6,3 +6,19 @@
 //
 
 import Foundation
+
+struct MessagesListResponseData: Codable {
+    var items: [MessageData]
+    var page: Int
+    var size: Int
+    var totalCount: Int
+    var totalPage: Int
+    var empty: Bool
+}
+
+struct MessageListResponse: Codable {
+    var status: String
+    var message: String
+    var serverDateTime: String
+    var data: MessagesListResponseData
+}

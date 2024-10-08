@@ -1,0 +1,24 @@
+PODS:
+  - Alamofire (5.9.1)
+  - SocketRocket (0.7.1)
+  - StompClientLib (1.4.1):
+    - SocketRocket
+
+DEPENDENCIES:
+  - Alamofire
+  - StompClientLib
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - SocketRocket
+    - StompClientLib
+
+SPEC CHECKSUMS:
+  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
+  SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  StompClientLib: ac40390e9660c574675f1c933bec81c8e2811a4f
+
+PODFILE CHECKSUM: 7ed4a5c2237d9f80f223c865562a6b36ffce1e99
+
+COCOAPODS: 1.15.2
