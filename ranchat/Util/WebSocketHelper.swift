@@ -58,10 +58,14 @@ class WebSocketHelper {
         
         let matchingSuccessDestination = "/user/\(userId)/queue/v1/matching/success"
         
-        stompClient.subscribeWithHeader(
-            destination: matchingSuccessDestination,
-            withHeader: ["matchingSuccess": "true"]
-        )
+        if stompClient.isConnected() {
+            stompClient.subscribeWithHeader(
+                destination: matchingSuccessDestination,
+                withHeader: ["matchingSuccess": "true"]
+            )
+        } else {
+            throw WebSocketHelperError.connectError
+        }
     }
     
     func subscribeToRecieveMessage() throws {
@@ -75,10 +79,15 @@ class WebSocketHelper {
         
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
         
-        stompClient.subscribeWithHeader(
-            destination: receiveMessageDestination,
-            withHeader: ["recieveMessage": "true"]
-        )
+        if stompClient.isConnected() {
+            
+            stompClient.subscribeWithHeader(
+                destination: receiveMessageDestination,
+                withHeader: ["recieveMessage": "true"]
+            )
+        } else {
+            throw WebSocketHelperError.connectError
+        }
     }
     
     func unsubscribeFromMatchingSuccess() throws {
@@ -126,10 +135,14 @@ class WebSocketHelper {
         let requestMatchingDestination = "/v1/matching/apply"
         let payloadObject: [String: Any] = ["userId": userId]
         
-        stompClient.sendJSONForDict(
-            dict: payloadObject as AnyObject,
-            toDestination: requestMatchingDestination
-        )
+        if stompClient.isConnected() {
+            stompClient.sendJSONForDict(
+                dict: payloadObject as AnyObject,
+                toDestination: requestMatchingDestination
+            )
+        } else {
+            throw WebSocketHelperError.connectError
+        }
     }
     
     func sendMessage(_ message: String) throws {
@@ -143,12 +156,16 @@ class WebSocketHelper {
         
         let sendMessageDestination = "/v1/rooms/\(roomId)/messages/send"
         
-        stompClient.sendMessage(
-            message: message,
-            toDestination: sendMessageDestination,
-            withHeaders: nil,
-            withReceipt: nil
-        )
+        if stompClient.isConnected() {
+            stompClient.sendMessage(
+                message: message,
+                toDestination: sendMessageDestination,
+                withHeaders: nil,
+                withReceipt: nil
+            )
+        } else {
+            throw WebSocketHelperError.connectError
+        }
     }
 }
 
@@ -160,8 +177,9 @@ extension WebSocketHelper: StompClientLibDelegate {
         withHeader header: [String : String]?,
         withDestination destination: String
     ) {
-        guard let json = jsonBody as? [String: AnyObject] else { return }
-        print("json: \(json)")
+//        guard let json = jsonBody as? [String: AnyObject] else { return }
+//        print("json: \(json)")
+        
     }
     
     func stompClientDidDisconnect(client: StompClientLib!) {
