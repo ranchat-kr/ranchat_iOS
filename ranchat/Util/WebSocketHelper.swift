@@ -20,8 +20,12 @@ enum WebSocketHelperError: Error {
 class WebSocketHelper {
     private let socketURL = "wss://\(DefaultData.domain)/endpoint"
     private var idHelper: IdHelper?
+    private var matchingSuccessDestination: String?
+    private var receivingMessageDestination: String?
     
     var stompClient = StompClientLib()
+    
+    var isMatchSuccess: Bool = false
     
     func connectToWebSocket(idHelper: IdHelper) throws {
         self.idHelper = idHelper
@@ -59,10 +63,10 @@ class WebSocketHelper {
         let matchingSuccessDestination = "/user/\(userId)/queue/v1/matching/success"
         
         if stompClient.isConnected() {
-            stompClient.subscribeWithHeader(
-                destination: matchingSuccessDestination,
-                withHeader: ["matchingSuccess": "true"]
+            stompClient.subscribe(
+                destination: matchingSuccessDestination
             )
+            self.matchingSuccessDestination = matchingSuccessDestination
         } else {
             throw WebSocketHelperError.connectError
         }
@@ -80,11 +84,10 @@ class WebSocketHelper {
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
         
         if stompClient.isConnected() {
-            
-            stompClient.subscribeWithHeader(
-                destination: receiveMessageDestination,
-                withHeader: ["recieveMessage": "true"]
+            stompClient.subscribe(
+                destination: receiveMessageDestination
             )
+            self.receivingMessageDestination = receiveMessageDestination
         } else {
             throw WebSocketHelperError.connectError
         }
@@ -140,6 +143,7 @@ class WebSocketHelper {
                 dict: payloadObject as AnyObject,
                 toDestination: requestMatchingDestination
             )
+            isMatchSuccess = false
         } else {
             throw WebSocketHelperError.connectError
         }
@@ -177,9 +181,24 @@ extension WebSocketHelper: StompClientLibDelegate {
         withHeader header: [String : String]?,
         withDestination destination: String
     ) {
-//        guard let json = jsonBody as? [String: AnyObject] else { return }
-//        print("json: \(json)")
         
+        if destination == matchingSuccessDestination {
+            guard let body = jsonBody as? [String: AnyObject],
+                  let status = body["status"] as? String else {
+                print("DEBUG: Invalid response structure")
+                return
+            }
+
+            if status == "SUCCESS", let data = body["data"] as? [String: AnyObject] {
+                self.idHelper?.setRoomId(data["roomId"] as? String ?? "")
+                self.isMatchSuccess = true
+            } else {
+                print("DEBUG: subscribeToMatchingSuccess failed: \(status)")
+            }
+            
+        } else if destination == receivingMessageDestination {
+            
+        }
     }
     
     func stompClientDidDisconnect(client: StompClientLib!) {
