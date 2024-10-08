@@ -29,6 +29,9 @@ struct ranchatApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear {
+                    ApiHelper.shared.setIdHelper(idHelper: idHelper)
+                }
                 .preferredColorScheme(.dark)
                 .environment(webSocketHelper)
                 .environment(idHelper)

@@ -10,5 +10,6 @@ target 'ranchat' do
   # Pods for ranchat
   pod "StompClientLib"
   pod "Alamofire"
+  pod "AlertToast"
 
 end

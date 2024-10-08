@@ -33,6 +33,7 @@ class HomeViewModel {
                     try webSocketHelper.connectToWebSocket(idHelper: idHelper)
                     await checkRoomExist()
                 } catch {
+                    print("setUser error: \(error.localizedDescription)")
                     showAlert = true
                 }
             }
@@ -48,6 +49,7 @@ class HomeViewModel {
             do {
                 self.isRoomExist = try await ApiHelper.shared.checkRoomExist()
             } catch {
+                print("checkRoomExist error: \(error.localizedDescription)")
                 showAlert = true
             }
         }

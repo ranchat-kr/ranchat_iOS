@@ -9,7 +9,15 @@ import SwiftUI
 
 struct CenterLoadingView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Color.black.opacity(0.4)
+            .edgesIgnoringSafeArea(.all)
+        
+        ProgressView("Loading...")
+            .progressViewStyle(CircularProgressViewStyle())
+            .padding()
+            .background(.gray)
+            .cornerRadius(10)
+            .shadow(radius: 10)
     }
 }
 

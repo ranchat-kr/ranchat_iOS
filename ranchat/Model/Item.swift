@@ -8,11 +8,11 @@
 import Foundation
 import SwiftData
 
-@Model
-final class User {
-    var userId: String?
-    
-    init(userId: String) {
-        self.userId = userId
-    }
-}
+//@Model
+//final class User {
+//    var userId: String?
+//    
+//    init(userId: String) {
+//        self.userId = userId
+//    }
+//}

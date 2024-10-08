@@ -15,7 +15,6 @@ struct HomeView: View {
 //    @Query private var user: User?
     @State private var isAnimating = false
     @State private var networkMotinor = NetworkMonitor()
-    @State var nickName = "닉네임"
     @Bindable var viewModel = HomeViewModel()
     
     
@@ -55,38 +54,28 @@ struct HomeView: View {
                     }
                     
                     
-                    
-                    .toolbar {
-                        ToolbarItem(placement: .bottomBar) {
-                            Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
-                                .font(.dungGeunMo12)
-                                .opacity(isAnimating ? 1.0 : 0.0)
-                                .animation(.easeInOut(duration: 1.0), value: isAnimating)
-                        }
-                        
-                        
-                        ToolbarItem(placement: .topBarTrailing) {
-                            NavigationLink(destination: {
-                                SettingView(nickName: $nickName)
-                            }, label: {
-                                Image(systemName: "gearshape")
-                                    .tint(.white)
-                            })
+                    if viewModel.isLoading {
+                        CenterLoadingView()
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .bottomBar) {
+                        Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
+                            .font(.dungGeunMo12)
                             .opacity(isAnimating ? 1.0 : 0.0)
                             .animation(.easeInOut(duration: 1.0), value: isAnimating)
-                        }
                     }
                     
-                    if viewModel.isLoading {
-                        Color.black.opacity(0.4)
-                            .edgesIgnoringSafeArea(.all)
-                        
-                        ProgressView("Loading...")
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .padding()
-                            .background(.gray)
-                            .cornerRadius(10)
-                            .shadow(radius: 10)
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink(destination: {
+                            SettingView()
+                        }, label: {
+                            Image(systemName: "gearshape")
+                                .tint(.white)
+                        })
+                        .opacity(isAnimating ? 1.0 : 0.0)
+                        .animation(.easeInOut(duration: 1.0), value: isAnimating)
                     }
                 }
             }
