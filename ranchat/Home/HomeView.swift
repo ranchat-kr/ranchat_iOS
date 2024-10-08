@@ -37,7 +37,7 @@ struct HomeView: View {
                         Color.clear.frame(height: 30)
                         
                         MainButtonView(text: "START!") {
-                            
+                            viewModel.requestMatching()
                         }
                         .opacity(isAnimating ? 1.0 : 0.0)
                         

@@ -46,6 +46,7 @@ class WebSocketHelper {
         stompClient.disconnect()
     }
     
+    //MARK: - Subscribe
     func subscribeToMatchingSuccess() throws {
         guard let idHelper else {
             throw WebSocketHelperError.nilError
@@ -57,8 +58,77 @@ class WebSocketHelper {
         
         let matchingSuccessDestination = "/user/\(userId)/queue/v1/matching/success"
         
-        stompClient.subscribe(
-            destination: matchingSuccessDestination
+        stompClient.subscribeWithHeader(
+            destination: matchingSuccessDestination,
+            withHeader: ["matchingSuccess": "true"]
+        )
+    }
+    
+    func subscribeToRecieveMessage() throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let roomId = idHelper.getRoomId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
+        
+        stompClient.subscribeWithHeader(
+            destination: receiveMessageDestination,
+            withHeader: ["recieveMessage": "true"]
+        )
+    }
+    
+    func unsubscribeFromMatchingSuccess() throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let userId = idHelper.getUserId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        let matchingSuccessDestination = "/user/\(userId)/queue/v1/matching/success"
+        
+        stompClient.unsubscribe(destination: matchingSuccessDestination)
+    }
+    
+    func unsubscribeFromRecieveMessage() throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let roomId = idHelper.getRoomId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
+        
+        stompClient.unsubscribe(destination: receiveMessageDestination)
+    }
+    
+    //MARK: - Recieve
+    
+    
+    //MARK: - Send
+    
+    func requestMatching() throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let userId = idHelper.getUserId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        let requestMatchingDestination = "/v1/matching/apply"
+        let payloadObject: [String: Any] = ["userId": userId]
+        
+        stompClient.sendJSONForDict(
+            dict: payloadObject as AnyObject,
+            toDestination: requestMatchingDestination
         )
     }
     
@@ -90,7 +160,8 @@ extension WebSocketHelper: StompClientLibDelegate {
         withHeader header: [String : String]?,
         withDestination destination: String
     ) {
-        
+        guard let json = jsonBody as? [String: AnyObject] else { return }
+        print("json: \(json)")
     }
     
     func stompClientDidDisconnect(client: StompClientLib!) {

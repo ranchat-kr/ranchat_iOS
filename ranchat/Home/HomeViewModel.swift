@@ -55,8 +55,18 @@ class HomeViewModel {
         isLoading = false
     }
     
-    func requestMatching(webSocketHelper: WebSocketHelper) {
+    func requestMatching() {
+        guard let webSocketHelper else {
+            print("webSocketHelper is nil")
+            showAlert = true
+            return
+        }
         
+        do {
+            try webSocketHelper.requestMatching()
+        } catch {
+            print("requestMatching error: \(error.localizedDescription)")
+        }
     }
     
     func checkRoomExist() async {
