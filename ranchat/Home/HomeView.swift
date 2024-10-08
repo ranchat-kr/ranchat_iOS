@@ -81,7 +81,8 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            viewModel.setUser(idHelper: idHelper, webSocketHelper: webSocketHelper)
+            viewModel.setWebSocketHelper(webSocketHelper, idHelper: idHelper)
+            viewModel.setUser()
         }
         
         .alert(isPresented: $viewModel.showAlert) {

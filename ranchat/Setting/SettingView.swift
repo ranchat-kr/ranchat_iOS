@@ -88,15 +88,19 @@ struct SettingView: View {
         }
         .alert(isPresented: $viewModel.showNetworkErrorAlert) {
             Alert(
-                title: Text("인터넷 연결 오류"),
-                message: Text("인터넷 연결을 확인해주세요."),
+                title: Text("인터넷 연결 오류")
+                    .font(.dungGeunMo24),
+                message: Text("인터넷 연결을 확인해주세요.")
+                    .font(.dungGeunMo16),
                 dismissButton: .default(Text("확인"))
             )
         }
         .alert(isPresented: $viewModel.showCheckNickNameAlert) {
             Alert(
-                title: Text("닉네임 변경"),
-                message: Text("닉네임을 \(viewModel.editNickName)(으)로 변경하시겠습니까?"),
+                title: Text("닉네임 변경")
+                    .font(.dungGeunMo24),
+                message: Text("닉네임을 \(viewModel.editNickName)(으)로 변경하시겠습니까?")
+                    .font(.dungGeunMo16),
                 primaryButton: .destructive(Text("확인")) {
                     viewModel.setNickname()
                 },

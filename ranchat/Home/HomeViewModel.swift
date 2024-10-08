@@ -13,12 +13,25 @@ class HomeViewModel {
     var showAlert = false
     var isLoading = false
     var isRoomExist = false
+    var webSocketHelper: WebSocketHelper?
+    var idHelper: IdHelper?
     
-    func setUser(idHelper: IdHelper, webSocketHelper: WebSocketHelper) {
+    func setWebSocketHelper(_ webSocketHelper: WebSocketHelper, idHelper: IdHelper) {
+        self.webSocketHelper = webSocketHelper
+        self.idHelper = idHelper
+    }
+    
+    func setUser() {
+        isLoading = true
+        
         @AppStorage("user_id") var user: String?
         user = nil  // 임시. 초기화.
         
-        isLoading = true
+        guard let webSocketHelper, let idHelper else {
+            print("webSocketHelper or idHelper is nil")
+            showAlert = true
+            return
+        }
         
         if let user {  // 기존 유저
             idHelper.setUserId(user)
@@ -40,6 +53,10 @@ class HomeViewModel {
         }
         
         isLoading = false
+    }
+    
+    func requestMatching(webSocketHelper: WebSocketHelper) {
+        
     }
     
     func checkRoomExist() async {
