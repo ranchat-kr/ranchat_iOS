@@ -12,13 +12,33 @@ import SwiftUI
 class HomeViewModel {
     var showAlert = false
     var isLoading = false
+    var isMatching = false
     var isRoomExist = false
+    
+    var goToSetting = false
+    var goToChat = false
+    var goToRoomList = false
+    
+    var navigationPath = NavigationPath()
+    
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
     
     func setWebSocketHelper(_ webSocketHelper: WebSocketHelper, idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
+    }
+    
+    func navigateToChat() {
+        goToChat = true
+    }
+    
+    func navigateToRoomList() {
+        goToRoomList = true
+    }
+    
+    func navigateToSetting() {
+        goToSetting = true
     }
     
     func setUser() {
@@ -56,6 +76,8 @@ class HomeViewModel {
     }
     
     func requestMatching() {
+        isMatching = true
+        
         guard let webSocketHelper else {
             print("webSocketHelper is nil")
             showAlert = true
@@ -64,8 +86,33 @@ class HomeViewModel {
         
         do {
             try webSocketHelper.requestMatching()
+            checkMatching()
         } catch {
             print("requestMatching error: \(error.localizedDescription)")
+        }
+    }
+    
+    func checkMatching() {
+        guard let webSocketHelper, let idHelper else {
+            print("webSocketHelper or idHelper is nil")
+            showAlert = true
+            return
+        }
+        
+        Task {
+            do {
+                try await Task.sleep(for: .seconds(8))
+                isMatching = false
+                if !webSocketHelper.isMatchSuccess {  //8초가 지나도 매칭이 안 됐을 경우, GPT와 연결
+                    try webSocketHelper.cancelMatching()
+                    let roomId = try await ApiHelper.shared.createRoom()
+                    idHelper.setRoomId(roomId)
+                    try webSocketHelper.enterRoom()
+                    
+                }
+            } catch {
+                print("Failed to sleep: \(error.localizedDescription)")
+            }
         }
     }
     

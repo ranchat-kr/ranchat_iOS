@@ -125,7 +125,6 @@ class WebSocketHelper {
     
     
     //MARK: - Send
-    
     func requestMatching() throws {
         guard let idHelper else {
             throw WebSocketHelperError.nilError
@@ -142,6 +141,29 @@ class WebSocketHelper {
             stompClient.sendJSONForDict(
                 dict: payloadObject as AnyObject,
                 toDestination: requestMatchingDestination
+            )
+            isMatchSuccess = false
+        } else {
+            throw WebSocketHelperError.connectError
+        }
+    }
+    
+    func cancelMatching() throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let userId = idHelper.getUserId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        let cancelMatchingDestination = "/v1/matching/cancel"
+        let payloadObject: [String: Any] = ["userId": userId]
+        
+        if stompClient.isConnected() {
+            stompClient.sendJSONForDict(
+                dict: payloadObject as AnyObject,
+                toDestination: cancelMatchingDestination
             )
             isMatchSuccess = false
         } else {
@@ -166,6 +188,50 @@ class WebSocketHelper {
                 toDestination: sendMessageDestination,
                 withHeaders: nil,
                 withReceipt: nil
+            )
+        } else {
+            throw WebSocketHelperError.connectError
+        }
+    }
+    
+    func enterRoom() throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let roomId = idHelper.getRoomId(), let userId = idHelper.getUserId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        let enterRoomDestination = "/v1/rooms/\(roomId)/enter"
+        let payloadObject: [String: Any] = ["userId": userId]
+        
+        if stompClient.isConnected() {
+            stompClient.sendJSONForDict(
+                dict: payloadObject as AnyObject,
+                toDestination: enterRoomDestination
+            )
+        } else {
+            throw WebSocketHelperError.connectError
+        }
+    }
+    
+    func exitRoom(roomId: String) throws {
+        guard let idHelper else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        guard let roomId = idHelper.getRoomId(), let userId = idHelper.getUserId() else {
+            throw WebSocketHelperError.nilError
+        }
+        
+        let exitRoomDestination = "/v1/rooms/\(roomId)/exit"
+        let payloadObject: [String: Any] = ["userId": userId]
+        
+        if stompClient.isConnected() {
+            stompClient.sendJSONForDict(
+                dict: payloadObject as AnyObject,
+                toDestination: exitRoomDestination
             )
         } else {
             throw WebSocketHelperError.connectError

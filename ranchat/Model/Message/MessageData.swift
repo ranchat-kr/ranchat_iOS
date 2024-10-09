@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct MessageData: Codable {
+struct MessageData: Codable, Identifiable, Equatable {
     var id: Int
-    var roomId: Int
-    var userId: String
-    var participantId: Int
-    var participantName: String
+    var roomId: Int?
+    var userId: String?
+    var participantId: Int?
+    var participantName: String?
     var content: String
-    var messageType: String
-    var contentType: String
-    var senderType: String
-    var createdAt: String
+    var messageType: String?
+    var contentType: String?
+    var senderType: String?
+    var createdAt: String?
 }

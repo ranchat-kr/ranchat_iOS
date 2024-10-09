@@ -33,9 +33,13 @@
 		492B641C2CB3B34B000CB1A3 /* ranchatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B64012CB3B34B000CB1A3 /* ranchatApp.swift */; };
 		492BBB5D2CB5022A00C027C6 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492BBB5C2CB5022300C027C6 /* NetworkMonitor.swift */; };
 		492BBB602CB5086600C027C6 /* UUIDV7 in Frameworks */ = {isa = PBXBuildFile; productRef = 492BBB5F2CB5086600C027C6 /* UUIDV7 */; };
+		49A3B7202CB65A2F002C6FA6 /* MatchingLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */; };
+		49AA2E022CB68BFF0030BDF0 /* ChattingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */; };
+		49AA2E052CB68CEC0030BDF0 /* ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA2E042CB68CEC0030BDF0 /* ChattingViewModel.swift */; };
 		49B515DE2CB5306A002F8875 /* IdHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B515DD2CB5306A002F8875 /* IdHelper.swift */; };
 		49B515E02CB550A4002F8875 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B515DF2CB550A4002F8875 /* SettingViewModel.swift */; };
 		49B515E22CB55205002F8875 /* CenterLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B515E12CB55205002F8875 /* CenterLoadingView.swift */; };
+		49F2DA662CB6A9990060E4AB /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA652CB6A9990060E4AB /* ChatInputView.swift */; };
 		8BB9142D288CAEA528D533D8 /* Pods_ranchat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E83D129B83EB149794EC952 /* Pods_ranchat.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,9 +85,13 @@
 		492B64012CB3B34B000CB1A3 /* ranchatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ranchatApp.swift; sourceTree = "<group>"; };
 		492BBB5C2CB5022300C027C6 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		499584A92C8DEBDB00A77646 /* ranchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ranchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingLoadingView.swift; sourceTree = "<group>"; };
+		49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingView.swift; sourceTree = "<group>"; };
+		49AA2E042CB68CEC0030BDF0 /* ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingViewModel.swift; sourceTree = "<group>"; };
 		49B515DD2CB5306A002F8875 /* IdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdHelper.swift; sourceTree = "<group>"; };
 		49B515DF2CB550A4002F8875 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		49B515E12CB55205002F8875 /* CenterLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterLoadingView.swift; sourceTree = "<group>"; };
+		49F2DA652CB6A9990060E4AB /* ChatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputView.swift; sourceTree = "<group>"; };
 		6EBB5E4C9F83FF48F921F323 /* Pods-ranchat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.debug.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.debug.xcconfig"; sourceTree = "<group>"; };
 		B031065110250D7527CFA8C9 /* Pods-ranchat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.release.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -113,7 +121,6 @@
 			isa = PBXGroup;
 			children = (
 				492B63DD2CB3B34B000CB1A3 /* DosStyleTextField.swift */,
-				492B63DE2CB3B34B000CB1A3 /* MainButtonView.swift */,
 				49B515E12CB55205002F8875 /* CenterLoadingView.swift */,
 			);
 			path = Common;
@@ -142,6 +149,7 @@
 		492B63E82CB3B34B000CB1A3 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				49A3B71E2CB659FB002C6FA6 /* CustomView */,
 				492B63E62CB3B34B000CB1A3 /* HomeView.swift */,
 				492B63E72CB3B34B000CB1A3 /* HomeViewModel.swift */,
 			);
@@ -233,6 +241,7 @@
 				492B63F72CB3B34B000CB1A3 /* Model */,
 				492B63E82CB3B34B000CB1A3 /* Home */,
 				492B63FB2CB3B34B000CB1A3 /* Setting */,
+				49AA2E032CB68C080030BDF0 /* Chatting */,
 				492B63FC2CB3B34B000CB1A3 /* Assets.xcassets */,
 				492B63FE2CB3B34B000CB1A3 /* DungGeunMo.ttf */,
 				492B63FF2CB3B34B000CB1A3 /* Info.plist */,
@@ -257,6 +266,33 @@
 				499584A92C8DEBDB00A77646 /* ranchat.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		49A3B71E2CB659FB002C6FA6 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				492B63DE2CB3B34B000CB1A3 /* MainButtonView.swift */,
+				49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */,
+			);
+			path = CustomView;
+			sourceTree = "<group>";
+		};
+		49AA2E032CB68C080030BDF0 /* Chatting */ = {
+			isa = PBXGroup;
+			children = (
+				49F2DA642CB6A97C0060E4AB /* CustomView */,
+				49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */,
+				49AA2E042CB68CEC0030BDF0 /* ChattingViewModel.swift */,
+			);
+			path = Chatting;
+			sourceTree = "<group>";
+		};
+		49F2DA642CB6A97C0060E4AB /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				49F2DA652CB6A9990060E4AB /* ChatInputView.swift */,
+			);
+			path = CustomView;
 			sourceTree = "<group>";
 		};
 		7A2C7BC9619A53FD98386D6C /* Pods */ = {
@@ -389,7 +425,9 @@
 			files = (
 				492B64082CB3B34B000CB1A3 /* DosStyleTextField.swift in Sources */,
 				492B64092CB3B34B000CB1A3 /* MainButtonView.swift in Sources */,
+				49A3B7202CB65A2F002C6FA6 /* MatchingLoadingView.swift in Sources */,
 				492B640A2CB3B34B000CB1A3 /* Font+DungGeunMo.swift in Sources */,
+				49AA2E052CB68CEC0030BDF0 /* ChattingViewModel.swift in Sources */,
 				492B640B2CB3B34B000CB1A3 /* ApiHelper.swift in Sources */,
 				492B640C2CB3B34B000CB1A3 /* DefaultData.swift in Sources */,
 				492B640D2CB3B34B000CB1A3 /* WebSocketHelper.swift in Sources */,
@@ -397,6 +435,7 @@
 				492B640F2CB3B34B000CB1A3 /* HomeViewModel.swift in Sources */,
 				492B64102CB3B34B000CB1A3 /* MessageListResponse.swift in Sources */,
 				492B64112CB3B34B000CB1A3 /* MessageData.swift in Sources */,
+				49AA2E022CB68BFF0030BDF0 /* ChattingView.swift in Sources */,
 				492B64122CB3B34B000CB1A3 /* RoomDataList.swift in Sources */,
 				49B515E22CB55205002F8875 /* CenterLoadingView.swift in Sources */,
 				49B515DE2CB5306A002F8875 /* IdHelper.swift in Sources */,
@@ -409,6 +448,7 @@
 				492B64182CB3B34B000CB1A3 /* DefaultResponse.swift in Sources */,
 				49B515E02CB550A4002F8875 /* SettingViewModel.swift in Sources */,
 				492B64192CB3B34B000CB1A3 /* SettingView.swift in Sources */,
+				49F2DA662CB6A9990060E4AB /* ChatInputView.swift in Sources */,
 				492B641A2CB3B34B000CB1A3 /* ContentView.swift in Sources */,
 				492B641B2CB3B34B000CB1A3 /* Item.swift in Sources */,
 				492B641C2CB3B34B000CB1A3 /* ranchatApp.swift in Sources */,

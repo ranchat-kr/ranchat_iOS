@@ -12,7 +12,7 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
-//    @Query private var user: User?
+    //    @Query private var user: User?
     @State private var isAnimating = false
     @State private var networkMotinor = NetworkMonitor()
     @Bindable var viewModel = HomeViewModel()
@@ -22,64 +22,84 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack {
-            NavigationView {
-                ZStack {
-                    VStack {
-                        Text("Ran-Talk")
-                            .font(.dungGeunMo80)
-                            .offset(y: isAnimating ? 0 : -screenHeight / 2)
-                            .onAppear {
-                                withAnimation(.easeInOut(duration: 1.0)) {
-                                    isAnimating = true
-                                }
+            
+            ZStack {
+                VStack {
+                    Text("Ran-Talk")
+                        .font(.dungGeunMo80)
+                        .offset(y: isAnimating ? 0 : -screenHeight / 2)
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 1.0)) {
+                                isAnimating = true
                             }
-                        
-                        Color.clear.frame(height: 30)
-                        
-                        MainButtonView(text: "START!") {
-                            viewModel.requestMatching()
                         }
-                        .opacity(isAnimating ? 1.0 : 0.0)
-                        
-                        
-                        Color.clear.frame(height: 10)
-                        
-
-                        MainButtonView(text: "CONTINUE!") {
-                            
-                        }
-                        
-                        .opacity((viewModel.isRoomExist && isAnimating) ? 1.0 : 0.0)
+                    
+                    Color.clear.frame(height: 30)
+                    
+                    MainButtonView(text: "START!") {
+                        //viewModel.requestMatching()
+                        viewModel.navigateToChat()
+                    }
+                    .opacity(isAnimating ? 1.0 : 0.0)
+                    
+                    
+                    Color.clear.frame(height: 10)
+                    
+                    
+                    MainButtonView(text: "CONTINUE!") {
                         
                     }
                     
+                    .opacity((viewModel.isRoomExist && isAnimating) ? 1.0 : 0.0)
                     
-                    if viewModel.isLoading {
-                        CenterLoadingView()
-                    }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
-                            .font(.dungGeunMo12)
-                            .opacity(isAnimating ? 1.0 : 0.0)
-                            .animation(.easeInOut(duration: 1.0), value: isAnimating)
-                    }
-                    
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink(destination: {
-                            SettingView()
-                        }, label: {
-                            Image(systemName: "gearshape")
-                                .tint(.white)
-                        })
+                
+                
+                if viewModel.isLoading {
+                    CenterLoadingView()
+                }
+                
+                if viewModel.isMatching {
+                    MatchingLoadingView()
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
+                        .font(.dungGeunMo12)
                         .opacity(isAnimating ? 1.0 : 0.0)
                         .animation(.easeInOut(duration: 1.0), value: isAnimating)
+                }
+                
+                
+                ToolbarItem(placement: .topBarTrailing) {
+//                    NavigationLink(destination: {
+//                        SettingView()
+//                    }, label: {
+//                        Image(systemName: "gearshape")
+//                            .tint(.white)
+//                    })
+//                    .opacity(isAnimating ? 1.0 : 0.0)
+//                    .animation(.easeInOut(duration: 1.0), value: isAnimating)
+                    Button {
+                        viewModel.navigateToSetting()
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .tint(.white)
                     }
                 }
             }
+            .navigationDestination(isPresented: $viewModel.goToSetting, destination: {
+                SettingView()
+            })
+            .navigationDestination(isPresented: $viewModel.goToChat, destination: {
+                ChattingView()
+            })
+            .navigationDestination(isPresented: $viewModel.goToRoomList, destination: {
+                // RoomListView()   
+            })
         }
+        
         .onAppear {
             viewModel.setWebSocketHelper(webSocketHelper, idHelper: idHelper)
             viewModel.setUser()
@@ -92,7 +112,7 @@ struct HomeView: View {
                 dismissButton: .default(Text("확인"))
             )
         }
-
+        
         .onChange(of: networkMotinor.isConnected) { _, isConnected in
             if !isConnected {
                 viewModel.showAlert = true
