@@ -14,35 +14,7 @@ struct ChattingView: View {
     
     var body: some View {
         VStack {
-            ScrollViewReader { scrollViewProxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
-                        ForEach(viewModel.chattingList, id: \.id) { message in
-                            let content = message.content
-                            let id = message.id
-                            
-                            Text(content)
-                                .font(.dungGeunMo16)
-                                .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .id(id)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-                .onChange(of: viewModel.chattingList) { _ in
-                    if let lastMessage = viewModel.chattingList.last {
-                        withAnimation {
-                            scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
-                        }
-                    }
-                }
-                .onAppear {
-                    if let lastMessage = viewModel.chattingList.last {
-                        scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
-                    }
-                }
-            }
+            ChatScrollView(chattingList: $viewModel.chattingList)
             ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.chattingList, onSend: send)
         }
         .navigationTitle(viewModel.roomDetailData?.title ?? "")
