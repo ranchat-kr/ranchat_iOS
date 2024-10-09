@@ -29,14 +29,14 @@ struct ChattingView: View {
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
-                        // Add functionality here
+                        
                     } label: {
                         Image(systemName: "iphone.and.arrow.right.outward")
                             .tint(.white)
                     }
 
                     Button {
-                        // Add functionality here
+                        
                     } label: {
                         Image(systemName: "exclamationmark.bubble.fill")
                             .tint(.white)

@@ -23,7 +23,7 @@ struct ChatScrollView: View {
 //                                .padding(.vertical, 4)
 //                                .frame(maxWidth: .infinity, alignment: .leading)
 //                                .id(id)
-                        ChatElementView(id: id, userId: message.userId ?? "", content: message.content, messageType: message.messageType ?? "")
+                        ChatElementView(id: id, userId: message.userId ?? "", content: content, messageType: message.messageType ?? "")
                     }
                 }
                 .padding(.horizontal)
