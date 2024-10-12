@@ -23,6 +23,9 @@ struct ReportDialogView: View {
     var body: some View {
         Color.black.opacity(0.4)
             .edgesIgnoringSafeArea(.all)
+            .onTapGesture {
+                isPresented = false
+            }
         
         ZStack {
             VStack (alignment: .leading) {
