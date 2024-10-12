@@ -42,12 +42,18 @@ class ChattingViewModel {
     ]
     var inputText: String = ""
     var roomDetailData: RoomDetailData?
+    
     var showReportDialog: Bool = false
+    var showExitDialog: Bool = false
     
     var selectedReason: String?
     var reportText: String = ""
     
     func reportUser() {
+        
+    }
+    
+    func exitRoom() async {
         
     }
 }

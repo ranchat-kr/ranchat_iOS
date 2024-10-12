@@ -39,7 +39,7 @@ struct ChattingView: View {
                     
                     // 나가기 버튼
                     Button {
-                        
+                        viewModel.showExitDialog = true
                     } label: {
                         Image(systemName: "iphone.and.arrow.right.outward")
                             .tint(.white)
@@ -54,6 +54,18 @@ struct ChattingView: View {
                     selectedReason: $viewModel.selectedReason,
                     reportText: $viewModel.reportText,
                     onReport: viewModel.reportUser
+                )
+            }
+            
+            if viewModel.showExitDialog {
+                ExitDialogView(
+                    isPresented: $viewModel.showExitDialog,
+                    onConfirm: {
+                        Task {
+                            await viewModel.exitRoom()
+                            dismiss()
+                        }
+                    }
                 )
             }
         }
