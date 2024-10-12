@@ -108,20 +108,20 @@ struct SettingView: View {
             )
         }
         .toast(isPresenting: $viewModel.showSuccessToast, alert: {
-            AlertToast(type: .regular, title: "닉네임 변경이 완료되었습니다.")
+            AlertToast(type: .regular, title: "닉네임 변경이 완료되었습니다.", style: .style(titleFont: .dungGeunMo16))
         })
         .toast(isPresenting: $viewModel.showInValidToast, alert: {
             switch viewModel.nicknameError {
             case .Empty:
-                return AlertToast(type: .error(.red), title: "닉네임을 입력해주세요.")
+                return AlertToast(type: .error(.red), title: "닉네임을 입력해주세요.", style: .style(titleFont: .dungGeunMo16))
             case .Length:
-                return AlertToast(type: .error(.red), title: "닉네임은 2자 이상 10자 이하로 입력해주세요.")
+                return AlertToast(type: .error(.red), title: "닉네임은 2자 이상 10자 이하로 입력해주세요.", style: .style(titleFont: .dungGeunMo16))
             case .ContainsBlank:
-                return AlertToast(type: .error(.red), title: "닉네임에 공백이 포함되어 있습니다.")
+                return AlertToast(type: .error(.red), title: "닉네임에 공백이 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
             case .SpecialCharacter:
-                return AlertToast(type: .error(.red), title: "닉네임에 특수문자가 포함되어 있습니다.")
+                return AlertToast(type: .error(.red), title: "닉네임에 특수문자가 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
             case .ContainsForbiddenCharacter:
-                return AlertToast(type: .error(.red), title: "닉네임에 금지된 단어가 포함되어 있습니다.")
+                return AlertToast(type: .error(.red), title: "닉네임에 금지된 단어가 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
             default:
                 return AlertToast(type: .error(.red), title: "")
             }

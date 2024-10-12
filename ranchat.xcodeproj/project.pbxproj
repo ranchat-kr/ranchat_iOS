@@ -42,6 +42,7 @@
 		49F2DA662CB6A9990060E4AB /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA652CB6A9990060E4AB /* ChatInputView.swift */; };
 		49F2DA682CB6B1030060E4AB /* ChatElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA672CB6B1030060E4AB /* ChatElementView.swift */; };
 		49F2DA6A2CB6B6F40060E4AB /* ChatScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA692CB6B6F40060E4AB /* ChatScrollView.swift */; };
+		49F2DA6C2CB6C9B50060E4AB /* ReportDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA6B2CB6C9B50060E4AB /* ReportDialogView.swift */; };
 		8BB9142D288CAEA528D533D8 /* Pods_ranchat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E83D129B83EB149794EC952 /* Pods_ranchat.framework */; };
 /* End PBXBuildFile section */
 
@@ -96,6 +97,7 @@
 		49F2DA652CB6A9990060E4AB /* ChatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputView.swift; sourceTree = "<group>"; };
 		49F2DA672CB6B1030060E4AB /* ChatElementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatElementView.swift; sourceTree = "<group>"; };
 		49F2DA692CB6B6F40060E4AB /* ChatScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatScrollView.swift; sourceTree = "<group>"; };
+		49F2DA6B2CB6C9B50060E4AB /* ReportDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDialogView.swift; sourceTree = "<group>"; };
 		6EBB5E4C9F83FF48F921F323 /* Pods-ranchat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.debug.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.debug.xcconfig"; sourceTree = "<group>"; };
 		B031065110250D7527CFA8C9 /* Pods-ranchat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.release.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -297,6 +299,7 @@
 				49F2DA652CB6A9990060E4AB /* ChatInputView.swift */,
 				49F2DA672CB6B1030060E4AB /* ChatElementView.swift */,
 				49F2DA692CB6B6F40060E4AB /* ChatScrollView.swift */,
+				49F2DA6B2CB6C9B50060E4AB /* ReportDialogView.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -453,6 +456,7 @@
 				492B64162CB3B34B000CB1A3 /* RoomDetailData.swift in Sources */,
 				492B64172CB3B34B000CB1A3 /* UserData.swift in Sources */,
 				492B64182CB3B34B000CB1A3 /* DefaultResponse.swift in Sources */,
+				49F2DA6C2CB6C9B50060E4AB /* ReportDialogView.swift in Sources */,
 				49B515E02CB550A4002F8875 /* SettingViewModel.swift in Sources */,
 				492B64192CB3B34B000CB1A3 /* SettingView.swift in Sources */,
 				49F2DA662CB6A9990060E4AB /* ChatInputView.swift in Sources */,
