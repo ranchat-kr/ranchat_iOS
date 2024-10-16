@@ -112,6 +112,7 @@ class HomeViewModel {
                 navigateToChat()
             } catch {
                 print("Failed to sleep: \(error.localizedDescription)")
+                isMatching = false
             }
         }
     }

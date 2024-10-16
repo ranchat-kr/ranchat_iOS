@@ -17,7 +17,7 @@ class IdHelper {
     }
     
     func setRoomId(_ roomId: String) {
-        self.userId = roomId
+        self.roomId = roomId
     }
     
     func getUserId() -> String? {

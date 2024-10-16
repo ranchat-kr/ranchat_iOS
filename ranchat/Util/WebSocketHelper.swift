@@ -33,10 +33,12 @@ class WebSocketHelper {
         self.idHelper = idHelper
         
         guard let url = URL(string: socketURL) else {
+            print("DEBUG: WebSocketHelper.connectToWebSocket: invalid url")
             throw WebSocketHelperError.invalidURLError
         }
         
         guard let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.connectToWebSocket: nil userId")
             throw WebSocketHelperError.nilError
         }
         
@@ -55,10 +57,12 @@ class WebSocketHelper {
     //MARK: - Subscribe
     func subscribeToMatchingSuccess() throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.subscribeToMatchingSuccess: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.subscribeToMatchingSuccess: nil userId")
             throw WebSocketHelperError.nilError
         }
         
@@ -70,16 +74,19 @@ class WebSocketHelper {
             )
             self.matchingSuccessDestination = matchingSuccessDestination
         } else {
+            print("DEBUG: WebSocketHelper.subscribeToMatchingSuccess: Not connected to websocket")
             throw WebSocketHelperError.connectError
         }
     }
     
     func subscribeToRecieveMessage() throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.subscribeToRecieveMessage: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let roomId = idHelper.getRoomId() else {
+            print("DEBUG: WebSocketHelper.subscribeToRecieveMessage: nil roomId")
             throw WebSocketHelperError.nilError
         }
         
@@ -91,16 +98,19 @@ class WebSocketHelper {
             )
             self.receivingMessageDestination = receiveMessageDestination
         } else {
+            print("DEBUG: WebSocketHelper.subscribeToRecieveMessage: not connected")
             throw WebSocketHelperError.connectError
         }
     }
     
     func unsubscribeFromMatchingSuccess() throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.unsubscribeFromMatchingSuccess: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.unsubscribeFromMatchingSuccess: nil userId")
             throw WebSocketHelperError.nilError
         }
         
@@ -111,10 +121,12 @@ class WebSocketHelper {
     
     func unsubscribeFromRecieveMessage() throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.unsubscribeFromRecieveMessage: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let roomId = idHelper.getRoomId() else {
+            print("DEBUG: WebSocketHelper.unsubscribeFromRecieveMessage: nil roomId")
             throw WebSocketHelperError.nilError
         }
         
@@ -126,10 +138,12 @@ class WebSocketHelper {
     //MARK: - Send
     func requestMatching() throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.requestMatching: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.requestMatching: nil userId")
             throw WebSocketHelperError.nilError
         }
         
@@ -143,16 +157,19 @@ class WebSocketHelper {
             )
             isMatchSuccess = false
         } else {
+            print("DEBUG: WebSocketHelper.requestMatching: Not connected to Stomp")
             throw WebSocketHelperError.connectError
         }
     }
     
     func cancelMatching() throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.cancelMatching: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.cancelMatching: nil userId")
             throw WebSocketHelperError.nilError
         }
         
@@ -166,16 +183,19 @@ class WebSocketHelper {
             )
             isMatchSuccess = false
         } else {
+            print("DEBUG: WebSocketHelper.cancelMatching: not connected")
             throw WebSocketHelperError.connectError
         }
     }
     
     func sendMessage(_ message: String) throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.sendMessage: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let roomId = idHelper.getRoomId() else {
+            print("DEBUG: WebSocketHelper.sendMessage: nil roomId")
             throw WebSocketHelperError.nilError
         }
         
@@ -189,16 +209,19 @@ class WebSocketHelper {
                 withReceipt: nil
             )
         } else {
+            print("DEBUG: WebSocketHelper.sendMessage: not connected")
             throw WebSocketHelperError.connectError
         }
     }
     
     func enterRoom() throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.enterRoom: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let roomId = idHelper.getRoomId(), let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.enterRoom: nil roomId or userId")
             throw WebSocketHelperError.nilError
         }
         
@@ -211,16 +234,19 @@ class WebSocketHelper {
                 toDestination: enterRoomDestination
             )
         } else {
+            print("DEBUG: WebSocketHelper.enterRoom: not connected")
             throw WebSocketHelperError.connectError
         }
     }
     
     func exitRoom(roomId: String) throws {
         guard let idHelper else {
+            print("DEBUG: WebSocketHelper.exitRoom: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
         guard let roomId = idHelper.getRoomId(), let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.exitRoom: nil roomId or userId")
             throw WebSocketHelperError.nilError
         }
         
@@ -233,6 +259,7 @@ class WebSocketHelper {
                 toDestination: exitRoomDestination
             )
         } else {
+            print("DEBUG: WebSocketHelper.exitRoom: Not connected to Stomp")
             throw WebSocketHelperError.connectError
         }
     }
@@ -265,7 +292,7 @@ extension WebSocketHelper: StompClientLibDelegate {
                 //매칭 성공 시 roomId 새로 할당
                 self.idHelper?.setRoomId(data["roomId"] as? String ?? "")
                 self.isMatchSuccess = true
-                
+                print("DEBUG: WebSocketHelper stompClient subscribeToMatchingSuccess success")
             // data : MessageData.swift
             } else if destination == receivingMessageDestination {
                 guard let messageData = MessageData(jsonString: data) else {
