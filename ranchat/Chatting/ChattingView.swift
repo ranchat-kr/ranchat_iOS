@@ -20,7 +20,6 @@ struct ChattingView: View {
                 ChatScrollView(chattingList: $viewModel.messageDataList)
                 ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.messageDataList, onSend: send)
             }
-            .navigationTitle(viewModel.roomDetailData?.title ?? "")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -48,6 +47,10 @@ struct ChattingView: View {
                         Image(systemName: "iphone.and.arrow.right.outward")
                             .tint(.white)
                     }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text(viewModel.roomDetailData?.title ?? "")
+                        .font(.dungGeunMo32)
                 }
             }
             .navigationBarBackButtonHidden()
