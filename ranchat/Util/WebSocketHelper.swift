@@ -255,7 +255,7 @@ extension WebSocketHelper: StompClientLibDelegate {
                 return
             }
 
-            if status == "SUCCESS", let data = body["data"] as? [String: AnyObject] {
+            if status == "SUCCESS", let data = body["data"] as? [String: AnyObject] { //매칭 성공 시 roomId 새로 할당
                 self.idHelper?.setRoomId(data["roomId"] as? String ?? "")
                 self.isMatchSuccess = true
             } else {
