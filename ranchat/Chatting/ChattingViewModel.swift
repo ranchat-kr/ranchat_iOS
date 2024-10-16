@@ -9,7 +9,7 @@ import Foundation
 
 @Observable
 class ChattingViewModel {
-    var chattingList: [MessageData] = [
+    var messageDataList: [MessageData] = [
         MessageData(id: 1, content: "안녕"),
         MessageData(id: 2, content: "ㅎㅇ"),
         MessageData(id: 3, content: "바이"),
@@ -50,6 +50,27 @@ class ChattingViewModel {
     
     var selectedReason: String?
     var reportText: String = ""
+    
+    var webSocketHelper: WebSocketHelper?
+    var idHelper: IdHelper?
+    
+    func setHelper(_ webSocketHelper: WebSocketHelper, idHelper: IdHelper) {
+        self.webSocketHelper = webSocketHelper
+        self.idHelper = idHelper
+    }
+    
+    func addMessage(messageData: MessageData) {
+        messageDataList.append(messageData)
+    }
+    
+    func getRoomDetailData() async {
+        do {
+            let roomDetailData = try await ApiHelper.shared.getRoomDetail()
+            self.roomDetailData = roomDetailData
+        } catch {
+            print("DEBUG: ChattingViewModel - getRoomDetailData - error: \(error.localizedDescription)")
+        }
+    }
     
     func reportUser() {
         

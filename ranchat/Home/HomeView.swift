@@ -101,7 +101,7 @@ struct HomeView: View {
         }
         
         .onAppear {
-            viewModel.setWebSocketHelper(webSocketHelper, idHelper: idHelper)
+            viewModel.setHelper(webSocketHelper, idHelper: idHelper)
             viewModel.setUser()
         }
         

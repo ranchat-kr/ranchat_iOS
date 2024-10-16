@@ -22,11 +22,13 @@ class WebSocketHelper {
     private var idHelper: IdHelper?
     private var matchingSuccessDestination: String?
     private var receivingMessageDestination: String?
+    private var chattingViewModel: ChattingViewModel?
     
     var stompClient = StompClientLib()
     
     var isMatchSuccess: Bool = false
     
+    //MARK: - Setting
     func connectToWebSocket(idHelper: IdHelper) throws {
         self.idHelper = idHelper
         
@@ -120,9 +122,6 @@ class WebSocketHelper {
         
         stompClient.unsubscribe(destination: receiveMessageDestination)
     }
-    
-    //MARK: - Recieve
-    
     
     //MARK: - Send
     func requestMatching() throws {
@@ -237,6 +236,11 @@ class WebSocketHelper {
             throw WebSocketHelperError.connectError
         }
     }
+    
+    //MARK: - ETC
+    func setChattingViewModel(_ chattingViewModel: ChattingViewModel) {
+        self.chattingViewModel = chattingViewModel
+    }
 }
 
 extension WebSocketHelper: StompClientLibDelegate {
@@ -247,23 +251,31 @@ extension WebSocketHelper: StompClientLibDelegate {
         withHeader header: [String : String]?,
         withDestination destination: String
     ) {
+        guard let body = jsonBody as? [String: AnyObject],
+              let status = body["status"] as? String else {
+            print("DEBUG: WebSocketHelper stompClient Invalid response structure")
+            return
+        }
         
-        if destination == matchingSuccessDestination {
-            guard let body = jsonBody as? [String: AnyObject],
-                  let status = body["status"] as? String else {
-                print("DEBUG: Invalid response structure")
-                return
-            }
-
-            if status == "SUCCESS", let data = body["data"] as? [String: AnyObject] { //매칭 성공 시 roomId 새로 할당
+        if status == "SUCCESS",
+           let data = body["data"] as? [String: AnyObject] {
+            
+            // data : { "roomId" : 0 }
+            if destination == matchingSuccessDestination {
+                //매칭 성공 시 roomId 새로 할당
                 self.idHelper?.setRoomId(data["roomId"] as? String ?? "")
                 self.isMatchSuccess = true
-            } else {
-                print("DEBUG: subscribeToMatchingSuccess failed: \(status)")
+                
+            // data : MessageData.swift
+            } else if destination == receivingMessageDestination {
+                guard let messageData = MessageData(jsonString: data) else {
+                    print("DEBUG: WebSocketHelper stompClient Invalid message data")
+                    return
+                }
+                chattingViewModel?.addMessage(messageData: messageData)
             }
-            
-        } else if destination == receivingMessageDestination {
-            
+        } else {
+            print("DEBUG: WebSocketHelper stompClient subscribeToMatchingSuccess failed: \(status)")
         }
     }
     

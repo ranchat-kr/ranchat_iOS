@@ -9,14 +9,16 @@ import SwiftUI
 
 struct ChattingView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(IdHelper.self) var idHelper
+    @Environment(WebSocketHelper.self) var webSocketHelper
     @State var viewModel = ChattingViewModel()
     var idCount = 100
     
     var body: some View {
         ZStack {
             VStack {
-                ChatScrollView(chattingList: $viewModel.chattingList)
-                ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.chattingList, onSend: send)
+                ChatScrollView(chattingList: $viewModel.messageDataList)
+                ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.messageDataList, onSend: send)
             }
             .navigationTitle(viewModel.roomDetailData?.title ?? "")
             .toolbar {
@@ -33,8 +35,10 @@ struct ChattingView: View {
                     Button {
                         viewModel.showReportDialog = true
                     } label: {
-                        Image(systemName: "exclamationmark.bubble.fill")
-                            .tint(.white)
+                        if viewModel.roomDetailData?.type != "GPT" {
+                            Image(systemName: "exclamationmark.bubble.fill")
+                                .tint(.white)
+                        }
                     }
                     
                     // 나가기 버튼
@@ -73,10 +77,15 @@ struct ChattingView: View {
                 CenterLoadingView()
             }
         }
+        .onAppear {
+            Task {
+                await viewModel.getRoomDetailData()
+            }
+        }
     }
     
     func send() {
-        viewModel.chattingList.append(MessageData(id: idCount, content: viewModel.inputText))
+        viewModel.messageDataList.append(MessageData(id: idCount, content: viewModel.inputText))
     }
 }
 

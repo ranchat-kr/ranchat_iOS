@@ -24,7 +24,7 @@ class HomeViewModel {
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
     
-    func setWebSocketHelper(_ webSocketHelper: WebSocketHelper, idHelper: IdHelper) {
+    func setHelper(_ webSocketHelper: WebSocketHelper, idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
     }
