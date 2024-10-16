@@ -68,6 +68,10 @@ struct ChattingView: View {
                     }
                 )
             }
+            
+            if viewModel.isLoading {
+                CenterLoadingView()
+            }
         }
     }
     

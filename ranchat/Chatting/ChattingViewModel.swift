@@ -40,6 +40,8 @@ class ChattingViewModel {
         MessageData(id: 28, content: "레오나"),
         MessageData(id: 29, content: "베이가"),
     ]
+    var isLoading: Bool = false
+    
     var inputText: String = ""
     var roomDetailData: RoomDetailData?
     
@@ -54,6 +56,10 @@ class ChattingViewModel {
     }
     
     func exitRoom() async {
+        isLoading = true
         
+        
+        
+        isLoading = false
     }
 }
