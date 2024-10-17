@@ -65,11 +65,9 @@ struct SettingView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {
+                        ToolbarButton(action: {
                             dismiss()
-                        } label: {
-                            Image(systemName: "chevron.backward")
-                        }
+                        }, imageName: "chevron.backward")
                     }
                     
                     ToolbarItem(placement: .principal) {

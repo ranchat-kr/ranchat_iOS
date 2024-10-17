@@ -21,31 +21,22 @@ struct ChattingView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
+                    ToolbarButton(action: {
                         dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .tint(.white)
-                    }
+                    }, imageName: "chevron.backward")
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     // 신고 버튼
-                    Button {
-                        viewModel.showReportDialog = true
-                    } label: {
-                        if viewModel.roomDetailData?.type != "GPT" {
-                            Image(systemName: "exclamationmark.bubble.fill")
-                                .tint(.white)
-                        }
+                    if viewModel.roomDetailData?.type != "GPT" {
+                        ToolbarButton(action: {
+                            viewModel.showReportDialog = true
+                        }, imageName: "exclamationmark.bubble.fill")
                     }
                     
                     // 나가기 버튼
-                    Button {
+                    ToolbarButton(action: {
                         viewModel.showExitDialog = true
-                    } label: {
-                        Image(systemName: "iphone.and.arrow.right.outward")
-                            .tint(.white)
-                    }
+                    }, imageName: "iphone.and.arrow.right.outward")
                 }
                 ToolbarItem(placement: .principal) {
                     Text(viewModel.roomDetailData?.title ?? "")

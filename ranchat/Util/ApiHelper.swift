@@ -78,7 +78,7 @@ class ApiHelper {
     
     //MARK: - ChatRoom
     /// CONTINUE! 화면에서 나오는 방 리스트 호출
-    func getRooms(page: Int = 0, size: Int = 10) async throws -> [RoomData] {
+    func getRooms(page: Int = 0, size: Int = 10) async throws -> RoomDataList {
         guard let userId = idHelper?.getUserId() else {
             throw ApiHelperError.nilError
         }
@@ -95,7 +95,7 @@ class ApiHelper {
             
             if response.status == Status.success.rawValue {
                 print("DEBUG: Success to get rooms: \(response)")
-                return response.data.items
+                return response
             } else {
                 print("DEBUG: Failed to get rooms with error: \(response.message)")
                 throw ApiHelperError.networkError(response.message)

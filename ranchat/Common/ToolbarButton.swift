@@ -7,18 +7,20 @@
 
 import SwiftUI
 
-struct ToolbarBackButton: View {
+struct ToolbarButton: View {
     var action: () -> Void
+    var imageName: String
+    
     var body: some View {
         Button {
             action()
         } label: {
-            Image(systemName: "chevron.left")
+            Image(systemName: imageName)
                 .tint(.white)
         }
     }
 }
 
 #Preview {
-    ToolbarBackButton(action: {})
+    ToolbarButton(action: {}, imageName: "")
 }

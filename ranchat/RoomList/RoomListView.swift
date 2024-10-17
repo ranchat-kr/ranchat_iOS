@@ -11,9 +11,26 @@ struct RoomListView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
+    @State var viewModel = RoomListViewModel()
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView {
+            GeometryReader { geometry in
+                
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Continue")
+                    .font(.dungGeunMo24)
+            }
+            ToolbarItem(placement: .topBarLeading) {
+                ToolbarButton(action: {
+                    dismiss()
+                }, imageName: "chevron.backward")
+            }
+        }
+        .navigationBarBackButtonHidden()
     }
 }
 
