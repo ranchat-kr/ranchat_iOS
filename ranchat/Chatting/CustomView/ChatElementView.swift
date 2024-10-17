@@ -27,7 +27,7 @@ struct ChatElementView: View {
     }
     
     var body: some View {
-        Text("\(messageType == MessageTypeForColor.other.rawValue ? sender : "")\(content)")
+        Text("\(messageTypeForColor == .other ? sender : "")\(content)")
             .font(.dungGeunMo16)
             .padding(.vertical, 4)
             .frame(maxWidth: .infinity, alignment: .leading)
