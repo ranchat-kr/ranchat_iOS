@@ -126,6 +126,12 @@ struct HomeView: View {
                 }
             }
         }
+        
+        .onChange(of: webSocketHelper.isMatchSuccess) { _, newValue in
+            if newValue {
+                viewModel.successMatching()
+            }
+        }
     }
 }
 

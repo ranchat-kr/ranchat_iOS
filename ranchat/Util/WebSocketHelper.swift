@@ -26,13 +26,7 @@ class WebSocketHelper {
     
     var stompClient = StompClientLib()
     
-    var isMatchSuccess: Bool = false {
-        didSet {
-            if isMatchSuccess, let onSuccessMatching {
-                onSuccessMatching()
-            }
-        }
-    }
+    var isMatchSuccess: Bool = false
     
     var onSuccessMatching: (() -> Void)?
     
@@ -295,10 +289,6 @@ class WebSocketHelper {
     //MARK: - ETC
     func setChattingViewModel(_ chattingViewModel: ChattingViewModel) {
         self.chattingViewModel = chattingViewModel
-    }
-    
-    func setOnSuccessMatching(_ onSuccessMatching: @escaping () -> Void) {
-        self.onSuccessMatching = onSuccessMatching
     }
 }
 

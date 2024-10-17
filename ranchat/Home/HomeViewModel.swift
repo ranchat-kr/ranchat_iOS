@@ -29,8 +29,6 @@ class HomeViewModel {
     func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
-        
-        webSocketHelper.setOnSuccessMatching(successMatching)
     }
     
     func navigateToChat() {
