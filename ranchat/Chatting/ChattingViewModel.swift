@@ -56,7 +56,7 @@ class ChattingViewModel {
         do {
             let messageList = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize * 2)
             currentPage += 1
-            
+            self.messageDataList.removeAll()
             self.messageDataList = messageList
             print("messageList: \(messageList)")
         } catch {

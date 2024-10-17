@@ -12,7 +12,6 @@ struct ChattingView: View {
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
     @State var viewModel = ChattingViewModel()
-    var idCount = 100
     
     var body: some View {
         ZStack {

@@ -13,19 +13,15 @@ struct ChatScrollView: View {
     var body: some View {
         ScrollViewReader { scrollViewProxy in
             ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading) {
                     ForEach(chattingList, id: \.id) { message in
                         let content = message.content
                         let id = message.id
                         
-//                            Text(content)
-//                                .font(.dungGeunMo16)
-//                                .padding(.vertical, 4)
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//                                .id(id)
-                        ChatElementView(id: id, userId: message.userId ?? "", content: content, messageType: message.messageType ?? "")
+                        ChatElementView(id: id, userId: message.userId, content: content, messageType: message.messageType)
                     }
                 }
+                .padding(.top, -40)
                 .padding(.horizontal)
             }
             .onChange(of: chattingList) { _ in
