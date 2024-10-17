@@ -122,11 +122,16 @@ class ChattingViewModel {
     func exitRoom() async {
         isLoading = true
         
-        
+        do {
+            try webSocketHelper?.exitRoom()
+        } catch {
+            print("DEBUG: ChattingViewModel - exitRoom - error: \(error.localizedDescription)")
+        }
         
         isLoading = false
     }
     
+    //MARK: - ETC
     func getReportType(reason: String?) -> String {
         switch reason {
         case "스팸":

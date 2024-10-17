@@ -68,6 +68,12 @@ class WebSocketHelper {
             delegate: self,
             connectionHeaders: ["userId": userId]
         )
+        
+        do {
+            try subscribeToMatchingSuccess()
+        } catch {
+            print("DEBUG: WebSocketHelper.reconnectToWebSocket: \(error.localizedDescription)")
+        }
     }
     
     func disconnectFromWebSocket() {
@@ -154,6 +160,13 @@ class WebSocketHelper {
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
         
         stompClient.unsubscribe(destination: receiveMessageDestination)
+        
+        do {
+            try reconnectToWebSocket()
+        } catch {
+            print("DEBUG: WebSocketHelper.unsubscribeFromRecieveMessage: error: \(error.localizedDescription)")
+            throw WebSocketHelperError.connectError
+        }
     }
     
     //MARK: - Send
@@ -272,7 +285,7 @@ class WebSocketHelper {
         }
     }
     
-    func exitRoom(roomId: String) throws {
+    func exitRoom() throws {
         guard let idHelper else {
             print("DEBUG: WebSocketHelper.exitRoom: nil idHelper")
             throw WebSocketHelperError.nilError
@@ -287,17 +300,17 @@ class WebSocketHelper {
         let payloadObject: [String: Any] = ["userId": userId]
         
         if stompClient.isConnected() {
-            stompClient.sendJSONForDict(
-                dict: payloadObject as AnyObject,
-                toDestination: exitRoomDestination
-            )
-            
             do {
                 try unsubscribeFromRecieveMessage()
             } catch {
                 print("DEBUG: WebSocketHelper.exitRoom: Error unsubscribing from recieveMessage: \(error.localizedDescription)")
                 throw WebSocketHelperError.connectError
             }
+            
+            stompClient.sendJSONForDict(
+                dict: payloadObject as AnyObject,
+                toDestination: exitRoomDestination
+            )
         } else {
             print("DEBUG: WebSocketHelper.exitRoom: Not connected to Stomp")
             throw WebSocketHelperError.connectError
@@ -353,7 +366,7 @@ extension WebSocketHelper: StompClientLibDelegate {
     func stompClientDidDisconnect(client: StompClientLib!) {
         print("stompClientDidDisconnect")
         do {
-            try unsubscribeFromMatchingSuccess()
+            //try unsubscribeFromMatchingSuccess()
             try reconnectToWebSocket()
         } catch {
             print("DEBUG: reconnectToWebSocket failed: \(error.localizedDescription)")
