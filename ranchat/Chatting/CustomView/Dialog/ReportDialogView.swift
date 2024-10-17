@@ -24,7 +24,7 @@ struct ReportDialogView: View {
         Color.black.opacity(0.4)
             .edgesIgnoringSafeArea(.all)
             .onTapGesture {
-                isPresented = false
+                optionClear()
             }
         
         ZStack {
@@ -45,18 +45,6 @@ struct ReportDialogView: View {
                         .foregroundStyle(.blue)
                     
                     Spacer()
-                    
-//                    Picker("신고 사유 선택", selection: $selectedReason) {
-//                        ForEach(reportReasons, id: \.self) { reason in
-//                            Text(reason)
-//                                .font(.dungGeunMo20)
-//                                .foregroundStyle(.blue)
-//                                .tag(reason as String?)
-//                            
-//                        }
-//                    }
-//                    .tint(.black)
-//                    .pickerStyle(.menu)
                     
                     Image(systemName: "chevron.up.chevron.down")
                         .foregroundStyle(.black)
@@ -80,7 +68,7 @@ struct ReportDialogView: View {
                         .font(.dungGeunMo24)
                         .foregroundStyle(.black)
                         .tint(.gray)
-                        .frame(height: 80)
+                        .frame(height: 60)
                         .background(.white)
                         .overlay {
                             RoundedRectangle(cornerRadius: 8)
@@ -89,14 +77,11 @@ struct ReportDialogView: View {
                 }
                 .padding(.bottom, 30)
                 
-                
-                
-                
                 HStack {
                     Spacer()
                     
                     Button {
-                        isPresented = false
+                        optionClear()
                     } label: {
                         Text("취소")
                             .font(.dungGeunMo16)
@@ -167,7 +152,11 @@ struct ReportDialogView: View {
                 )
             }
         }
-        
+    }
+    private func optionClear() {
+        selectedReason = nil
+        reportText = ""
+        isPresented = false
     }
 }
 
