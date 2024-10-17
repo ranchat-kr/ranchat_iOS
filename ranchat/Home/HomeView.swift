@@ -33,17 +33,13 @@ struct HomeView: View {
                                 isAnimating = true
                             }
                         }
-                    
-                    Color.clear.frame(height: 30)
+                        .padding(.bottom, 30)
                     
                     MainButtonView(text: "START!") {
                         viewModel.requestMatching()
                         //viewModel.navigateToChat()
                     }
                     .opacity(isAnimating ? 1.0 : 0.0)
-                    
-                    
-                    Color.clear.frame(height: 10)
                     
                     
                     MainButtonView(text: "CONTINUE!") {

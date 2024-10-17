@@ -16,11 +16,11 @@ struct MainButtonView: View {
             action()
         } label: {
             Text(text)
-                .font(.dungGeunMo32)
+                .font(.dungGeunMo30)
+                .frame(width: 200, height: 50)
                 .foregroundStyle(.white)
-                .overlay {
+                .background {
                     Rectangle()
-                        .frame(width: 200, height: 50)
                         .foregroundColor(.clear)
                         .border(.white, width: 5)
                 }
