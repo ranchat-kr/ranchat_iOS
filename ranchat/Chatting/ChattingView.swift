@@ -50,7 +50,7 @@ struct ChattingView: View {
                 }
                 ToolbarItem(placement: .principal) {
                     Text(viewModel.roomDetailData?.title ?? "")
-                        .font(.dungGeunMo32)
+                        .font(.dungGeunMo24)
                 }
             }
             .navigationBarBackButtonHidden()
