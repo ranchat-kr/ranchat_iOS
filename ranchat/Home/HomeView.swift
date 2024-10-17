@@ -59,9 +59,9 @@ struct HomeView: View {
                     CenterLoadingView()
                 }
                 
-                if viewModel.isMatching {
+                if viewModel.isMatching && !webSocketHelper.isMatchSuccess {
                     MatchingLoadingView()
-                }
+                } 
             }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
@@ -101,7 +101,7 @@ struct HomeView: View {
         }
         
         .onAppear {
-            viewModel.setHelper(webSocketHelper, idHelper: idHelper)
+            viewModel.setHelper(webSocketHelper, idHelper)
             viewModel.setUser()
         }
         

@@ -24,9 +24,11 @@ class HomeViewModel {
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
     
-    func setHelper(_ webSocketHelper: WebSocketHelper, idHelper: IdHelper) {
+    func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
+        
+        webSocketHelper.setOnSuccessMatching(successMatching)
     }
     
     func navigateToChat() {
@@ -75,6 +77,23 @@ class HomeViewModel {
         isLoading = false
     }
     
+    func successMatching() {
+        guard let webSocketHelper else {
+            print("webSocketHelper is nil")
+            showAlert = true
+            return
+        }
+        
+        isMatching = false
+        do {
+            try webSocketHelper.cancelMatching()
+            try webSocketHelper.enterRoom()
+            navigateToChat()
+        } catch {
+            print("Failed to success matching: \(error.localizedDescription)")
+        }
+    }
+    
     func requestMatching() {
         isMatching = true
         
@@ -102,6 +121,9 @@ class HomeViewModel {
         Task {
             do {
                 try await Task.sleep(for: .seconds(8))
+                
+                if !isMatching { return }
+                
                 isMatching = false
                 try webSocketHelper.cancelMatching()
                 if !webSocketHelper.isMatchSuccess {  //8초가 지나도 매칭이 안 됐을 경우, GPT와 연결 (방을 인위적으로 만들어 나온 roomId로 설정)

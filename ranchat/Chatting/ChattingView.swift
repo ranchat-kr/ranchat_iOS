@@ -82,13 +82,16 @@ struct ChattingView: View {
         }
         .onAppear {
             Task {
+                viewModel.setHelper(webSocketHelper, idHelper)
+                viewModel.webSocketHelper?.setChattingViewModel(viewModel)
                 await viewModel.getRoomDetailData()
+                await viewModel.getMessageList()
             }
         }
     }
     
     func send() {
-        viewModel.messageDataList.append(MessageData(id: idCount, content: viewModel.inputText))
+        viewModel.sendMessage()
     }
 }
 

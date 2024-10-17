@@ -168,7 +168,7 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to get room detail: \(response)")
+                print("DEBUG: Success to get room detail")
                 
                 return response.data
             } else {
@@ -353,7 +353,7 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to get messages: \(response)")
+                print("DEBUG: Success to get messages")
                 return response.data.items
             } else {
                 print("DEBUG: Failed to get messages with error: \(response.message)")

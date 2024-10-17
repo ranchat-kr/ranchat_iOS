@@ -26,9 +26,17 @@ class WebSocketHelper {
     
     var stompClient = StompClientLib()
     
-    var isMatchSuccess: Bool = false
+    var isMatchSuccess: Bool = false {
+        didSet {
+            if isMatchSuccess, let onSuccessMatching {
+                onSuccessMatching()
+            }
+        }
+    }
     
-    //MARK: - Setting
+    var onSuccessMatching: (() -> Void)?
+    
+    //MARK: - Init Setting
     func connectToWebSocket(idHelper: IdHelper) throws {
         self.idHelper = idHelper
         
@@ -91,6 +99,7 @@ class WebSocketHelper {
         }
         
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
+        print("DEBUG: WebSocketHelper.subscribeToRecieveMessage: receiveMessageDestination: \(receiveMessageDestination)")
         
         if stompClient.isConnected() {
             stompClient.subscribe(
@@ -188,25 +197,30 @@ class WebSocketHelper {
         }
     }
     
-    func sendMessage(_ message: String) throws {
+    func sendMessage(_ content: String) throws {
+        
         guard let idHelper else {
             print("DEBUG: WebSocketHelper.sendMessage: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
-        guard let roomId = idHelper.getRoomId() else {
-            print("DEBUG: WebSocketHelper.sendMessage: nil roomId")
+        guard let roomId = idHelper.getRoomId(), let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.sendMessage: nil roomId or userId")
             throw WebSocketHelperError.nilError
         }
         
         let sendMessageDestination = "/v1/rooms/\(roomId)/messages/send"
+        let payloadObject: [String: Any] = [
+            "userId": userId,
+            "content": content,
+            "contentType": "Text",
+        ]
         
         if stompClient.isConnected() {
-            stompClient.sendMessage(
-                message: message,
-                toDestination: sendMessageDestination,
-                withHeaders: nil,
-                withReceipt: nil
+            
+            stompClient.sendJSONForDict(
+                dict: payloadObject as AnyObject,
+                toDestination: sendMessageDestination
             )
         } else {
             print("DEBUG: WebSocketHelper.sendMessage: not connected")
@@ -233,6 +247,12 @@ class WebSocketHelper {
                 dict: payloadObject as AnyObject,
                 toDestination: enterRoomDestination
             )
+            do {
+                try subscribeToRecieveMessage()
+            } catch {
+                print("DEBUG: WebSocketHelper.enterRoom: subscribeToRecieveMessage error: \(error.localizedDescription)")
+                throw WebSocketHelperError.connectError
+            }
         } else {
             print("DEBUG: WebSocketHelper.enterRoom: not connected")
             throw WebSocketHelperError.connectError
@@ -258,6 +278,13 @@ class WebSocketHelper {
                 dict: payloadObject as AnyObject,
                 toDestination: exitRoomDestination
             )
+            
+            do {
+                try unsubscribeFromRecieveMessage()
+            } catch {
+                print("DEBUG: WebSocketHelper.exitRoom: Error unsubscribing from recieveMessage: \(error.localizedDescription)")
+                throw WebSocketHelperError.connectError
+            }
         } else {
             print("DEBUG: WebSocketHelper.exitRoom: Not connected to Stomp")
             throw WebSocketHelperError.connectError
@@ -267,6 +294,10 @@ class WebSocketHelper {
     //MARK: - ETC
     func setChattingViewModel(_ chattingViewModel: ChattingViewModel) {
         self.chattingViewModel = chattingViewModel
+    }
+    
+    func setOnSuccessMatching(_ onSuccessMatching: @escaping () -> Void) {
+        self.onSuccessMatching = onSuccessMatching
     }
 }
 
@@ -286,13 +317,14 @@ extension WebSocketHelper: StompClientLibDelegate {
         
         if status == "SUCCESS",
            let data = body["data"] as? [String: AnyObject] {
-            
             // data : { "roomId" : 0 }
             if destination == matchingSuccessDestination {
-                //매칭 성공 시 roomId 새로 할당
-                self.idHelper?.setRoomId(data["roomId"] as? String ?? "")
-                self.isMatchSuccess = true
                 print("DEBUG: WebSocketHelper stompClient subscribeToMatchingSuccess success")
+                //매칭 성공 시 roomId 새로 할당
+                let roomId = String(data["roomId"] as? Int ?? 0)
+                print("DEBUG: WebSocketHelper stompClient subscribeToMatchingSuccess data: \(data) roomId: \(roomId)")
+                self.idHelper?.setRoomId(roomId)
+                self.isMatchSuccess = true
             // data : MessageData.swift
             } else if destination == receivingMessageDestination {
                 guard let messageData = MessageData(jsonString: data) else {
@@ -300,9 +332,12 @@ extension WebSocketHelper: StompClientLibDelegate {
                     return
                 }
                 chattingViewModel?.addMessage(messageData: messageData)
+                print("DEBUG: WebSocketHelper stompClient received message: \(messageData)")
+            } else {
+                print("DEBUG: WebSocketHelper stompClient subscribeToMatchingSuccess failed: invalid destination: \(destination)")
             }
         } else {
-            print("DEBUG: WebSocketHelper stompClient subscribeToMatchingSuccess failed: \(status)")
+            print("DEBUG: WebSocketHelper stompClient Receive message failed: \(status)")
         }
     }
     

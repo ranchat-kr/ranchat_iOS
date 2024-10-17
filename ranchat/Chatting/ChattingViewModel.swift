@@ -9,37 +9,7 @@ import Foundation
 
 @Observable
 class ChattingViewModel {
-    var messageDataList: [MessageData] = [
-        MessageData(id: 1, content: "안녕"),
-        MessageData(id: 2, content: "ㅎㅇ"),
-        MessageData(id: 3, content: "바이"),
-        MessageData(id: 4, content: "룰루"),
-        MessageData(id: 5, content: "트리스타나"),
-        MessageData(id: 6, content: "이즈리얼"),
-        MessageData(id: 7, content: "브라움"),
-        MessageData(id: 8, content: "소라카"),
-        MessageData(id: 9, content: "미스포츈"),
-        MessageData(id: 10, content: "케이틀린"),
-        MessageData(id: 11, content: "진"),
-        MessageData(id: 12, content: "드레이븐"),
-        MessageData(id: 13, content: "벡스"),
-        MessageData(id: 14, content: "모데카이저"),
-        MessageData(id: 15, content: "아우렐리온 솔"),
-        MessageData(id: 16, content: "모르가나"),
-        MessageData(id: 17, content: "요네"),
-        MessageData(id: 18, content: "야스오"),
-        MessageData(id: 19, content: "아트록스"),
-        MessageData(id: 20, content: "일라오이"),
-        MessageData(id: 21, content: "오공"),
-        MessageData(id: 22, content: "자르반"),
-        MessageData(id: 23, content: "피들스틱"),
-        MessageData(id: 24, content: "자야"),
-        MessageData(id: 25, content: "라칸"),
-        MessageData(id: 26, content: "블리츠크랭크"),
-        MessageData(id: 27, content: "쓰레쉬"),
-        MessageData(id: 28, content: "레오나"),
-        MessageData(id: 29, content: "베이가"),
-    ]
+    var messageDataList: [MessageData] = []
     var isLoading: Bool = false
     
     var inputText: String = ""
@@ -51,10 +21,13 @@ class ChattingViewModel {
     var selectedReason: String?
     var reportText: String = ""
     
+    var currentPage: Int = 0
+    let pageSize: Int = 50
+    
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
     
-    func setHelper(_ webSocketHelper: WebSocketHelper, idHelper: IdHelper) {
+    func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
     }
@@ -63,17 +36,66 @@ class ChattingViewModel {
         messageDataList.append(messageData)
     }
     
+    //MARK: - Require Network
     func getRoomDetailData() async {
+        isLoading = true
+        
         do {
             let roomDetailData = try await ApiHelper.shared.getRoomDetail()
             self.roomDetailData = roomDetailData
         } catch {
             print("DEBUG: ChattingViewModel - getRoomDetailData - error: \(error.localizedDescription)")
         }
+        
+        isLoading = false
+    }
+    
+    func getMessageList() async {
+        isLoading = true
+        
+        do {
+            let messageList = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize * 2)
+            currentPage += 1
+            
+            self.messageDataList = messageList
+            print("messageList: \(messageList)")
+        } catch {
+            print("DEBUG: ChattingViewModel - getMessageList - error: \(error.localizedDescription)")
+        }
+        
+        isLoading = false
+    }
+    
+    func fetchMessageList() async {
+        isLoading = true
+        
+        do {
+            currentPage += 1
+            let messageList = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize)
+            self.messageDataList.append(contentsOf: messageList)
+        } catch {
+            print("DEBUG: ChattingViewModel - fetchMessageList - error: \(error.localizedDescription)")
+        }
+        
+        isLoading = false
+    }
+    
+    func sendMessage() {
+        let message = inputText
+        inputText = ""
+        do {
+            try webSocketHelper?.sendMessage(message)
+        } catch {
+            print("DEBUG: ChattingViewModel - sendMessage - error: \(error.localizedDescription)")
+        }
     }
     
     func reportUser() {
+        isLoading = true
         
+        
+        
+        isLoading = false
     }
     
     func exitRoom() async {
