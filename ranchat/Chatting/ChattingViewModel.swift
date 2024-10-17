@@ -94,7 +94,7 @@ class ChattingViewModel {
         }
     }
     
-    func reportUser() {
+    func reportUser() async {
         isLoading = true
         
         guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != idHelper?.getUserId() })?.userId else {
@@ -104,17 +104,17 @@ class ChattingViewModel {
         
         let reportType = getReportType(reason: selectedReason)
         
-        Task {
-            do {
-                try await ApiHelper.shared.reportUser(
-                    reportedUserId: reportedUserId,
-                    reportReason: reportText,
-                    reportType: reportType
-                )
-            } catch {
-                print("DEBUG: ChattingViewModel - reportUser - error: \(error.localizedDescription)")
-            }
+        
+        do {
+            try await ApiHelper.shared.reportUser(
+                reportedUserId: reportedUserId,
+                reportReason: reportText,
+                reportType: reportType
+            )
+        } catch {
+            print("DEBUG: ChattingViewModel - reportUser - error: \(error.localizedDescription)")
         }
+        
         
         isLoading = false
     }

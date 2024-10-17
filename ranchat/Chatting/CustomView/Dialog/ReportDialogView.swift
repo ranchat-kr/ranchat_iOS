@@ -18,7 +18,7 @@ struct ReportDialogView: View {
     var reportReasons = [
         "사유를 선택해주세요.", "스팸", "욕설 및 비방", "광고", "허위 정보", "저작권 침해", "기타"
     ]
-    var onReport: () -> Void
+    var onReport: () async -> Void
     
     var body: some View {
         Color.black.opacity(0.4)
@@ -95,7 +95,10 @@ struct ReportDialogView: View {
                         } else if reportText.isEmpty {
                             showWarningToReportContentToast = true
                         } else {
-                            onReport()
+                            Task {
+                                await onReport()
+                                optionClear()
+                            }
                         }
                     } label: {
                         Text("신고")
