@@ -97,7 +97,24 @@ class ChattingViewModel {
     func reportUser() {
         isLoading = true
         
+        guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != idHelper?.getUserId() })?.userId else {
+            print("DEBUG: ChattingViewModel - reportUser - reportedUserId is nil")
+            return
+        }
         
+        let reportType = getReportType(reason: selectedReason)
+        
+        Task {
+            do {
+                try await ApiHelper.shared.reportUser(
+                    reportedUserId: reportedUserId,
+                    reportReason: reportText,
+                    reportType: reportType
+                )
+            } catch {
+                print("DEBUG: ChattingViewModel - reportUser - error: \(error.localizedDescription)")
+            }
+        }
         
         isLoading = false
     }
@@ -108,5 +125,24 @@ class ChattingViewModel {
         
         
         isLoading = false
+    }
+    
+    func getReportType(reason: String?) -> String {
+        switch reason {
+        case "스팸":
+            return "SPAM"
+        case "욕설 및 비방":
+            return "HARASSMENT"
+        case "광고":
+            return "ADVERTISEMENT"
+        case "허위 정보":
+            return "MISINFORMATION"
+        case "저작권 침해":
+            return "COPYRIGHT_INFRINGEMENT"
+        case "기타":
+            return "ETC"
+        default:
+            return ""
+        }
     }
 }

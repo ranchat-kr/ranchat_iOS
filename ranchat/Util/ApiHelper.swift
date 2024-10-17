@@ -35,7 +35,7 @@ class ApiHelper {
     
     //MARK: - Report
     /// 유저 신고하기
-    func reportUser(reportedUserId: String, selectedReason: String, reportReason: String, reportType: String) async throws {
+    func reportUser(reportedUserId: String, reportReason: String, reportType: String) async throws {
         
         guard let userId = idHelper?.getUserId() else {
             throw ApiHelperError.nilError

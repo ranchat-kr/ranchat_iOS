@@ -63,12 +63,13 @@ struct ReportDialogView: View {
                             .padding(.horizontal, 20)
                             .padding(.top, 25) // 위치 조정
                     }
-                    TextField("", text: $reportText)
+                    TextField("", text: $reportText, axis: .vertical)
+                        .lineLimit(3)
                         .padding(.horizontal, 20)
                         .font(.dungGeunMo24)
                         .foregroundStyle(.black)
                         .tint(.gray)
-                        .frame(height: 60)
+                        .frame(height: 80)
                         .background(.white)
                         .overlay {
                             RoundedRectangle(cornerRadius: 8)
@@ -153,6 +154,7 @@ struct ReportDialogView: View {
             }
         }
     }
+    
     private func optionClear() {
         selectedReason = nil
         reportText = ""
