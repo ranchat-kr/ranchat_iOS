@@ -52,6 +52,24 @@ class WebSocketHelper {
         
     }
     
+    func reconnectToWebSocket() throws {
+        guard let url = URL(string: socketURL) else {
+            print("DEBUG: WebSocketHelper.reconnectToWebSocket: invalid url")
+            throw WebSocketHelperError.invalidURLError
+        }
+        
+        guard let idHelper, let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.reconnectToWebSocket: nil idHelper or userId")
+            throw WebSocketHelperError.nilError
+        }
+        
+        stompClient.openSocketWithURLRequest(
+            request: NSURLRequest(url: url),
+            delegate: self,
+            connectionHeaders: ["userId": userId]
+        )
+    }
+    
     func disconnectFromWebSocket() {
         stompClient.disconnect()
     }
@@ -334,6 +352,11 @@ extension WebSocketHelper: StompClientLibDelegate {
     
     func stompClientDidDisconnect(client: StompClientLib!) {
         print("stompClientDidDisconnect")
+        do {
+            try reconnectToWebSocket()
+        } catch {
+            print("DEBUG: reconnectToWebSocket failed: \(error.localizedDescription)")
+        }
     }
     
     func stompClientDidConnect(client: StompClientLib!) {
