@@ -23,11 +23,11 @@ struct ChatElementView: View {
     @State private var messageTypeForColor: MessageTypeForColor = .other
     
     var sender: String {
-        idHelper.getUserId() == userId ? "나" : "상대방"
+        idHelper.getUserId() == userId ? "나: " : "상대방: "
     }
     
     var body: some View {
-        Text(content)
+        Text("\(messageType == MessageTypeForColor.other.rawValue ? sender : "")\(content)")
             .font(.dungGeunMo16)
             .padding(.vertical, 4)
             .frame(maxWidth: .infinity, alignment: .leading)
