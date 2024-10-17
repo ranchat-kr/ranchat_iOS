@@ -353,6 +353,7 @@ extension WebSocketHelper: StompClientLibDelegate {
     func stompClientDidDisconnect(client: StompClientLib!) {
         print("stompClientDidDisconnect")
         do {
+            try unsubscribeFromMatchingSuccess()
             try reconnectToWebSocket()
         } catch {
             print("DEBUG: reconnectToWebSocket failed: \(error.localizedDescription)")
