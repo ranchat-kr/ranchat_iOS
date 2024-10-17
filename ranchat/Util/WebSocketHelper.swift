@@ -213,7 +213,7 @@ class WebSocketHelper {
         let payloadObject: [String: Any] = [
             "userId": userId,
             "content": content,
-            "contentType": "Text",
+            "contentType": "TEXT",
         ]
         
         if stompClient.isConnected() {
@@ -222,6 +222,7 @@ class WebSocketHelper {
                 dict: payloadObject as AnyObject,
                 toDestination: sendMessageDestination
             )
+            print("DEBUG: WebSocketHelper.sendMessage: sent message to \(sendMessageDestination)")
         } else {
             print("DEBUG: WebSocketHelper.sendMessage: not connected")
             throw WebSocketHelperError.connectError

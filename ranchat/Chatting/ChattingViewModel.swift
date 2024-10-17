@@ -82,9 +82,13 @@ class ChattingViewModel {
     
     func sendMessage() {
         let message = inputText
-        inputText = ""
         do {
-            try webSocketHelper?.sendMessage(message)
+            if let webSocketHelper {
+                try webSocketHelper.sendMessage(message)
+                inputText = ""
+            } else {
+                print("DEBUG: ChattingViewModel - sendMessage - webSocketHelper is nil")
+            }
         } catch {
             print("DEBUG: ChattingViewModel - sendMessage - error: \(error.localizedDescription)")
         }
