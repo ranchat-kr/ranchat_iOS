@@ -15,6 +15,8 @@ class HomeViewModel {
     var isMatching = false
     var isRoomExist = false
     
+    var needsRoomCheck = false
+    
     var goToSetting = false
     var goToChat = false
     var goToRoomList = false
@@ -33,10 +35,12 @@ class HomeViewModel {
     
     func navigateToChat() {
         goToChat = true
+        needsRoomCheck = true
     }
     
     func navigateToRoomList() {
         goToRoomList = true
+        needsRoomCheck = true
     }
     
     func navigateToSetting() {

@@ -118,6 +118,14 @@ struct HomeView: View {
                 viewModel.showAlert = true
             }
         }
+        
+        .onChange(of: viewModel.needsRoomCheck) { _, newValue in
+            if newValue {
+                Task {
+                    await viewModel.checkRoomExist()
+                }
+            }
+        }
     }
 }
 
