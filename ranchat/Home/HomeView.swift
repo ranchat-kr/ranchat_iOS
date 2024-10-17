@@ -43,7 +43,7 @@ struct HomeView: View {
                     
                     
                     MainButtonView(text: "CONTINUE!") {
-                        
+                        viewModel.navigateToRoomList()
                     }
                     
                     .opacity((viewModel.isRoomExist && isAnimating) ? 1.0 : 0.0)
@@ -69,14 +69,6 @@ struct HomeView: View {
                 
                 
                 ToolbarItem(placement: .topBarTrailing) {
-//                    NavigationLink(destination: {
-//                        SettingView()
-//                    }, label: {
-//                        Image(systemName: "gearshape")
-//                            .tint(.white)
-//                    })
-//                    .opacity(isAnimating ? 1.0 : 0.0)
-//                    .animation(.easeInOut(duration: 1.0), value: isAnimating)
                     Button {
                         viewModel.navigateToSetting()
                     } label: {
@@ -92,7 +84,7 @@ struct HomeView: View {
                 ChattingView()
             })
             .navigationDestination(isPresented: $viewModel.goToRoomList, destination: {
-                // RoomListView()   
+                RoomListView()   
             })
         }
         
