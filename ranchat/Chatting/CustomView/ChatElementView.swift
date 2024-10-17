@@ -11,6 +11,7 @@ enum MessageTypeForColor: String {
     case enter = "ENTER"
     case leave = "LEAVE"
     case other
+    case me
 }
 
 struct ChatElementView: View {
@@ -20,40 +21,38 @@ struct ChatElementView: View {
     let content: String
     let messageType: String
     
-    @State private var messageTypeForColor: MessageTypeForColor = .other
+    private var messageTypeForOption: MessageTypeForColor {
+        switch messageType {
+        case MessageTypeForColor.enter.rawValue:
+            return .enter
+        case MessageTypeForColor.leave.rawValue:
+            return .leave
+        default:
+            return idHelper.getUserId() == userId ? .me : .other
+        }
+    }
     
-    var sender: String {
-        idHelper.getUserId() == userId ? "나: " : "상대방: "
+    private var sender: String {
+        (messageTypeForOption == .other || messageTypeForOption == .me) ? (idHelper.getUserId() == userId ? "나: " : "상대방: ") : ""
     }
     
     var body: some View {
-        Text("\(messageTypeForColor == .other ? sender : "")\(content)")
+        Text("\(sender)\(content)")
             .font(.dungGeunMo16)
             .padding(.vertical, 4)
             .frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(colorForMessageType())
             .id(id)
-            .onAppear {
-                setType()
-            }
-    }
-    
-    private func setType() {
-        if messageType == MessageTypeForColor.enter.rawValue {
-            messageTypeForColor = .enter
-        } else if messageType == MessageTypeForColor.leave.rawValue {
-            messageTypeForColor = .leave
-        } else {
-            messageTypeForColor = .other
-        }
     }
     
     private func colorForMessageType() -> Color {
-        switch messageTypeForColor {
+        switch messageTypeForOption {
         case .enter:
             return .cyan
         case .leave:
             return .red
+        case .me:
+            return .yellow
         default:
             return .white
         }
