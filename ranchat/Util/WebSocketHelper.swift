@@ -285,14 +285,14 @@ class WebSocketHelper {
         }
     }
     
-    func exitRoom() throws {
+    func exitRoom(roomId: String) throws {
         guard let idHelper else {
             print("DEBUG: WebSocketHelper.exitRoom: nil idHelper")
             throw WebSocketHelperError.nilError
         }
         
-        guard let roomId = idHelper.getRoomId(), let userId = idHelper.getUserId() else {
-            print("DEBUG: WebSocketHelper.exitRoom: nil roomId or userId")
+        guard let userId = idHelper.getUserId() else {
+            print("DEBUG: WebSocketHelper.exitRoom: nil userId")
             throw WebSocketHelperError.nilError
         }
         
