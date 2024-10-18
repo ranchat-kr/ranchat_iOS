@@ -122,10 +122,14 @@ class ChattingViewModel {
     func exitRoom() async {
         isLoading = true
         
-        do {
-            try webSocketHelper?.exitRoom()
-        } catch {
-            print("DEBUG: ChattingViewModel - exitRoom - error: \(error.localizedDescription)")
+        if let idHelper, let roomId = idHelper.getRoomId(), let webSocketHelper {
+            do {
+                try webSocketHelper.exitRoom(roomId: roomId)
+            } catch {
+                print("DEBUG: ChattingViewModel.exitRoom() error: \(error.localizedDescription)")
+            }
+        } else {
+            print("DEBUG: ChattingViewModel.exitRoom() idHelper or webSocketHelper is nil")
         }
         
         isLoading = false

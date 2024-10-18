@@ -35,6 +35,12 @@ class RoomListViewModel {
 //        RoomData(id: 20, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
     ]
     
+    var webSocketHelper: WebSocketHelper?
+    
+    func setHelper(_ webSocketHelper: WebSocketHelper) {
+        self.webSocketHelper = webSocketHelper
+    }
+    
     func getRoomList() async {
         isLoading = true
         
@@ -52,5 +58,20 @@ class RoomListViewModel {
         }
         
         isLoading = false
+    }
+    
+    func exitRoom(at: Int) {
+        let roomId: String = String(roomItems[at].id)
+        
+        if let webSocketHelper {
+            do {
+                try webSocketHelper.exitRoom(roomId: roomId)
+                roomItems.remove(at: at)
+            } catch {
+                print("DEBUG: RoomListViewModel.exitRoom() error: \(error.localizedDescription)")
+            }
+        } else {
+            print("DEBUG: RoomListViewModel.exitRoom() webSocketHelper is nil")
+        }
     }
 }
