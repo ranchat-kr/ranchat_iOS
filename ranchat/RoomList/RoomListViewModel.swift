@@ -9,31 +9,13 @@ import Foundation
 @Observable
 class RoomListViewModel {
     var isLoading: Bool = false
+    var showExitRoomDialog: Bool = false
     
     var roomPage = 0
-    var roomItems: [RoomData] = [
-//        RoomData(id: 0, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 1, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 2, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 3, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 4, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 5, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 6, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 7, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 8, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 9, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 10, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 11, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 12, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 13, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 14, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 15, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 16, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 17, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 18, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 19, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-//        RoomData(id: 20, title: "qdqd", type: "dqdwq", latestMessage: "dsadad", latestMessageAt: "2024-10-17T21:13:22"),
-    ]
+    var roomItems: [RoomData] = []
+    
+    var selectedRoom: RoomData?
+    var selectedRoomIndex: Int?
     
     var webSocketHelper: WebSocketHelper?
     

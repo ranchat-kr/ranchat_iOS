@@ -13,20 +13,19 @@ struct RoomListView: View {
     @Environment(WebSocketHelper.self) var webSocketHelper
     
     @State var viewModel = RoomListViewModel()
-    @State private var isScrolledToBottom = false
     
     var body: some View {
         ZStack {
             List(Array(viewModel.roomItems.enumerated()), id: \.element.id) { index, roomData in
-                // 채팅방 리스트
-                //                ForEach(Array(viewModel.roomItems.enumerated()), id: \.element.id) { index, roomData in
+                
                 RoomItemView(roomData: roomData)
                     .listRowInsets(EdgeInsets())
                     .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            withAnimation {
-                                viewModel.exitRoom(at: index)
-                            }
+                        Button(role: .cancel) {
+
+                            viewModel.selectedRoom = roomData
+                            viewModel.selectedRoomIndex = index
+                            viewModel.showExitRoomDialog = true
                         } label: {
                             Text("나가기")
                                 .font(.dungGeunMo16)
@@ -42,7 +41,7 @@ struct RoomListView: View {
                             }
                         }
                     }
-                //                }
+                
             }
             .listStyle(.plain)
             .onAppear {
@@ -68,6 +67,19 @@ struct RoomListView: View {
             
             if viewModel.isLoading {
                 CenterLoadingView()
+            }
+            
+            if viewModel.showExitRoomDialog {
+                ExitRoomDialogView(
+                    isPresented: $viewModel.showExitRoomDialog,
+                    title: viewModel.selectedRoom?.title ?? "",
+                    onConfirm: {
+                        withAnimation {
+                            viewModel.exitRoom(at: viewModel.selectedRoomIndex ?? -1)
+                        }
+                        viewModel.showExitRoomDialog = false
+                    }
+                )
             }
         }
     }

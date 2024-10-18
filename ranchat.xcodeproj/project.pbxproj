@@ -48,6 +48,7 @@
 		49F2DA762CC12E280060E4AB /* RoomListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA752CC12E210060E4AB /* RoomListViewModel.swift */; };
 		49F2DA782CC131DF0060E4AB /* ToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA772CC131DF0060E4AB /* ToolbarButton.swift */; };
 		49F2DA7A2CC136880060E4AB /* RoomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA792CC136880060E4AB /* RoomItemView.swift */; };
+		49F2DA812CC278AF0060E4AB /* ExitRoomDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA802CC278AF0060E4AB /* ExitRoomDialogView.swift */; };
 		8BB9142D288CAEA528D533D8 /* Pods_ranchat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E83D129B83EB149794EC952 /* Pods_ranchat.framework */; };
 /* End PBXBuildFile section */
 
@@ -108,6 +109,7 @@
 		49F2DA752CC12E210060E4AB /* RoomListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomListViewModel.swift; sourceTree = "<group>"; };
 		49F2DA772CC131DF0060E4AB /* ToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButton.swift; sourceTree = "<group>"; };
 		49F2DA792CC136880060E4AB /* RoomItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomItemView.swift; sourceTree = "<group>"; };
+		49F2DA802CC278AF0060E4AB /* ExitRoomDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitRoomDialogView.swift; sourceTree = "<group>"; };
 		6EBB5E4C9F83FF48F921F323 /* Pods-ranchat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.debug.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.debug.xcconfig"; sourceTree = "<group>"; };
 		B031065110250D7527CFA8C9 /* Pods-ranchat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.release.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -339,8 +341,17 @@
 			isa = PBXGroup;
 			children = (
 				49F2DA792CC136880060E4AB /* RoomItemView.swift */,
+				49F2DA822CC278B50060E4AB /* Dialog */,
 			);
 			path = CustomView;
+			sourceTree = "<group>";
+		};
+		49F2DA822CC278B50060E4AB /* Dialog */ = {
+			isa = PBXGroup;
+			children = (
+				49F2DA802CC278AF0060E4AB /* ExitRoomDialogView.swift */,
+			);
+			path = Dialog;
 			sourceTree = "<group>";
 		};
 		7A2C7BC9619A53FD98386D6C /* Pods */ = {
@@ -498,6 +509,7 @@
 				492B64142CB3B34B000CB1A3 /* ParticipantsData.swift in Sources */,
 				492B64152CB3B34B000CB1A3 /* RoomData.swift in Sources */,
 				492B64162CB3B34B000CB1A3 /* RoomDetailData.swift in Sources */,
+				49F2DA812CC278AF0060E4AB /* ExitRoomDialogView.swift in Sources */,
 				492B64172CB3B34B000CB1A3 /* UserData.swift in Sources */,
 				492B64182CB3B34B000CB1A3 /* DefaultResponse.swift in Sources */,
 				49F2DA6C2CB6C9B50060E4AB /* ReportDialogView.swift in Sources */,
