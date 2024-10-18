@@ -85,7 +85,7 @@ struct RoomListView: View {
             }
         }
         .navigationDestination(isPresented: $viewModel.goToChat, destination: {
-            ChattingView()
+            ChattingView(roomListViewModel: viewModel)
         })
     }
 }
