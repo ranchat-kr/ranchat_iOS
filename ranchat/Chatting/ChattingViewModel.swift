@@ -33,7 +33,8 @@ class ChattingViewModel {
     }
     
     func addMessage(messageData: MessageData) {
-        messageDataList.append(messageData)
+        messageDataList.insert(messageData, at: 0)
+        //messageDataList.append(messageData)
     }
     
     //MARK: - Require Network

@@ -14,7 +14,7 @@ struct ChatScrollView: View {
         ScrollViewReader { scrollViewProxy in
             ScrollView {
                 VStack(alignment: .leading) {
-                    ForEach(chattingList, id: \.id) { message in
+                    ForEach(chattingList.reversed(), id: \.id) { message in
                         let content = message.content
                         let id = message.id
                         
