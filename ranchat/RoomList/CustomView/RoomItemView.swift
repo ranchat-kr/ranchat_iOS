@@ -22,9 +22,10 @@ struct DateData {
 
 struct RoomItemView: View {
     var roomData: RoomData
-    @State var timeFormatState: TimeFormatState = .none
-    
     var action: () -> Void
+    
+    @State var timeFormatState: TimeFormatState = .none
+    @State var isClicked: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -49,9 +50,18 @@ struct RoomItemView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 20)
-        .onTapGesture {
-            action()
-        }
+        .background(isClicked ? .gray.opacity(0.3) : .clear)
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    isClicked = true
+                }
+                .onEnded { _ in
+                    isClicked  = false
+                    action()
+                }
+        )
+        
     }
     
     func fontByTimeFormat() -> Font {
