@@ -146,17 +146,7 @@ class WebSocketHelper {
         stompClient.unsubscribe(destination: matchingSuccessDestination)
     }
     
-    func unsubscribeFromRecieveMessage() throws {
-        guard let idHelper else {
-            print("DEBUG: WebSocketHelper.unsubscribeFromRecieveMessage: nil idHelper")
-            throw WebSocketHelperError.nilError
-        }
-        
-        guard let roomId = idHelper.getRoomId() else {
-            print("DEBUG: WebSocketHelper.unsubscribeFromRecieveMessage: nil roomId")
-            throw WebSocketHelperError.nilError
-        }
-        
+    func unsubscribeFromRecieveMessage(roomId: String) throws {
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
         
         stompClient.unsubscribe(destination: receiveMessageDestination)
@@ -301,7 +291,7 @@ class WebSocketHelper {
         
         if stompClient.isConnected() {
             do {
-                try unsubscribeFromRecieveMessage()
+                try unsubscribeFromRecieveMessage(roomId: roomId)
             } catch {
                 print("DEBUG: WebSocketHelper.exitRoom: Error unsubscribing from recieveMessage: \(error.localizedDescription)")
                 throw WebSocketHelperError.connectError
