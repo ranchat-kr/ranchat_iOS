@@ -48,8 +48,9 @@ class HomeViewModel {
     func setUser() {
         isLoading = true
         
-        @AppStorage("user_id") var user: String?
-        user = nil  // 임시. 초기화.
+        //        @AppStorage("user_id") var user: String?
+        //        user = nil  // 임시. 초기화.
+        var user: String? = "01929e74-dbf3-7ef4-8d85-dadc68410de7"
         
         guard let webSocketHelper, let idHelper else {
             print("webSocketHelper or idHelper is nil")
@@ -57,22 +58,22 @@ class HomeViewModel {
             return
         }
         
-        if let user {  // 기존 유저
-            idHelper.setUserId(user)
-        } else {  // 새로운 유저 (앱 처음 실행)
-            let uuid = UUID.uuidV7String()
-            user = uuid
-            idHelper.setUserId(uuid)
-            
-            Task {
-                do {
+        Task {
+            do {
+                if let user {  // 기존 유저
+                    idHelper.setUserId(user)
+                } else {  // 새로운 유저 (앱 처음 실행)
+                    let uuid = UUID.uuidV7String()
+                    user = uuid
+                    idHelper.setUserId(uuid)
                     try await ApiHelper.shared.createUser(name: getRandomNickname())
-                    try webSocketHelper.connectToWebSocket(idHelper: idHelper)
-                    await checkRoomExist()
-                } catch {
-                    print("setUser error: \(error.localizedDescription)")
-                    showAlert = true
+                    
                 }
+                try webSocketHelper.connectToWebSocket(idHelper: idHelper)
+                await checkRoomExist()
+            } catch {
+                print("Failed to setUser: \(error.localizedDescription)")
+                showAlert = true
             }
         }
         
