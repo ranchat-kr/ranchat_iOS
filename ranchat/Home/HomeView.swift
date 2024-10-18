@@ -41,12 +41,14 @@ struct HomeView: View {
                     }
                     .opacity(isAnimating ? 1.0 : 0.0)
                     
-                    
-                    MainButtonView(text: "CONTINUE!") {
-                        viewModel.navigateToRoomList()
+                    if viewModel.isRoomExist {
+                        MainButtonView(text: "CONTINUE!") {
+                            viewModel.navigateToRoomList()
+                        }
+                        .opacity(isAnimating ? 1.0 : 0.0)
+                    } else {
+                        Color.clear.frame(height: 50)
                     }
-                    
-                    .opacity((viewModel.isRoomExist && isAnimating) ? 1.0 : 0.0)
                     
                 }
                 
@@ -59,6 +61,7 @@ struct HomeView: View {
                     MatchingLoadingView()
                 } 
             }
+//            .animation(.easeInOut, value: viewModel.isMatching)
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
