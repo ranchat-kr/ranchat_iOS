@@ -24,15 +24,15 @@ struct ChatScrollView: View {
                 .padding(.horizontal)
             }
             .onChange(of: chattingList) { _ in
-                if let lastMessage = chattingList.last {
+                if let lastMessage = chattingList.first {
                     withAnimation {
-                        scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
+                        scrollViewProxy.scrollTo(lastMessage.id, anchor: .top)
                     }
                 }
             }
             .onAppear {
-                if let lastMessage = chattingList.last {
-                    scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
+                if let lastMessage = chattingList.first {
+                    scrollViewProxy.scrollTo(lastMessage.id, anchor: .top)
                 }
             }
         }
