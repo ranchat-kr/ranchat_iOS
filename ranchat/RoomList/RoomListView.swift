@@ -17,32 +17,29 @@ struct RoomListView: View {
     
     var body: some View {
         ZStack {
-            ScrollView {
-                VStack {
-                    // 채팅방 리스트
-                    ForEach(Array(viewModel.roomItems.enumerated()), id: \.element.id) { index, roomData in
-                        RoomItemView(roomData: roomData)
-                        
-                        if index < viewModel.roomItems.count - 1 {
-                            Rectangle()
-                                .background(.gray)
-                                .frame(height: 1)
-                                .frame(maxWidth: .infinity)
-                                .padding(.horizontal)
-                        }
-                    }
-                }
-                .padding(.top, -40)
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear
-                            .onChange(of: proxy.frame(in: .global).maxY) { _ in
-                                checkIfScrolledToBottom(proxy: proxy)
+            List(Array(viewModel.roomItems.enumerated()), id: \.element.id) { index, roomData in
+                // 채팅방 리스트
+//                ForEach(Array(viewModel.roomItems.enumerated()), id: \.element.id) { index, roomData in
+                    RoomItemView(roomData: roomData)
+                    .listRowInsets(EdgeInsets())
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                withAnimation {
+                                    viewModel.exitRoom(at: index)
+                                }
+                            } label: {
+                                Text("나가기")
+                                    .font(.dungGeunMo16)
+                                    .foregroundStyle(.white)
+                                    .padding()
+                                    .background(Color.red)
                             }
-                    }
-                )
+                        }
+//                }
             }
+            .listStyle(.plain)
             .onAppear {
+                viewModel.setHelper(webSocketHelper)
                 Task {
                     await viewModel.getRoomList()
                 }
@@ -52,6 +49,7 @@ struct RoomListView: View {
                     Text("Continue")
                         .font(.dungGeunMo24)
                 }
+                
                 ToolbarItem(placement: .topBarLeading) {
                     ToolbarButton(action: {
                         dismiss()
@@ -59,24 +57,10 @@ struct RoomListView: View {
                 }
             }
             .navigationBarBackButtonHidden()
+            .navigationBarTitleDisplayMode(.inline)
             
             if viewModel.isLoading {
                 CenterLoadingView()
-            }
-        }
-    }
-    
-    private func checkIfScrolledToBottom(proxy: GeometryProxy) {
-        let contentHeight = proxy.size.height
-        let scrollViewHeight = UIScreen.main.bounds.height
-        let scrollOffset = abs(proxy.frame(in: .global).minY)
-
-        print("contentHeight: \(contentHeight), scrollViewHeight: \(scrollViewHeight), scrollOffset: \(scrollOffset)")
-        // Adjust the condition based on your requirement.
-        if  (scrollViewHeight - 50)...scrollViewHeight ~= scrollOffset + contentHeight {
-            // ScrollView가 맨 아래에 도달했을 때 호출될 함수
-            Task {
-                await viewModel.getRoomList()
             }
         }
     }

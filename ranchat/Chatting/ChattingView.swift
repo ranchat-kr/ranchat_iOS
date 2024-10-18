@@ -44,6 +44,7 @@ struct ChattingView: View {
                 }
             }
             .navigationBarBackButtonHidden()
+            .navigationBarTitleDisplayMode(.inline)
             
             if viewModel.showReportDialog {
                 ReportDialogView(

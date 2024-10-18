@@ -21,7 +21,6 @@ struct ChatScrollView: View {
                         ChatElementView(id: id, userId: message.userId, content: content, messageType: message.messageType)
                     }
                 }
-                .padding(.top, -40)
                 .padding(.horizontal)
             }
             .onChange(of: chattingList) { _ in
