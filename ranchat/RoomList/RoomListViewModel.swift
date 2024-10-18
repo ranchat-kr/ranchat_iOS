@@ -44,14 +44,16 @@ class RoomListViewModel {
     func getRoomList() async {
         isLoading = true
         
+        
         do {
             let roomList = try await ApiHelper.shared.getRooms(page: roomPage, size: 10)
             if roomList.data.totalCount == roomItems.count {
+                isLoading = false
                 return
             }
             roomPage += 1
             roomItems.append(contentsOf: roomList.data.items)
-            print("roomcount: \(roomItems.count), roomList: \(roomList)")
+            print("roomcount: \(roomItems.count), roomPage: \(roomPage)")
             try await Task.sleep(for: .seconds(2))
         } catch {
             print("DEBUG: RoomListViewModel.getRoomList() error: \(error.localizedDescription)")
