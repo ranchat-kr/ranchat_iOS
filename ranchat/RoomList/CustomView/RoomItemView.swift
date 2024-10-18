@@ -45,7 +45,8 @@ struct RoomItemView: View {
                 .font(.dungGeunMo12)
                 .foregroundStyle(.white)
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.vertical, 20)
         .onAppear {
             
         }
