@@ -18,7 +18,9 @@ struct RoomListView: View {
         ZStack {
             List(Array(viewModel.roomItems.enumerated()), id: \.element.id) { index, roomData in
                 
-                RoomItemView(roomData: roomData)
+                RoomItemView(roomData: roomData, action: {
+                    viewModel.enterRoom(at: index)
+                })
                     .listRowInsets(EdgeInsets())
                     .swipeActions(edge: .trailing) {
                         Button(role: .cancel) {
@@ -45,7 +47,7 @@ struct RoomListView: View {
             }
             .listStyle(.plain)
             .onAppear {
-                viewModel.setHelper(webSocketHelper)
+                viewModel.setHelper(webSocketHelper, idHelper)
                 Task {
                     await viewModel.getRoomList()
                 }
@@ -82,6 +84,9 @@ struct RoomListView: View {
                 )
             }
         }
+        .navigationDestination(isPresented: $viewModel.goToChat, destination: {
+            ChattingView()
+        })
     }
 }
 

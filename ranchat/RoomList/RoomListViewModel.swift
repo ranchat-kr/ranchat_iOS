@@ -10,6 +10,7 @@ import Foundation
 class RoomListViewModel {
     var isLoading: Bool = false
     var showExitRoomDialog: Bool = false
+    var goToChat: Bool = false
     
     var roomPage = 0
     var roomItems: [RoomData] = []
@@ -18,11 +19,18 @@ class RoomListViewModel {
     var selectedRoomIndex: Int?
     
     var webSocketHelper: WebSocketHelper?
+    var idHelper: IdHelper?
     
-    func setHelper(_ webSocketHelper: WebSocketHelper) {
+    func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
+        self.idHelper = idHelper
     }
     
+    func navigateToChat() {
+        goToChat = true
+    }
+    
+    //MARK: - Require Network
     func getRoomList() async {
         isLoading = true
 
@@ -44,6 +52,24 @@ class RoomListViewModel {
         }
         
         isLoading = false
+    }
+    
+    func enterRoom(at: Int) {
+        let roomId: String = String(roomItems[at].id)
+        
+        guard let webSocketHelper, let idHelper else {
+            print("DEBUG: RoomListViewModel.enterRoom() error: webSocketHelper or idHelper nil")
+            return
+        }
+        
+        idHelper.setRoomId(roomId)
+        
+        do {
+            try webSocketHelper.enterRoom()
+            navigateToChat()
+        } catch {
+            print("DEBUG: RoomListViewModel.enterRoom() error: \(error.localizedDescription)")
+        }
     }
     
     func exitRoom(at: Int) {

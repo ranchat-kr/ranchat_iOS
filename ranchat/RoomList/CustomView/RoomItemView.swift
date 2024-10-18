@@ -24,6 +24,8 @@ struct RoomItemView: View {
     var roomData: RoomData
     @State var timeFormatState: TimeFormatState = .none
     
+    var action: () -> Void
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -47,8 +49,8 @@ struct RoomItemView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 20)
-        .onAppear {
-            
+        .onTapGesture {
+            action()
         }
     }
     
@@ -97,5 +99,5 @@ struct RoomItemView: View {
 }
 
 #Preview {
-    RoomItemView(roomData: RoomData(id: 1, title: "즐거운바다dasdasdqdqwdwqdqwdqwdqwdqwdqwdqwdqwqwdqwdwqdqwdwq", type: "type", latestMessage: "즐거운바다님이 입장하셨습니다.qwdqwdwqhdhwqdhqwuidhwqiudhisadasljdkladjkasjdl", latestMessageAt: "2024-02-15T21:01:28"))
+    RoomItemView(roomData: RoomData(id: 1, title: "즐거운바다dasdasdqdqwdwqdqwdqwdqwdqwdqwdqwdqwqwdqwdwqdqwdwq", type: "type", latestMessage: "즐거운바다님이 입장하셨습니다.qwdqwdwqhdhwqdhqwuidhwqiudhisadasljdkladjkasjdl", latestMessageAt: "2024-02-15T21:01:28"), action: {})
 }
