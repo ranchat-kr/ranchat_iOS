@@ -37,19 +37,21 @@ struct HomeView: View {
                     
                     MainButtonView(text: "START!") {
                         viewModel.requestMatching()
-                        //viewModel.navigateToChat()
                     }
                     .opacity(isAnimating ? 1.0 : 0.0)
                     
-                    if viewModel.isRoomExist {
-                        MainButtonView(text: "CONTINUE!") {
-                            viewModel.navigateToRoomList()
-                        }
-                        .opacity(isAnimating ? 1.0 : 0.0)
-                    } else {
-                        Color.clear.frame(height: 50)
+                    ZStack {
+                        
+                            MainButtonView(text: "CONTINUE!") {
+                                viewModel.navigateToRoomList()
+                                    
+                            }
+                            .opacity(isAnimating ? 1.0 : 0.0)
+
+                        
+                        
+                        Color.black.frame(height: viewModel.isRoomExist ? 0 : 50)
                     }
-                    
                 }
                 
                 
