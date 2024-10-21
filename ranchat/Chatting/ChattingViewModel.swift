@@ -23,6 +23,7 @@ class ChattingViewModel {
     
     var currentPage: Int = 0
     let pageSize: Int = 50
+    var totalCount: Int = 0
     
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
@@ -55,11 +56,12 @@ class ChattingViewModel {
         isLoading = true
         
         do {
-            let messageList = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize * 2)
-            currentPage += 1
+            let messagesListResponseData = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize * 2)
+            self.currentPage += 1
+            self.totalCount = messagesListResponseData.totalCount
             self.messageDataList.removeAll()
-            self.messageDataList = messageList
-            print("messageList: \(messageList)")
+            self.messageDataList = messagesListResponseData.items
+            print("currentPage: \(currentPage)")
         } catch {
             print("DEBUG: ChattingViewModel - getMessageList - error: \(error.localizedDescription)")
         }
@@ -68,17 +70,19 @@ class ChattingViewModel {
     }
     
     func fetchMessageList() async {
-        isLoading = true
+        
         
         do {
-            currentPage += 1
-            let messageList = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize)
-            self.messageDataList.append(contentsOf: messageList)
+            if messageDataList.count >= (currentPage + 1) * pageSize || messageDataList.count < self.totalCount {
+                currentPage += 1
+                let messagesListResponseData = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize)
+                self.messageDataList.append(contentsOf: messagesListResponseData.items)
+            }
         } catch {
             print("DEBUG: ChattingViewModel - fetchMessageList - error: \(error.localizedDescription)")
         }
         
-        isLoading = false
+        
     }
     
     func sendMessage() {

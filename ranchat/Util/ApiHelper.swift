@@ -94,7 +94,7 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to get rooms: \(response)")
+                // print("DEBUG: Success to get rooms: \(response)")
                 return response
             } else {
                 print("DEBUG: Failed to get rooms with error: \(response.message)")
@@ -336,7 +336,7 @@ class ApiHelper {
     
     //MARK: - Chat
     /// 기존에 채팅한 목록 조회
-    func getMessages(page: Int = 0, size: Int = 20) async throws -> [MessageData] {
+    func getMessages(page: Int = 0, size: Int = 20) async throws -> MessagesListResponseData {
         
         guard let roomId = idHelper?.getRoomId() else {
             throw ApiHelperError.nilError
@@ -346,6 +346,7 @@ class ApiHelper {
             throw ApiHelperError.invalidURLError
         }
         
+        print("getMessages: https://\(DefaultData.domain)/v1/rooms/\(roomId)/messages?page=\(page)&size=\(size)")
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
                 .validate(statusCode: 200..<300)
@@ -353,8 +354,8 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to get messages")
-                return response.data.items
+                print("DEBUG: Success to get messages: \(response.data)")
+                return response.data
             } else {
                 print("DEBUG: Failed to get messages with error: \(response.message)")
                 throw ApiHelperError.networkError(response.message)

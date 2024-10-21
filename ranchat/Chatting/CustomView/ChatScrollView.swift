@@ -10,35 +10,40 @@ import SwiftUI
 struct ChatScrollView: View {
     @Binding var chattingList: [MessageData]
     
+    var fetchMessages: () async -> Void
+    
     var body: some View {
-        ScrollViewReader { scrollViewProxy in
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ForEach(chattingList.reversed(), id: \.id) { message in
-                        let content = message.content
-                        let id = message.id
-                        
-                        ChatElementView(id: id, userId: message.userId, content: content, messageType: message.messageType)
+
+        ScrollViewReader { proxy in
+            List(chattingList.reversed(), id: \.self) { message in
+                ChatElementView(
+                    id: message.id,
+                    userId: message.userId,
+                    content: message.content,
+                    messageType: message.messageType
+                )
+                .listRowSeparator(.hidden)
+                .onAppear {
+                    if message == chattingList.reversed().first {
+                        Task {
+                            await fetchMessages()
+                        }
                     }
                 }
-                .padding(.horizontal)
             }
-            .onChange(of: chattingList) { _ in
-                if let lastMessage = chattingList.first {
-                    withAnimation {
-                        scrollViewProxy.scrollTo(lastMessage.id, anchor: .top)
-                    }
-                }
-            }
-            .onAppear {
-                if let lastMessage = chattingList.first {
-                    scrollViewProxy.scrollTo(lastMessage.id, anchor: .top)
+            .listStyle(.plain)
+            .onChange(of: chattingList.reversed()) { oldValue, newValue in
+                if oldValue.isEmpty {
+                    proxy.scrollTo(chattingList.reversed().last?.id, anchor: .bottom)
+                } else {
+                    proxy.scrollTo(oldValue.first?.id, anchor: .top)
                 }
             }
         }
     }
 }
 
+
 #Preview {
-    ChatScrollView(chattingList: .constant([]))
+    ChatScrollView(chattingList: .constant([]), fetchMessages: {})
 }

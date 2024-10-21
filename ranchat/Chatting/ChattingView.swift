@@ -17,7 +17,7 @@ struct ChattingView: View {
     var body: some View {
         ZStack {
             VStack {
-                ChatScrollView(chattingList: $viewModel.messageDataList)
+                ChatScrollView(chattingList: $viewModel.messageDataList, fetchMessages: viewModel.fetchMessageList)
                 ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.messageDataList, onSend: send)
             }
             .toolbar {
