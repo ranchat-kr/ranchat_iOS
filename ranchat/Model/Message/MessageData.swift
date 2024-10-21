@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MessageData: Codable, Identifiable, Equatable {
+struct MessageData: Codable, Identifiable, Equatable, Hashable {
     var id: Int
     var roomId: Int
     var userId: String
