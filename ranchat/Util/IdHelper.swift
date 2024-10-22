@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+enum IdHelperError: Error {
+    case invalidUserIdError
+    case invalidRoomIdError
+    case nilUserIdError
+    case nilRoomIdError
+    case nilError
+}
+
 @Observable
 class IdHelper {
     private var userId: String?

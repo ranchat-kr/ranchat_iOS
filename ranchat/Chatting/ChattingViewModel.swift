@@ -9,6 +9,8 @@ import Foundation
 
 @Observable
 class ChattingViewModel {
+    let className = "ChattingViewModel"
+    
     var messageDataList: [MessageData] = []
     var isLoading: Bool = false
     
@@ -46,7 +48,7 @@ class ChattingViewModel {
             let roomDetailData = try await ApiHelper.shared.getRoomDetail()
             self.roomDetailData = roomDetailData
         } catch {
-            print("DEBUG: ChattingViewModel - getRoomDetailData - error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to get room detail data: \(error.localizedDescription)", .error)
         }
         
         isLoading = false
@@ -61,17 +63,14 @@ class ChattingViewModel {
             self.totalCount = messagesListResponseData.totalCount
             self.messageDataList.removeAll()
             self.messageDataList = messagesListResponseData.items
-            print("currentPage: \(currentPage)")
         } catch {
-            print("DEBUG: ChattingViewModel - getMessageList - error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to get message list: \(error.localizedDescription)", .error)
         }
         
         isLoading = false
     }
     
     func fetchMessageList() async {
-        
-        
         do {
             if messageDataList.count >= (currentPage + 1) * pageSize || messageDataList.count < self.totalCount {
                 currentPage += 1
@@ -79,7 +78,7 @@ class ChattingViewModel {
                 self.messageDataList.append(contentsOf: messagesListResponseData.items)
             }
         } catch {
-            print("DEBUG: ChattingViewModel - fetchMessageList - error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to fetch message list: \(error.localizedDescription)", .error)
         }
         
         
@@ -92,10 +91,10 @@ class ChattingViewModel {
                 try webSocketHelper.sendMessage(message)
                 inputText = ""
             } else {
-                print("DEBUG: ChattingViewModel - sendMessage - webSocketHelper is nil")
+                Logger.shared.log(self.className, #function, "webSocketHelper is nil", .error)
             }
         } catch {
-            print("DEBUG: ChattingViewModel - sendMessage - error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to send message: \(error.localizedDescription)", .error)
         }
     }
     
@@ -103,12 +102,12 @@ class ChattingViewModel {
         isLoading = true
         
         guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != idHelper?.getUserId() })?.userId else {
-            print("DEBUG: ChattingViewModel - reportUser - reportedUserId is nil")
+            Logger.shared.log(self.className, #function, "reportedUserId is nil", .error)
+            
             return
         }
         
         let reportType = getReportType(reason: selectedReason)
-        
         
         do {
             try await ApiHelper.shared.reportUser(
@@ -117,9 +116,8 @@ class ChattingViewModel {
                 reportType: reportType
             )
         } catch {
-            print("DEBUG: ChattingViewModel - reportUser - error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to report user: \(error.localizedDescription)", .error)
         }
-        
         
         isLoading = false
     }
@@ -131,10 +129,10 @@ class ChattingViewModel {
             do {
                 try webSocketHelper.exitRoom(roomId: roomId)
             } catch {
-                print("DEBUG: ChattingViewModel.exitRoom() error: \(error.localizedDescription)")
+                Logger.shared.log(self.className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
             }
         } else {
-            print("DEBUG: ChattingViewModel.exitRoom() idHelper or webSocketHelper is nil")
+            Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil", .error)
         }
         
         isLoading = false

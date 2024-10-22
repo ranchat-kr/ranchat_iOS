@@ -10,6 +10,8 @@ import SwiftUI
 
 @Observable
 class HomeViewModel {
+    let className = "HomeViewModel"
+    
     var showAlert = false
     var isLoading = false
     var isMatching = false
@@ -52,9 +54,10 @@ class HomeViewModel {
         //        user = nil  // 임시. 초기화.
         var user: String? = "01929e74-dbf3-7ef4-8d85-dadc68410de7"
         
+        
         guard let webSocketHelper, let idHelper else {
-            print("webSocketHelper or idHelper is nil")
-            showAlert = true
+            Logger.shared.log(self.className, #function, "webSocketHelper or idHelper is nil", .error)
+            
             return
         }
         
@@ -72,8 +75,9 @@ class HomeViewModel {
                 try webSocketHelper.connectToWebSocket(idHelper: idHelper)
                 await checkRoomExist()
             } catch {
-                print("Failed to setUser: \(error.localizedDescription)")
                 showAlert = true
+                
+                Logger.shared.log(self.className, #function, "Faile to set user: \(error.localizedDescription)", .error)
             }
         }
         
@@ -82,8 +86,8 @@ class HomeViewModel {
     
     func successMatching() {
         guard let webSocketHelper else {
-            print("webSocketHelper is nil")
-            showAlert = true
+            Logger.shared.log(self.className, #function, "webSocketHelper is nil")
+            
             return
         }
         
@@ -93,7 +97,9 @@ class HomeViewModel {
             try webSocketHelper.enterRoom()
             navigateToChat()
         } catch {
-            print("Failed to success matching: \(error.localizedDescription)")
+            showAlert = true
+            
+            Logger.shared.log(self.className, #function, "Failed to success matching: \(error.localizedDescription)", .error)
         }
     }
     
@@ -101,8 +107,8 @@ class HomeViewModel {
         isMatching = true
         
         guard let webSocketHelper else {
-            print("webSocketHelper is nil")
-            showAlert = true
+            Logger.shared.log(self.className, #function, "webSocketHelper is nil", .error)
+            
             return
         }
         
@@ -110,14 +116,17 @@ class HomeViewModel {
             try webSocketHelper.requestMatching()
             checkMatching()
         } catch {
-            print("requestMatching error: \(error.localizedDescription)")
+            isMatching = false
+            showAlert = true
+    
+            Logger.shared.log(self.className, #function, "Failed to request matching: \(error.localizedDescription)", .error)
         }
     }
     
     func checkMatching() {
         guard let webSocketHelper, let idHelper else {
-            print("webSocketHelper or idHelper is nil")
-            showAlert = true
+            Logger.shared.log(self.className, #function, "webSocketHelper or idHelper is nil", .error)
+            
             return
         }
         
@@ -136,8 +145,10 @@ class HomeViewModel {
                 try webSocketHelper.enterRoom()
                 navigateToChat()
             } catch {
-                print("Failed to sleep: \(error.localizedDescription)")
                 isMatching = false
+                showAlert = true
+                
+                Logger.shared.log(self.className, #function, "Failed to check matching: \(error.localizedDescription)", .error)
             }
         }
     }
@@ -149,8 +160,9 @@ class HomeViewModel {
             do {
                 self.isRoomExist = try await ApiHelper.shared.checkRoomExist()
             } catch {
-                print("checkRoomExist error: \(error.localizedDescription)")
                 showAlert = true
+                
+                Logger.shared.log(self.className, #function, "Failed to check room exist: \(error.localizedDescription)", .error)
             }
         }
         

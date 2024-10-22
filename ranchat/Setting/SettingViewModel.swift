@@ -18,6 +18,8 @@ enum nickNameError {
 
 @Observable
 class SettingViewModel {
+    let className = "SettingViewModel"
+    
     var isLoading: Bool = false
     var showNetworkErrorAlert: Bool = false
     var showCheckNickNameAlert: Bool = false
@@ -39,6 +41,8 @@ class SettingViewModel {
                 user = try await ApiHelper.shared.getUser()
             } catch {
                 showNetworkErrorAlert = true
+                
+                Logger.shared.log(self.className, #function, "Failed to get user: \(error.localizedDescription)", .error)
             }
         }
         
@@ -56,6 +60,8 @@ class SettingViewModel {
                 showSuccessToast = true
             } catch {
                 showNetworkErrorAlert = true
+                
+                Logger.shared.log(self.className, #function, "Failed to update user name: \(error.localizedDescription)", .error)
             }
         }
         
@@ -100,7 +106,6 @@ class SettingViewModel {
             }
         }
         for forbiddenWord in forbiddenWords {
-            print("nickname: \(editNickName), forbiddenWord: \(forbiddenWord)")
             if editNickName.contains(forbiddenWord) {
                 nicknameError = .ContainsForbiddenCharacter
                 

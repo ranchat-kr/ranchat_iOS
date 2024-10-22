@@ -8,6 +8,8 @@ import Foundation
 
 @Observable
 class RoomListViewModel {
+    let className = "RoomListViewModel"
+    
     var isLoading: Bool = false
     var showExitRoomDialog: Bool = false
     var goToChat: Bool = false
@@ -42,13 +44,12 @@ class RoomListViewModel {
             }
             roomPage += 1
             roomItems.append(contentsOf: roomList.data.items)
-            print("roomcount: \(roomItems.count), roomPage: \(roomPage)")
             
 //            if roomPage == 1 {
 //                try await Task.sleep(for: .seconds(2))
 //            }
         } catch {
-            print("DEBUG: RoomListViewModel.getRoomList() error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to get room list: \(error.localizedDescription)", .error)
         }
         
         isLoading = false
@@ -58,7 +59,7 @@ class RoomListViewModel {
         let roomId: String = String(roomItems[at].id)
         
         guard let webSocketHelper, let idHelper else {
-            print("DEBUG: RoomListViewModel.enterRoom() error: webSocketHelper or idHelper nil")
+            Logger.shared.log(self.className, #function, "webSocketHelper or idHelper nil", .error)
             return
         }
         
@@ -68,7 +69,7 @@ class RoomListViewModel {
             try webSocketHelper.enterRoom()
             navigateToChat()
         } catch {
-            print("DEBUG: RoomListViewModel.enterRoom() error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to enter room: \(error.localizedDescription)", .error)
         }
     }
     
@@ -80,10 +81,10 @@ class RoomListViewModel {
                 try webSocketHelper.exitRoom(roomId: roomId)
                 roomItems.remove(at: at)
             } catch {
-                print("DEBUG: RoomListViewModel.exitRoom() error: \(error.localizedDescription)")
+                Logger.shared.log(self.className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
             }
         } else {
-            print("DEBUG: RoomListViewModel.exitRoom() webSocketHelper is nil")
+            Logger.shared.log(self.className, #function, "webSocketHelper is nil", .error)
         }
     }
 }

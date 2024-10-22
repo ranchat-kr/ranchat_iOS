@@ -23,6 +23,7 @@ enum Status: String {
 
 class ApiHelper {
     static let shared = ApiHelper()
+    let className = "ApiHelper"
     var idHelper: IdHelper?
     
     let headers: HTTPHeaders = ["Content-Type": "application/json", "Accept": "application/json"]
@@ -36,18 +37,9 @@ class ApiHelper {
     //MARK: - Report
     /// 유저 신고하기
     func reportUser(reportedUserId: String, reportReason: String, reportType: String) async throws {
-        
-        guard let userId = idHelper?.getUserId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let roomId = idHelper?.getRoomId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/reports") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let roomId = try getRoomId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/reports")
         
         let param: [String: Any] = [
             "roomId": roomId,
@@ -64,14 +56,16 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to report user: \(response)")
+                Logger.shared.log(self.className, #function, "Success to report user: \(response)")
             } else {
-                print("DEBUG: Failed to report user with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Failed to report user with error: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
             
         } catch {
-            print("DEBUG: Failed to report user with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to report user with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
@@ -79,13 +73,8 @@ class ApiHelper {
     //MARK: - ChatRoom
     /// CONTINUE! 화면에서 나오는 방 리스트 호출
     func getRooms(page: Int = 0, size: Int = 10) async throws -> RoomDataList {
-        guard let userId = idHelper?.getUserId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/rooms?page=\(page)&size=\(size)&userId=\(userId)") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms?page=\(page)&size=\(size)&userId=\(userId)")
                 
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -94,28 +83,25 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                // print("DEBUG: Success to get rooms: \(response)")
+                Logger.shared.log(self.className, #function, "Success to get rooms: \(response)")
+                
                 return response
             } else {
-                print("DEBUG: Failed to get rooms with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Failed to get rooms with error: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to get rooms with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to get rooms with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
     
     /// HOME화면에서 CONTINUE! 버튼의 Visible유무를 판단하기 위한 방 존재 여부 호출
     func checkRoomExist() async throws -> Bool {
-        
-        guard let userId = idHelper?.getUserId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/rooms/exists-by-userId?userId=\(userId)") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms/exists-by-userId?userId=\(userId)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -124,7 +110,7 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to check room exist: \(response)")
+                Logger.shared.log(self.className, #function, "Successfully checked room exist")
                 
                 guard let responseData = response.data else { throw ApiHelperError.responseDataError }
                 
@@ -137,29 +123,22 @@ class ApiHelper {
                     return boolValue
                 }
             } else {
-                print("DEBUG: Failed to check room exist with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Failed to check room exist with error: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to check room exist with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to check room exist with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
     
     /// 채팅 화면에서 방 상세 정보를 불러오기 위한 호출
     func getRoomDetail() async throws -> RoomDetailData {
-        
-        guard let userId = idHelper?.getUserId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let roomId = idHelper?.getRoomId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/rooms/\(roomId)?userId=\(userId)") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let roomId = try getRoomId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms/\(roomId)?userId=\(userId)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -168,29 +147,25 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to get room detail")
+                Logger.shared.log(self.className, #function, "Success to get room detail with data: \(response.data)")
                 
                 return response.data
             } else {
-                print("DEBUG: Failed to get room detail with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Failed to get room detail with error: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to get room detail with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to get room detail with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
     
     /// 매칭 시간이 끝났는데도 매칭이 안 됐을 경우 GPT와 같이 들어갈 방 생성
     func createRoom() async throws -> String {
-        
-        guard let userId = idHelper?.getUserId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/rooms") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms")
         
         let param: [String: Any] = [
             "userIds": [userId],
@@ -204,9 +179,13 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to create room: \(response)")
+                Logger.shared.log(self.className, #function, "Success to create room: \(response)")
                 
-                guard let responseData = response.data else { throw ApiHelperError.responseDataError }
+                guard let responseData = response.data else {
+                    Logger.shared.log(self.className, #function, "Failed to get response data", .error)
+                    
+                    throw ApiHelperError.responseDataError
+                }
                 
                 switch responseData {
                 case .userDataValue:
@@ -217,11 +196,13 @@ class ApiHelper {
                     throw ApiHelperError.responseDataError
                 }
             } else {
-                print("DEBUG: Failed to create room with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Faile to create room with error: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to create room with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to create room with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
@@ -229,15 +210,8 @@ class ApiHelper {
     //MARK: - User
     /// 앱을 처음 실행 시 유저 생성
     func createUser(name: String) async throws {
-        
-        guard let userId = idHelper?.getUserId() else {
-            print("userId is nil")
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/users") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/users")
         
         let param: [String: Any] = [
             "id": userId,
@@ -251,27 +225,23 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to create user: \(response)")
+                Logger.shared.log(self.className, #function, "Success to create user: \(response)")
             } else {
-                print("DEBUG: Failed to create user with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Failed to create user: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to create user with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to create user with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
     
     /// 회원 정보를 조회하기 위한 회원 상세조회
     func getUser() async throws -> UserData {
-        
-        guard let userId = idHelper?.getUserId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/users/\(userId)") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/users/\(userId)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -280,8 +250,12 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to get user: \(response)")
-                guard let responseData = response.data else { throw ApiHelperError.responseDataError }
+                Logger.shared.log(self.className, #function, "Success to get user: \(response)")
+                guard let responseData = response.data else {
+                    Logger.shared.log(self.className, #function, "Failed to get user: responseData is nil", .error)
+                    
+                    throw ApiHelperError.responseDataError
+                }
                 
                 switch responseData {
                 case .userDataValue(let userDataValue):
@@ -292,25 +266,21 @@ class ApiHelper {
                     throw ApiHelperError.responseDataError
                 }
             } else {
-                print("DEBUG: Failed to get user with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Failed to get user: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to get user with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to get user with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
     
     /// 회원 닉네임 수정을 위한 회원 수정
     func updateUserName(name: String) async throws {
-        
-        guard let userId = idHelper?.getUserId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/users/\(userId)") else {
-            throw ApiHelperError.invalidURLError
-        }
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/users/\(userId)")
         
         let param: [String: Any] = [
             "name": name,
@@ -323,13 +293,15 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to update user name: \(response)")
+                Logger.shared.log(self.className, #function, "Success to update user name: \(response)")
             } else {
-                print("DEBUG: Failed to update user name with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Faile to update user name: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to update user name with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Fair to update user name with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
     }
@@ -337,16 +309,9 @@ class ApiHelper {
     //MARK: - Chat
     /// 기존에 채팅한 목록 조회
     func getMessages(page: Int = 0, size: Int = 20) async throws -> MessagesListResponseData {
+        let roomId = try getRoomId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms/\(roomId)/messages?page=\(page)&size=\(size)")
         
-        guard let roomId = idHelper?.getRoomId() else {
-            throw ApiHelperError.nilError
-        }
-        
-        guard let url = URL(string: "https://\(DefaultData.domain)/v1/rooms/\(roomId)/messages?page=\(page)&size=\(size)") else {
-            throw ApiHelperError.invalidURLError
-        }
-        
-        print("getMessages: https://\(DefaultData.domain)/v1/rooms/\(roomId)/messages?page=\(page)&size=\(size)")
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
                 .validate(statusCode: 200..<300)
@@ -354,16 +319,49 @@ class ApiHelper {
                 .value
             
             if response.status == Status.success.rawValue {
-                print("DEBUG: Success to get messages: \(response.data)")
+                Logger.shared.log(self.className, #function, "Success to get messages: \(response.data)")
+                
                 return response.data
             } else {
-                print("DEBUG: Failed to get messages with error: \(response.message)")
+                Logger.shared.log(self.className, #function, "Failed to get messages: \(response.message)", .error)
+                
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            print("DEBUG: Failed to get messages with error: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to get messages with error: \(error.localizedDescription)", .error)
+            
             throw ApiHelperError.networkError(error.localizedDescription)
         }
         
+    }
+    
+    //MARK: - Get
+    func getUserId() throws -> String {
+        guard let userId = idHelper?.getUserId() else {
+            Logger.shared.log(self.className, #function, "Failed to get user id", .error)
+            
+            throw ApiHelperError.nilError
+        }
+        
+        return userId
+    }
+    
+    func getRoomId() throws -> String {
+        guard let roomId = idHelper?.getRoomId() else {
+            Logger.shared.log(self.className, #function, "Failed to get room id", .error)
+            
+            throw ApiHelperError.nilError
+        }
+        
+        return roomId
+    }
+    
+    func getUrl(for path: String) throws -> URL {
+        guard let url = URL(string: path) else {
+            Logger.shared.log(self.className, #function, "Failed to create URL from path: \(path)")
+            
+            throw ApiHelperError.invalidURLError
+        }
+        return url
     }
 }

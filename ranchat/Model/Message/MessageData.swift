@@ -30,7 +30,7 @@ struct MessageData: Codable, Identifiable, Equatable, Hashable {
             let messageData = try decoder.decode(MessageData.self, from: jsonData)
             self = messageData
         } catch {
-            print("DEBUG: MessageData decoding error: \(error.localizedDescription)")
+            Logger.shared.log("MessageData", #function, "Failed to decode MessageData from JSON string: \(jsonString) with error: \(error.localizedDescription)", .error)
             return nil
         }
     }
