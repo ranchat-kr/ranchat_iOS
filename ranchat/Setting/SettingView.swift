@@ -44,6 +44,7 @@ struct SettingView: View {
                             .strokeBorder(Color.white, lineWidth: 1)
                             .background(RoundedRectangle(cornerRadius: 10).fill(.black))
                     )
+                    .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                     
                     Button {
