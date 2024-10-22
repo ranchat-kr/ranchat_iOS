@@ -10,6 +10,7 @@ import AlertToast
 
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
+    @FocusState private var isTextFieldFocused: Bool
     @State private var viewModel = SettingViewModel()
     
     var body: some View {
@@ -26,6 +27,7 @@ struct SettingView: View {
                     
                     HStack {
                         TextField("바꿀 닉네임을 입력해주세요.", text: $viewModel.editNickName)
+                            .focused($isTextFieldFocused)
                             .padding()
                             .font(.dungGeunMo20)
                             .foregroundColor(.white)
@@ -84,6 +86,9 @@ struct SettingView: View {
         }
         .onAppear {
             viewModel.setUser()
+        }
+        .onTapGesture {
+            isTextFieldFocused = false
         }
         .alert(isPresented: $viewModel.showNetworkErrorAlert) {
             Alert(
