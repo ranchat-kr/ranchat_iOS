@@ -66,6 +66,9 @@ struct SettingView: View {
                     }
                     
                 }
+                .onTapGesture {
+                    isTextFieldFocused = false
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         ToolbarButton(action: {
@@ -86,9 +89,6 @@ struct SettingView: View {
         }
         .onAppear {
             viewModel.setUser()
-        }
-        .onTapGesture {
-            isTextFieldFocused = false
         }
         .alert(isPresented: $viewModel.showNetworkErrorAlert) {
             Alert(
