@@ -33,16 +33,22 @@ class RoomListViewModel {
     }
     
     //MARK: - Require Network
-    func getRoomList() async {
+    func getRoomList(isRefresh: Bool = false) async {
         isLoading = true
-
+        
         do {
-            let roomList = try await ApiHelper.shared.getRooms(page: roomPage, size: 10)
+            var roomList: RoomDataList
+            if isRefresh {
+                roomItems.removeAll()
+                roomList = try await ApiHelper.shared.getRooms(page: 0, size: (roomPage + 1) * 10)
+            } else {
+                roomList = try await ApiHelper.shared.getRooms(page: roomPage, size: 10)
+                roomPage += 1
+            }
             if roomList.data.totalCount == roomItems.count {
                 isLoading = false
                 return
             }
-            roomPage += 1
             roomItems.append(contentsOf: roomList.data.items)
             
 //            if roomPage == 1 {

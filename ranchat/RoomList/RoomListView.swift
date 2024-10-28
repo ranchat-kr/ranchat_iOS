@@ -21,28 +21,28 @@ struct RoomListView: View {
                 RoomItemView(roomData: roomData, action: {
                     viewModel.enterRoom(at: index)
                 })
-                    .listRowInsets(EdgeInsets())
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .cancel) {
-
-                            viewModel.selectedRoom = roomData
-                            viewModel.selectedRoomIndex = index
-                            viewModel.showExitRoomDialog = true
-                        } label: {
-                            Text("나가기")
-                                .font(.dungGeunMo16)
-                                .foregroundStyle(.white)
-                                .padding()
-                                .background(Color.red)
+                .listRowInsets(EdgeInsets())
+                .swipeActions(edge: .trailing) {
+                    Button(role: .cancel) {
+                        
+                        viewModel.selectedRoom = roomData
+                        viewModel.selectedRoomIndex = index
+                        viewModel.showExitRoomDialog = true
+                    } label: {
+                        Text("나가기")
+                            .font(.dungGeunMo16)
+                            .foregroundStyle(.white)
+                            .padding()
+                            .background(Color.red)
+                    }
+                }
+                .onAppear {
+                    if viewModel.roomItems.last?.id == roomData.id {
+                        Task {
+                            await viewModel.getRoomList()
                         }
                     }
-                    .onAppear {
-                        if viewModel.roomItems.last?.id == roomData.id {
-                            Task {
-                                await viewModel.getRoomList()
-                            }
-                        }
-                    }
+                }
                 
             }
             .listStyle(.plain)
@@ -86,6 +86,11 @@ struct RoomListView: View {
         }
         .navigationDestination(isPresented: $viewModel.goToChat, destination: {
             ChattingView(roomListViewModel: viewModel)
+                .onDisappear {
+                    Task {
+                        await viewModel.getRoomList(isRefresh: true)
+                    }
+                }
         })
     }
 }
