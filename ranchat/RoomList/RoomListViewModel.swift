@@ -34,7 +34,7 @@ class RoomListViewModel {
     
     //MARK: - Require Network
     func getRoomList(isRefresh: Bool = false) async {
-        isLoading = true
+        //isLoading = true
         
         do {
             var roomList: RoomDataList
@@ -58,7 +58,7 @@ class RoomListViewModel {
             Logger.shared.log(self.className, #function, "Failed to get room list: \(error.localizedDescription)", .error)
         }
         
-        isLoading = false
+        // isLoading = false
     }
     
     func enterRoom(at: Int) {

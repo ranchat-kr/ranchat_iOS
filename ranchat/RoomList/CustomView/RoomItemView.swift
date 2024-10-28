@@ -26,42 +26,41 @@ struct RoomItemView: View {
     
     @State var timeFormatState: TimeFormatState = .none
     @State var isClicked: Bool = false
+    @State var dateText: String = ""
+    @State var dateFont: Font = .dungGeunMo12
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text(roomData.title)
+        Button {
+            action()
+        } label: {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(roomData.title)
+                        .lineLimit(1)
+                        .font(.dungGeunMo20)
+                        .foregroundStyle(.pink)
+                    
+                    Spacer()
+                    
+                    Text(dateText)
+                        .font(dateFont)
+                        .foregroundStyle(.gray)
+                }
+                .padding(.bottom, 5)
+                
+                Text(roomData.latestMessage)
                     .lineLimit(1)
-                    .font(.dungGeunMo20)
-                    .foregroundStyle(.pink)
-                
-                Spacer()
-                
-                Text(parseToRoomDateFormat())
-                    .font(fontByTimeFormat())
-                    .foregroundStyle(.gray)
+                    .font(.dungGeunMo12)
+                    .foregroundStyle(.white)
             }
-            .padding(.bottom, 5)
             
-            Text(roomData.latestMessage)
-                .lineLimit(1)
-                .font(.dungGeunMo12)
-                .foregroundStyle(.white)
+            .padding(.vertical, 10)
+            .onAppear {
+                dateText = parseToRoomDateFormat()
+                dateFont = fontByTimeFormat()
+            }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 20)
-        .background(isClicked ? .gray.opacity(0.3) : .clear)
-        .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in
-                    isClicked = true
-                }
-                .onEnded { _ in
-                    isClicked  = false
-                    action()
-                }
-        )
-        
+        .buttonStyle(RoomItemViewButtonStyle())
     }
     
     func fontByTimeFormat() -> Font {
@@ -109,5 +108,5 @@ struct RoomItemView: View {
 }
 
 #Preview {
-    RoomItemView(roomData: RoomData(id: 1, title: "즐거운바다dasdasdqdqwdwqdqwdqwdqwdqwdqwdqwdqwqwdqwdwqdqwdwq", type: "type", latestMessage: "즐거운바다님이 입장하셨습니다.qwdqwdwqhdhwqdhqwuidhwqiudhisadasljdkladjkasjdl", latestMessageAt: "2024-02-15T21:01:28"), action: {})
+    RoomItemView(roomData: RoomData(id: 1, title: "즐거운바다dasdasdqdqwdwqdqwdqwdqwdqwdqwdqwdqwqwdqwdwqdqwdwq", type: "type", latestMessage: "즐거운바다님이 입장하셨습니다.qwdqwdwqhdhwqdhqwuidhwqiudhisadasljdkladjkasjdl", latestMessageAt: "2024-02-15T21:01:28"), action: {}, dateText: "", dateFont: .dungGeunMo12)
 }
