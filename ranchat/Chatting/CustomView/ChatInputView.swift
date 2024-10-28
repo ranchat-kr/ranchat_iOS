@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatInputView: View {
     @Binding var inputText: String
     @Binding var chattingList: [MessageData]
+    @Binding var isFocused: Bool
     @FocusState private var isTextFieldFocused: Bool
     var onSend: () -> Void
     
@@ -23,6 +24,16 @@ struct ChatInputView: View {
                 .font(.dungGeunMo16)
                 .textFieldStyle(.plain)
                 .padding(.horizontal, 10)
+                .onAppear {
+                    isTextFieldFocused = isFocused
+                }
+                .onChange(of: isTextFieldFocused) { _, newValue in
+                    isFocused = newValue
+                }
+                .onChange(of: isFocused) { _, newValue in
+                    isTextFieldFocused = newValue
+                }
+
                 
             
             Button {
@@ -48,5 +59,5 @@ struct ChatInputView: View {
 }
 
 #Preview {
-    ChatInputView(inputText: .constant(""), chattingList: .constant([]), onSend: {})
+    ChatInputView(inputText: .constant(""), chattingList: .constant([]), isFocused: .constant(true), onSend: {})
 }

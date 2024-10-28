@@ -11,6 +11,12 @@ struct ChattingView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
+    @State var isTextFieldFocused: Bool = true
+    @State var keyboardHeight: CGFloat = 0 {
+        didSet {
+            print("keyboardHeight: \(keyboardHeight)")
+        }
+    }
     @State var viewModel = ChattingViewModel()
     var roomListViewModel: RoomListViewModel?
     
@@ -18,7 +24,13 @@ struct ChattingView: View {
         ZStack {
             VStack {
                 ChatScrollView(chattingList: $viewModel.messageDataList, fetchMessages: viewModel.fetchMessageList)
-                ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.messageDataList, onSend: send)
+                    //.padding(.bottom, keyboardHeight)
+                    
+                
+                ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.messageDataList, isFocused: $isTextFieldFocused, onSend: send)
+            }
+            .onTapGesture {
+                isTextFieldFocused = false
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

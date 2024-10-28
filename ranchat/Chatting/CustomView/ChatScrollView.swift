@@ -13,37 +13,42 @@ struct ChatScrollView: View {
     var fetchMessages: () async -> Void
     
     var body: some View {
-
+        
         ScrollViewReader { proxy in
-            List(chattingList.reversed(), id: \.self) { message in
+            
+            List(chattingList, id: \.id) { message in
                 ChatElementView(
                     id: message.id,
                     userId: message.userId,
                     content: message.content,
                     messageType: message.messageType
                 )
+                .scaleEffect(x: 1, y: -1)
                 .listRowSeparator(.hidden)
                 .onAppear {
-                    if message == chattingList.reversed().first {
+                    
+                    if chattingList.count >= 25 && message == chattingList[chattingList.count - 25] {
                         Task {
                             await fetchMessages()
                         }
                     }
                 }
             }
+            .scaleEffect(x: 1, y: -1)
             .listStyle(.plain)
-            .onChange(of: chattingList.reversed()) { oldValue, newValue in
+            .onChange(of: chattingList) { oldValue, newValue in
                 if oldValue.isEmpty {
-                    proxy.scrollTo(chattingList.reversed().last?.id, anchor: .bottom)
-                } else {
-                    proxy.scrollTo(oldValue.first?.id, anchor: .top)
+                    proxy.scrollTo(chattingList.first?.id, anchor: .bottom)
+                } else if newValue.count - oldValue.count == 1 {
+                    proxy.scrollTo(newValue.first?.id, anchor: .bottom)
                 }
             }
+            
         }
     }
 }
 
 
 #Preview {
-    ChatScrollView(chattingList: .constant([]), fetchMessages: {})
+    ChatScrollView(chattingList: .constant([]),  fetchMessages: {})
 }

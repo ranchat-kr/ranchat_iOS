@@ -62,7 +62,7 @@ class ChattingViewModel {
             self.currentPage += 1
             self.totalCount = messagesListResponseData.totalCount
             self.messageDataList.removeAll()
-            self.messageDataList = messagesListResponseData.items
+            self.messageDataList += messagesListResponseData.items
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get message list: \(error.localizedDescription)", .error)
         }
@@ -75,13 +75,11 @@ class ChattingViewModel {
             if messageDataList.count >= (currentPage + 1) * pageSize || messageDataList.count < self.totalCount {
                 currentPage += 1
                 let messagesListResponseData = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize)
-                self.messageDataList.append(contentsOf: messagesListResponseData.items)
+                self.messageDataList += messagesListResponseData.items
             }
         } catch {
             Logger.shared.log(self.className, #function, "Failed to fetch message list: \(error.localizedDescription)", .error)
         }
-        
-        
     }
     
     func sendMessage() {
