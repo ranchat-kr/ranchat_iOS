@@ -87,9 +87,19 @@ struct HomeView: View {
             })
             .navigationDestination(isPresented: $viewModel.goToChat, destination: {
                 ChattingView()
+                    .onDisappear {
+                        Task {
+                            await viewModel.checkRoomExist()
+                        }
+                    }
             })
             .navigationDestination(isPresented: $viewModel.goToRoomList, destination: {
-                RoomListView()   
+                RoomListView()
+                    .onDisappear {
+                        Task {
+                            await viewModel.checkRoomExist()
+                        }
+                    }
             })
         }
         
@@ -109,14 +119,6 @@ struct HomeView: View {
         .onChange(of: networkMotinor.isConnected) { _, isConnected in
             if !isConnected {
                 viewModel.showAlert = true
-            }
-        }
-        
-        .onChange(of: viewModel.needsRoomCheck) { _, newValue in
-            if newValue {
-                Task {
-                    await viewModel.checkRoomExist()
-                }
             }
         }
         
