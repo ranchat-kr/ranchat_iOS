@@ -85,7 +85,7 @@ struct RoomListView: View {
             }
         }
         .navigationDestination(isPresented: $viewModel.goToChat, destination: {
-            ChattingView(roomListViewModel: viewModel)
+            ChattingView()
                 .onDisappear {
                     Task {
                         await viewModel.getRoomList(isRefresh: true)

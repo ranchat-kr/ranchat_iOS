@@ -18,7 +18,6 @@ struct ChattingView: View {
         }
     }
     @State var viewModel = ChattingViewModel()
-    var roomListViewModel: RoomListViewModel?
     
     var body: some View {
         ZStack {
@@ -74,9 +73,6 @@ struct ChattingView: View {
                     onConfirm: {
                         Task {
                             await viewModel.exitRoom()
-                            if let roomListViewModel {
-                                roomListViewModel.roomItems = roomListViewModel.roomItems.filter { $0.id != viewModel.roomDetailData?.id }
-                            }
                             dismiss()
                         }
                     }
