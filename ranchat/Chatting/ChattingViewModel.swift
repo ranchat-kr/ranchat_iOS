@@ -137,6 +137,18 @@ class ChattingViewModel {
         isLoading = false
     }
     
+    func unSubscribeMessage() {
+        if let idHelper, let roomId = idHelper.getRoomId(), let webSocketHelper {
+            do {
+                try webSocketHelper.unsubscribeFromRecieveMessage(roomId: roomId)
+            } catch {
+                Logger.shared.log(self.className, #function, "Failed to unsubscribe from recieve message: \(error.localizedDescription)")
+            }
+        } else {
+            Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil")
+        }
+    }
+    
     //MARK: - ETC
     func getReportType(reason: String?) -> String {
         switch reason {

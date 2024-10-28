@@ -34,6 +34,7 @@ struct ChattingView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     ToolbarButton(action: {
+                        viewModel.unSubscribeMessage()
                         dismiss()
                     }, imageName: "chevron.backward")
                 }
