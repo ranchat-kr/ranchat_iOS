@@ -84,6 +84,7 @@ class ChattingViewModel {
     
     func sendMessage() {
         let message = inputText
+        if message.isEmpty { return }
         do {
             if let webSocketHelper {
                 try webSocketHelper.sendMessage(message)
