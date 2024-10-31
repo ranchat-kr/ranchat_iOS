@@ -104,7 +104,7 @@ class HomeViewModel {
         
         guard let webSocketHelper else {
             Logger.shared.log(self.className, #function, "webSocketHelper is nil", .error)
-            
+            isMatching = false
             return
         }
         
