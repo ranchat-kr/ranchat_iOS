@@ -16,75 +16,75 @@ struct SettingView: View {
     
     var body: some View {
         
-            ZStack {
-                VStack {
-                    
-                    if let name = viewModel.user?.name {
-                        Text(name)
-                            .font(.dungGeunMo24)
-                            .padding(.bottom, 20)
-                    }
-                    
-                    
-                    HStack {
-                        TextField("바꿀 닉네임을 입력해주세요.", text: $viewModel.editNickName)
-                            .focused($isTextFieldFocused)
-                            .padding()
-                            .font(.dungGeunMo20)
-                            .foregroundColor(.white)
-                        
-                        Button {
-                            viewModel.editNickName = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(.gray)
-                        }
-                        .padding(.trailing)
-                        .opacity(viewModel.editNickName.isEmpty ? 0 : 1)
-                    }
-                    .background(
-                        RoundedRectangle(cornerRadius: 3)
-                            .strokeBorder(Color.white, lineWidth: 1)
-                            .background(RoundedRectangle(cornerRadius: 10).fill(.black))
-                    )
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
-                    
-                    Button {
-                        if viewModel.isValidNickname() {
-                            viewModel.showCheckNickNameAlert = true
-                        }
-                    } label: {
-                        Text("변경하기")
-                            .font(.dungGeunMo20)
-                            .foregroundStyle(.red)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
-                            .background {
-                                Rectangle()
-                                    .strokeBorder(.red, lineWidth: 1)
-                            }
-                    }
-                    
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        ToolbarButton(action: {
-                            dismiss()
-                        }, imageName: "chevron.backward")
-                    }
-                    
-                    ToolbarItem(placement: .principal) {
-                        Text("Setting")
-                            .font(.dungGeunMo20)
-                    }
+        ZStack {
+            VStack {
+                
+                if let name = viewModel.user?.name {
+                    Text(name)
+                        .font(.dungGeunMo24)
+                        .padding(.bottom, 20)
                 }
                 
-                if viewModel.isLoading {
-                    CenterLoadingView()
+                
+                HStack {
+                    TextField("바꿀 닉네임을 입력해주세요.", text: $viewModel.editNickName)
+                        .focused($isTextFieldFocused)
+                        .padding()
+                        .font(.dungGeunMo20)
+                        .foregroundColor(.white)
+                    
+                    Button {
+                        viewModel.editNickName = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.gray)
+                    }
+                    .padding(.trailing)
+                    .opacity(viewModel.editNickName.isEmpty ? 0 : 1)
+                }
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .strokeBorder(Color.white, lineWidth: 1)
+                        .background(RoundedRectangle(cornerRadius: 10).fill(.black))
+                )
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+                
+                Button {
+                    if viewModel.isValidNickname() {
+                        viewModel.showCheckNickNameAlert = true
+                    }
+                } label: {
+                    Text("변경하기")
+                        .font(.dungGeunMo20)
+                        .foregroundStyle(.red)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background {
+                            Rectangle()
+                                .strokeBorder(.red, lineWidth: 1)
+                        }
+                }
+                
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    ToolbarButton(action: {
+                        dismiss()
+                    }, imageName: "chevron.backward")
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    Text("Setting")
+                        .font(.dungGeunMo20)
                 }
             }
-        
+            
+            if viewModel.isLoading {
+                CenterLoadingView()
+            }
+        }
+        .navigationBarBackButtonHidden()
         .onAppear {
             viewModel.setUser()
         }
@@ -102,7 +102,7 @@ struct SettingView: View {
             content: "인터넷 연결을 확인해주세요.",
             primaryButtonText: "확인",
             onPrimaryButton: {}
-            )
+        )
         .dialog(
             isPresented: $viewModel.showCheckNickNameAlert,
             title: "닉네임 변경",
