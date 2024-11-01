@@ -15,9 +15,19 @@ struct SettingView: View {
     @State private var viewModel = SettingViewModel()
     
     var body: some View {
-        
         ZStack {
+            GeometryReader { geometry in
+                    Color.clear
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            isTextFieldFocused = false
+                        }
+                }
+            
             VStack {
+                
+                Spacer()
                 
                 if let name = viewModel.user?.name {
                     Text(name)
@@ -66,6 +76,8 @@ struct SettingView: View {
                         }
                 }
                 
+                Spacer()
+                
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -79,6 +91,7 @@ struct SettingView: View {
                         .font(.dungGeunMo20)
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             
             if viewModel.isLoading {
                 CenterLoadingView()
@@ -92,9 +105,6 @@ struct SettingView: View {
             if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
                 viewModel.setUser()
             }
-        }
-        .onTapGesture {
-            isTextFieldFocused = false
         }
         .dialog(
             isPresented: $viewModel.showNetworkErrorAlert,
