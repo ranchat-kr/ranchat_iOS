@@ -180,6 +180,7 @@ struct ReportDialogView: View {
         selectedReason = nil
         reportText = ""
         isPresented = false
+        isFocused = false
     }
 }
 
