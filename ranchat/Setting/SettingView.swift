@@ -67,9 +67,6 @@ struct SettingView: View {
                     }
                     
                 }
-                .onTapGesture {
-                    isTextFieldFocused = false
-                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         ToolbarButton(action: {
@@ -95,6 +92,9 @@ struct SettingView: View {
             if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
                 viewModel.setUser()
             }
+        }
+        .onTapGesture {
+            isTextFieldFocused = false
         }
         .dialog(
             isPresented: $viewModel.showNetworkErrorAlert,
