@@ -9,13 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
+    @Environment(NetworkMonitor.self) var networkMonitor
     //    @Query private var user: User?
     @State private var isAnimating = false
-    @State private var networkMotinor = NetworkMonitor()
-    @Bindable var viewModel = HomeViewModel()
+    @State var viewModel = HomeViewModel()
     
     
     let screenHeight = UIScreen.main.bounds.height
@@ -105,20 +104,13 @@ struct HomeView: View {
         
         .onAppear {
             viewModel.setHelper(webSocketHelper, idHelper)
+            viewModel.setNetworkMonitor(networkMonitor)
             viewModel.setUser()
         }
         
-        .alert(isPresented: $viewModel.showAlert) {
-            Alert(
-                title: Text("인터넷 연결 오류"),
-                message: Text("인터넷 연결을 확인해주세요."),
-                dismissButton: .default(Text("확인"))
-            )
-        }
-        
-        .onChange(of: networkMotinor.isConnected) { _, isConnected in
-            if !isConnected {
-                viewModel.showAlert = true
+        .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
+            if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
+                viewModel.setUser()
             }
         }
         
@@ -127,6 +119,13 @@ struct HomeView: View {
                 viewModel.successMatching()
             }
         }
+        .dialog(
+            isPresented: $viewModel.showAlert,
+            title: "인터넷 연결 오류",
+            content: "인터넷 연결을 확인해주세요.",
+            primaryButtonText: "확인",
+            onPrimaryButton: {}
+            )
     }
 }
 

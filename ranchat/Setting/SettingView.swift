@@ -10,6 +10,7 @@ import AlertToast
 
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(NetworkMonitor.self) var networkMonitor
     @FocusState private var isTextFieldFocused: Bool
     @State private var viewModel = SettingViewModel()
     
@@ -90,27 +91,27 @@ struct SettingView: View {
         .onAppear {
             viewModel.setUser()
         }
-        .alert(isPresented: $viewModel.showNetworkErrorAlert) {
-            Alert(
-                title: Text("인터넷 연결 오류")
-                    .font(.dungGeunMo24),
-                message: Text("인터넷 연결을 확인해주세요.")
-                    .font(.dungGeunMo16),
-                dismissButton: .default(Text("확인"))
-            )
+        .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
+            if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
+                viewModel.setUser()
+            }
         }
-        .alert(isPresented: $viewModel.showCheckNickNameAlert) {
-            Alert(
-                title: Text("닉네임 변경")
-                    .font(.dungGeunMo24),
-                message: Text("닉네임을 \(viewModel.editNickName)(으)로 변경하시겠습니까?")
-                    .font(.dungGeunMo16),
-                primaryButton: .destructive(Text("확인")) {
-                    viewModel.setNickname()
-                },
-                secondaryButton: .cancel()
+        .dialog(
+            isPresented: $viewModel.showNetworkErrorAlert,
+            title: "인터넷 연결 오류",
+            content: "인터넷 연결을 확인해주세요.",
+            primaryButtonText: "확인",
+            onPrimaryButton: {}
             )
-        }
+        .dialog(
+            isPresented: $viewModel.showCheckNickNameAlert,
+            title: "닉네임 변경",
+            content: "닉네임을 '\(viewModel.editNickName)'\n(으)로 변경하시겠습니까?",
+            primaryButtonText: "확인",
+            secondaryButtonText: "취소",
+            onPrimaryButton: viewModel.setNickname,
+            onSecondaryButton: {}
+        )
         .toast(isPresenting: $viewModel.showSuccessToast, alert: {
             AlertToast(type: .regular, title: "닉네임 변경이 완료되었습니다.", style: .style(titleFont: .dungGeunMo16))
         })

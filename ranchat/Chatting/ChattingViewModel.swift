@@ -19,6 +19,7 @@ class ChattingViewModel {
     
     var showReportDialog: Bool = false
     var showExitDialog: Bool = false
+    var showNetworkErrorAlert: Bool = false
     
     var selectedReason: String?
     var reportText: String = ""
@@ -29,15 +30,40 @@ class ChattingViewModel {
     
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
+    var dismiss: (() -> Void)?
+    var networkMonitor: NetworkMonitor?
     
     func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
     }
     
+    func setDismiss(_ dismiss: @escaping () -> Void) {
+        self.dismiss = dismiss
+    }
+    
+    func setNetworkMonitor(_ networkMonitor: NetworkMonitor) {
+        self.networkMonitor = networkMonitor
+    }
+    
     func addMessage(messageData: MessageData) {
         messageDataList.insert(messageData, at: 0)
         //messageDataList.append(messageData)
+    }
+    
+    func tempExit() {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorAlert = true
+            return
+        }
+        
+        do {
+            try unSubscribeMessage()
+            (dismiss ?? {})()
+        } catch {
+            Logger.shared.log(self.className, #function, "Failed to unSubscribe message: \(error.localizedDescription)")
+            showNetworkErrorAlert = true
+        }
     }
     
     //MARK: - Require Network
@@ -49,6 +75,7 @@ class ChattingViewModel {
             self.roomDetailData = roomDetailData
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get room detail data: \(error.localizedDescription)", .error)
+            showNetworkErrorAlert = true
         }
         
         isLoading = false
@@ -65,6 +92,7 @@ class ChattingViewModel {
             self.messageDataList += messagesListResponseData.items
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get message list: \(error.localizedDescription)", .error)
+            showNetworkErrorAlert = true
         }
         
         isLoading = false
@@ -79,21 +107,31 @@ class ChattingViewModel {
             }
         } catch {
             Logger.shared.log(self.className, #function, "Failed to fetch message list: \(error.localizedDescription)", .error)
+            currentPage -= 1
+            showNetworkErrorAlert = true
         }
     }
     
     func sendMessage() {
         let message = inputText
         if message.isEmpty { return }
+        
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorAlert = true
+            return
+        }
+        
         do {
             if let webSocketHelper {
                 try webSocketHelper.sendMessage(message)
                 inputText = ""
             } else {
                 Logger.shared.log(self.className, #function, "webSocketHelper is nil", .error)
+                showNetworkErrorAlert = true
             }
         } catch {
             Logger.shared.log(self.className, #function, "Failed to send message: \(error.localizedDescription)", .error)
+            showNetworkErrorAlert = true
         }
     }
     
@@ -103,6 +141,7 @@ class ChattingViewModel {
         guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != idHelper?.getUserId() })?.userId else {
             Logger.shared.log(self.className, #function, "reportedUserId is nil", .error)
             
+            showNetworkErrorAlert = true
             return
         }
         
@@ -116,36 +155,49 @@ class ChattingViewModel {
             )
         } catch {
             Logger.shared.log(self.className, #function, "Failed to report user: \(error.localizedDescription)", .error)
+            showNetworkErrorAlert = true
         }
         
         isLoading = false
     }
     
     func exitRoom() async {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorAlert = true
+            return
+        }
+        
         isLoading = true
         
         if let idHelper, let roomId = idHelper.getRoomId(), let webSocketHelper {
             do {
                 try webSocketHelper.exitRoom(roomId: roomId)
+                (dismiss ?? {})()
             } catch {
                 Logger.shared.log(self.className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
+                showNetworkErrorAlert = true
             }
         } else {
             Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil", .error)
+            showNetworkErrorAlert = true
         }
         
         isLoading = false
     }
     
-    func unSubscribeMessage() {
+    func unSubscribeMessage() throws {
         if let idHelper, let roomId = idHelper.getRoomId(), let webSocketHelper {
             do {
                 try webSocketHelper.unsubscribeFromRecieveMessage(roomId: roomId)
             } catch {
                 Logger.shared.log(self.className, #function, "Failed to unsubscribe from recieve message: \(error.localizedDescription)")
+                showNetworkErrorAlert = true
+                throw WebSocketHelperError.connectError
             }
         } else {
             Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil")
+            showNetworkErrorAlert = true
+            throw IdHelperError.nilError
         }
     }
     

@@ -32,9 +32,7 @@ class WebSocketHelper {
     var onSuccessMatching: (() -> Void)?
     
     //MARK: - Init Setting
-    func connectToWebSocket(idHelper: IdHelper) throws {
-        self.idHelper = idHelper
-        
+    func connectToWebSocket() throws {
         let userId = try getUserId()
         
         guard let url = URL(string: socketURL) else {
@@ -49,32 +47,14 @@ class WebSocketHelper {
             connectionHeaders: ["userId": userId]
         )
         
-    }
-    
-    func reconnectToWebSocket() throws {
-        let userId = try getUserId()
-        
-        guard let url = URL(string: socketURL) else {
-            Logger.shared.log(self.className, #function, "Failed to create URL", .error)
-            
-            throw WebSocketHelperError.invalidURLError
-        }
-        
-        stompClient.openSocketWithURLRequest(
-            request: NSURLRequest(url: url),
-            delegate: self,
-            connectionHeaders: ["userId": userId]
-        )
-        
-        do {
-            try subscribeToMatchingSuccess()
-        } catch {
-            Logger.shared.log(self.className, #function, "Failed to subscribe to matching success", .error)
-        }
     }
     
     func disconnectFromWebSocket() {
         stompClient.disconnect()
+    }
+    
+    func setIdHelper(idHelper: IdHelper) {
+        self.idHelper = idHelper
     }
     
     //MARK: - Subscribe
@@ -130,11 +110,9 @@ class WebSocketHelper {
         stompClient.unsubscribe(destination: receiveMessageDestination)
         
         do {
-            try reconnectToWebSocket()
+            try connectToWebSocket()
         } catch {
-            Logger.shared.log(self.className, #function, "Failed to reconnect to WebSocket", .error)
-
-            throw WebSocketHelperError.connectError
+            Logger.shared.log(self.className, #function, "Failed to reconnect to websocket")
         }
     }
     
@@ -334,7 +312,7 @@ extension WebSocketHelper: StompClientLibDelegate {
         Logger.shared.log(self.className, #function, "Stomp client did disconnected")
         do {
             //try unsubscribeFromMatchingSuccess()
-            try reconnectToWebSocket()
+            try connectToWebSocket()
         } catch {
             Logger.shared.log(self.className, #function, "Failed to reconnect to WebSocket server: \(error.localizedDescription)", .error)
         }

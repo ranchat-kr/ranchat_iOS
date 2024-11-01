@@ -12,6 +12,7 @@ class RoomListViewModel {
     
     var isLoading: Bool = false
     var showExitRoomDialog: Bool = false
+    var showNetworkErrorDialog: Bool = false
     var goToChat: Bool = false
     
     var roomPage = 0

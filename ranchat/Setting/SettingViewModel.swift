@@ -26,7 +26,6 @@ class SettingViewModel {
     var showSuccessToast: Bool = false
     var showInValidToast: Bool = false
     
-    
     var user: UserData?
     
     var nicknameError: nickNameError = .None

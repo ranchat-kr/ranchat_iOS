@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RoomData: Codable {
+struct RoomData: Codable, Equatable {
     var id: Int
     var title: String
     var type: String

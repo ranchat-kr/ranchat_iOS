@@ -12,6 +12,7 @@ import SwiftData
 struct ranchatApp: App {
     private var webSocketHelper = WebSocketHelper()
     private var idHelper = IdHelper()
+    private var networkMotinor = NetworkMonitor()
     
 //    var sharedModelContainer: ModelContainer = {
 //        let schema = Schema([
@@ -31,10 +32,12 @@ struct ranchatApp: App {
             ContentView()
                 .onAppear {
                     ApiHelper.shared.setIdHelper(idHelper: idHelper)
+                    webSocketHelper.setIdHelper(idHelper: idHelper)
                 }
                 .preferredColorScheme(.dark)
                 .environment(webSocketHelper)
                 .environment(idHelper)
+                .environment(networkMotinor)
         }
 //        .modelContainer(sharedModelContainer)
     }

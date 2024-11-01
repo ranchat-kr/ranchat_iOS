@@ -55,6 +55,7 @@ struct RoomItemView: View {
             }
             
             .padding(.vertical, 10)
+    
             .onAppear {
                 dateText = parseToRoomDateFormat()
                 dateFont = fontByTimeFormat()

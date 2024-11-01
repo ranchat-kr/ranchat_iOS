@@ -34,6 +34,7 @@
 		492BBB5D2CB5022A00C027C6 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492BBB5C2CB5022300C027C6 /* NetworkMonitor.swift */; };
 		492BBB602CB5086600C027C6 /* UUIDV7 in Frameworks */ = {isa = PBXBuildFile; productRef = 492BBB5F2CB5086600C027C6 /* UUIDV7 */; };
 		494DC94B2CCFDB49002147AC /* RoomItemViewButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494DC94A2CCFDB49002147AC /* RoomItemViewButtonStyle.swift */; };
+		494DC94D2CD3CBE2002147AC /* DialogViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494DC94C2CD3CBE2002147AC /* DialogViewModifier.swift */; };
 		49A3B7202CB65A2F002C6FA6 /* MatchingLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */; };
 		49AA2E022CB68BFF0030BDF0 /* ChattingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */; };
 		49AA2E052CB68CEC0030BDF0 /* ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA2E042CB68CEC0030BDF0 /* ChattingViewModel.swift */; };
@@ -96,6 +97,7 @@
 		492B64012CB3B34B000CB1A3 /* ranchatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ranchatApp.swift; sourceTree = "<group>"; };
 		492BBB5C2CB5022300C027C6 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		494DC94A2CCFDB49002147AC /* RoomItemViewButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomItemViewButtonStyle.swift; sourceTree = "<group>"; };
+		494DC94C2CD3CBE2002147AC /* DialogViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModifier.swift; sourceTree = "<group>"; };
 		499584A92C8DEBDB00A77646 /* ranchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ranchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingLoadingView.swift; sourceTree = "<group>"; };
 		49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingView.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				49B515E12CB55205002F8875 /* CenterLoadingView.swift */,
 				49F2DA772CC131DF0060E4AB /* ToolbarButton.swift */,
 				494DC94A2CCFDB49002147AC /* RoomItemViewButtonStyle.swift */,
+				494DC94C2CD3CBE2002147AC /* DialogViewModifier.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -490,6 +493,7 @@
 			files = (
 				492B64082CB3B34B000CB1A3 /* DosStyleTextField.swift in Sources */,
 				492B64092CB3B34B000CB1A3 /* MainButtonView.swift in Sources */,
+				494DC94D2CD3CBE2002147AC /* DialogViewModifier.swift in Sources */,
 				49A3B7202CB65A2F002C6FA6 /* MatchingLoadingView.swift in Sources */,
 				49F2DA6E2CBA03C30060E4AB /* ExitDialogView.swift in Sources */,
 				492B640A2CB3B34B000CB1A3 /* Font+DungGeunMo.swift in Sources */,

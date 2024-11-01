@@ -25,10 +25,15 @@ class HomeViewModel {
     
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
+    var networkMonitor: NetworkMonitor?
     
     func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
+    }
+    
+    func setNetworkMonitor(_ networkMonitor: NetworkMonitor) {
+        self.networkMonitor = networkMonitor
     }
     
     func navigateToChat() {
@@ -68,7 +73,7 @@ class HomeViewModel {
                     try await ApiHelper.shared.createUser(name: getRandomNickname())
                     
                 }
-                try webSocketHelper.connectToWebSocket(idHelper: idHelper)
+                try webSocketHelper.connectToWebSocket()
                 await checkRoomExist()
             } catch {
                 showAlert = true
@@ -100,6 +105,11 @@ class HomeViewModel {
     }
     
     func requestMatching() {
+        if let networkMonitor, !networkMonitor.isConnected {
+            showAlert = true
+            return
+        }
+        
         isMatching = true
         
         guard let webSocketHelper else {

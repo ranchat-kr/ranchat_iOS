@@ -22,6 +22,7 @@ struct RoomListView: View {
                     viewModel.enterRoom(at: index)
                 })
                 .listRowInsets(EdgeInsets())
+                .listRowSeparator(.hidden)
                 .swipeActions(edge: .trailing) {
                     Button(role: .cancel) {
                         
@@ -45,7 +46,9 @@ struct RoomListView: View {
                 }
                 
             }
+            .animation(.snappy, value: viewModel.roomItems)
             .listStyle(.plain)
+            
             .onAppear {
                 viewModel.setHelper(webSocketHelper, idHelper)
                 Task {
@@ -70,19 +73,6 @@ struct RoomListView: View {
             if viewModel.isLoading {
                 CenterLoadingView()
             }
-            
-            if viewModel.showExitRoomDialog {
-                ExitRoomDialogView(
-                    isPresented: $viewModel.showExitRoomDialog,
-                    title: viewModel.selectedRoom?.title ?? "",
-                    onConfirm: {
-                        withAnimation {
-                            viewModel.exitRoom(at: viewModel.selectedRoomIndex ?? -1)
-                        }
-                        viewModel.showExitRoomDialog = false
-                    }
-                )
-            }
         }
         .navigationDestination(isPresented: $viewModel.goToChat, destination: {
             ChattingView()
@@ -92,6 +82,25 @@ struct RoomListView: View {
                     }
                 }
         })
+        .dialog(
+            isPresented: $viewModel.showExitRoomDialog,
+            title: "방 나가기",
+            content: "'\(viewModel.selectedRoom?.title ?? "")'\n 채팅방을 나가시겠습니까?",
+            primaryButtonText: "나가기",
+            secondaryButtonText: "취소") {
+                withAnimation {
+                    viewModel.exitRoom(at: viewModel.selectedRoomIndex ?? -1)
+                }
+                viewModel.showExitRoomDialog = false
+            }
+        
+        .dialog(
+            isPresented: $viewModel.showNetworkErrorDialog,
+            title: "인터넷 연결 오류",
+            content: "인터넷 연결을 확인해주세요.",
+            primaryButtonText: "확인",
+            onPrimaryButton: {}
+        )
     }
 }
 
