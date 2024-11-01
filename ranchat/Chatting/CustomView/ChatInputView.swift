@@ -19,7 +19,8 @@ struct ChatInputView: View {
             Image(systemName: "chevron.forward")
                 
             
-            TextField("입력하세요.", text: $inputText)
+            TextField("입력하세요.", text: $inputText, axis: .vertical)
+                .lineLimit(3)
                 .focused($isTextFieldFocused)
                 .font(.dungGeunMo16)
                 .textFieldStyle(.plain)
