@@ -12,9 +12,11 @@ struct ReportDialogView: View {
     @Binding var isPresented: Bool
     @Binding var selectedReason: String?
     @Binding var reportText: String
+    @Binding var isFocused: Bool
     @State var showWarningToSelectReasonToast: Bool = false
     @State var showWarningToReportContentToast: Bool = false
     @State var showReasonPicker: Bool = false
+    @FocusState var isTextFieldFocused: Bool
     var reportReasons = [
         "사유를 선택해주세요.", "스팸", "욕설 및 비방", "광고", "허위 정보", "저작권 침해", "기타"
     ]
@@ -34,49 +36,65 @@ struct ReportDialogView: View {
                     .foregroundStyle(.black)
                     .padding(.bottom, 30)
                 
-                HStack {
-                    Text("신고 사유 선택")
-                        .font(.dungGeunMo20)
-                        .foregroundStyle(.black)
-                    
-                    Text((selectedReason == reportReasons[0] ? "" : selectedReason) ?? "")
-                        .frame(maxWidth: 115, alignment: .center)
-                        .font(.dungGeunMo16)
-                        .foregroundStyle(.blue)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.up.chevron.down")
-                        .foregroundStyle(.black)
-                        .padding(.trailing, 10)
-                    
-                }
-                .padding(.bottom, 30)
-                .onTapGesture {
+                Button {
                     showReasonPicker = true
+                } label: {
+                    HStack {
+                        Text("신고 사유 선택")
+                            .font(.dungGeunMo20)
+                            .foregroundStyle(.black)
+                        
+                        Text((selectedReason == reportReasons[0] ? "" : selectedReason) ?? "")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .font(.dungGeunMo16)
+                            .foregroundStyle(.blue)
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.up.chevron.down")
+                            .foregroundStyle(.black)
+                            .padding(.trailing, 10)
+                        
+                    }
+                    .padding(.bottom, 30)
                 }
                 
                 ZStack(alignment: .leading) {
+                    
                     if reportText.isEmpty {
                         Text("신고 내용을 입력하세요.")
                             .foregroundColor(.gray) // 원하는 색상으로 변경
                             .padding(.horizontal, 20)
-                            .padding(.top, 25) // 위치 조정
+                            .font(.dungGeunMo24)
+                            .frame(maxHeight: .infinity, alignment: .center)
                     }
+                    
                     TextField("", text: $reportText, axis: .vertical)
+                        .focused($isTextFieldFocused)
                         .lineLimit(3)
                         .padding(.horizontal, 20)
                         .font(.dungGeunMo24)
                         .foregroundStyle(.black)
                         .tint(.gray)
-                        .frame(height: 80)
-                        .background(.white)
+                        .background(.clear)
                         .overlay {
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(.black, lineWidth: 1)
+                                .padding(.vertical, -10)
                         }
+                        .onAppear {
+                            isTextFieldFocused = isFocused
+                        }
+                        .onChange(of: isTextFieldFocused) { _, newValue in
+                            isFocused = newValue
+                        }
+                        .onChange(of: isFocused) { _, newValue in
+                            isTextFieldFocused = newValue
+                        }
+                    
                 }
                 .padding(.bottom, 30)
+                .frame(maxHeight: 100)
                 
                 HStack {
                     Spacer()
@@ -166,5 +184,5 @@ struct ReportDialogView: View {
 }
 
 #Preview {
-    ReportDialogView(isPresented: .constant(true), selectedReason: .constant("욕설 및 비방"), reportText: .constant(""),onReport: {})
+    ReportDialogView(isPresented: .constant(true), selectedReason: .constant("욕설 및 비방"), reportText: .constant(""), isFocused: .constant(true), onReport: {})
 }

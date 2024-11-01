@@ -13,6 +13,7 @@ struct ChattingView: View {
     @Environment(WebSocketHelper.self) var webSocketHelper
     @Environment(NetworkMonitor.self) var networkMonitor
     @State var isTextFieldFocused: Bool = true
+    @State var isReportDialogTextFieldFocused: Bool = false
     @State var keyboardHeight: CGFloat = 0 {
         didSet {
             print("keyboardHeight: \(keyboardHeight)")
@@ -58,12 +59,14 @@ struct ChattingView: View {
             }
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
+            .ignoresSafeArea(.keyboard, edges: isReportDialogTextFieldFocused ? .bottom : [])
             
             if viewModel.showReportDialog {
                 ReportDialogView(
                     isPresented: $viewModel.showReportDialog,
                     selectedReason: $viewModel.selectedReason,
                     reportText: $viewModel.reportText,
+                    isFocused: $isReportDialogTextFieldFocused,
                     onReport: viewModel.reportUser
                 )
             }
@@ -91,6 +94,11 @@ struct ChattingView: View {
                 
             }
         }
+        .onChange(of: viewModel.showReportDialog, { oldValue, newValue in
+            if newValue {
+                isTextFieldFocused = false
+            }
+        })
         .dialog(
             isPresented: $viewModel.showNetworkErrorAlert,
             title: "인터넷 연결 오류",
