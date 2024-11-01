@@ -15,7 +15,7 @@ struct SettingView: View {
     @State private var viewModel = SettingViewModel()
     
     var body: some View {
-        NavigationView {
+        
             ZStack {
                 VStack {
                     
@@ -84,7 +84,7 @@ struct SettingView: View {
                     CenterLoadingView()
                 }
             }
-        }
+        
         .onAppear {
             viewModel.setUser()
         }
@@ -131,7 +131,6 @@ struct SettingView: View {
                 return AlertToast(type: .error(.red), title: "")
             }
         })
-        .navigationBarBackButtonHidden()
         .tint(.white)
     }
 }
