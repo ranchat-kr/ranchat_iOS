@@ -11,6 +11,7 @@ enum nickNameError {
     case Empty
     case Length
     case ContainsBlank
+    case Duplicate
     case SpecialCharacter
     case ContainsForbiddenCharacter
     case None
@@ -32,7 +33,7 @@ class SettingViewModel {
     
     var nicknameError: nickNameError = .None
     
-    var editNickName = ""
+    var editNickName: String = ""
     
     func setUser() {
         isLoading = true
@@ -101,10 +102,15 @@ class SettingViewModel {
             showInValidToast = true
             
             return false
+        } else if let user, user.name == editNickName {
+            nicknameError = .Duplicate
+            
+            showInValidToast = true
+            
+            return false
         } else if let regex = try? NSRegularExpression(pattern: specialCharRegex, options: []) {
             let range = NSRange(location: 0, length: editNickName.utf16.count)
             let matchFound = regex.firstMatch(in: editNickName, options: [], range: range) != nil
-            
             if matchFound {
                 nicknameError = .SpecialCharacter
                 
@@ -113,6 +119,7 @@ class SettingViewModel {
                 return false
             }
         }
+        
         for forbiddenWord in forbiddenWords {
             if editNickName.contains(forbiddenWord) {
                 nicknameError = .ContainsForbiddenCharacter

@@ -121,6 +121,8 @@ struct SettingView: View {
                 return AlertToast(type: .error(.red), title: "닉네임은 2자 이상 10자 이하로 입력해주세요.", style: .style(titleFont: .dungGeunMo16))
             case .ContainsBlank:
                 return AlertToast(type: .error(.red), title: "닉네임에 공백이 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
+            case .Duplicate:
+                return AlertToast(type: .error(.red), title: "이미 사용중인 닉네임입니다.", style: .style(titleFont: .dungGeunMo16))
             case .SpecialCharacter:
                 return AlertToast(type: .error(.red), title: "닉네임에 특수문자가 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
             case .ContainsForbiddenCharacter:
