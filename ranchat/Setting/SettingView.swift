@@ -11,7 +11,7 @@ import AlertToast
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(NetworkMonitor.self) var networkMonitor
-    @FocusState private var isTextFieldFocused: Bool
+    @State private var isTextFieldFocused: Bool = false
     @State private var viewModel = SettingViewModel()
     @AppStorage("permissionForNotification") var permissionForNotification = false
     
@@ -27,83 +27,45 @@ struct SettingView: View {
                 }
             
             VStack {
-                
-                Spacer()
-                
-                Toggle(isOn: $viewModel.isToggleOn) {
-                    Text("알림")
-                        .font(.dungGeunMo20)
-                        .foregroundStyle(permissionForNotification ? .white : .gray)
-                }
-                .padding()
-                .toggleStyle(SwitchToggleStyle(tint: .red))
-                .disabled(!permissionForNotification)
-                .onChange(of: viewModel.isToggleOn) {
-                    viewModel.updateNotification()
-                    DefaultData.shared.isNotificationEnabled = viewModel.isToggleOn
-                }
-                
-                Divider()
-                    .frame(height: 2)
-                    .background(.gray)
-                    .padding(10)
-                
                 if let name = viewModel.user?.name {
                     Text(" \(name) ")
-                        .font(.dungGeunMo24)
+                        .font(.dungGeunMo32)
                         .padding(.vertical, 20)
                 }
                 
+                SettingBodyView(title: "알림 설정") {
+                    SettingToggleView(isToggleOn: $viewModel.isToggleOn, onChange: viewModel.updateNotification)
+                }
                 
-                HStack {
-                    TextField("바꿀 닉네임을 입력해주세요.", text: $viewModel.editNickName)
-                        .focused($isTextFieldFocused)
-                        .padding()
-                        .font(.dungGeunMo20)
-                        .foregroundColor(.white)
-                        .onChange(of: viewModel.editNickName) { _, nickName in
-                            if nickName.count > 10 {
-                                let index = nickName.index(nickName.startIndex, offsetBy: 10)
-                                viewModel.editNickName = String(nickName[..<index])
-                            }
-                        }
+                Divider()
+                    .frame(height: 0)
+                    .background(.gray)
+                    .padding(.vertical, 20)
+            
+                SettingBodyView(title: "닉네임 변경") {
+                    SettingNickNameTextFieldView(editNickName: $viewModel.editNickName, isFouced: $isTextFieldFocused)
                     
                     Button {
-                        viewModel.editNickName = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.gray)
-                    }
-                    .padding(.trailing)
-                    .opacity(viewModel.editNickName.isEmpty ? 0 : 1)
-                }
-                .background(
-                    RoundedRectangle(cornerRadius: 3)
-                        .strokeBorder(Color.white, lineWidth: 1)
-                        .background(RoundedRectangle(cornerRadius: 10).fill(.black))
-                )
-                .padding(.horizontal, 20)
-                .padding(.bottom, 20)
-                
-                Button {
-                    if viewModel.isValidNickname() {
-                        viewModel.showCheckNickNameDialog = true
-                    }
-                } label: {
-                    Text("변경하기")
-                        .font(.dungGeunMo20)
-                        .foregroundStyle(.red)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 10)
-                        .background {
-                            Rectangle()
-                                .strokeBorder(.red, lineWidth: 1)
+                        if viewModel.isValidNickname() {
+                            viewModel.showCheckNickNameDialog = true
                         }
+                    } label: {
+                        Text("변경하기")
+                            .font(.dungGeunMo20)
+                            .foregroundStyle(.red)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .background {
+                                Rectangle()
+                                    .strokeBorder(.red, lineWidth: 1)
+                            }
+                    }
                 }
                 
                 Spacer()
                 
             }
+            .padding(20)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     ToolbarButton(action: {

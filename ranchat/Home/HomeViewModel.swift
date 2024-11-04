@@ -174,7 +174,7 @@ class HomeViewModel {
                 if !webSocketHelper.isMatchSuccess {  //8초가 지나도 매칭이 안 됐을 경우, GPT와 연결 (방을 인위적으로 만들어 나온 roomId로 설정)
                     let roomId = try await ApiHelper.shared.createRoom()
                     idHelper.setRoomId(roomId)
-                }
+                }   
                 try webSocketHelper.enterRoom()
                 navigateToChat()
             } catch {

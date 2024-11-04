@@ -35,6 +35,9 @@
 		492BBB602CB5086600C027C6 /* UUIDV7 in Frameworks */ = {isa = PBXBuildFile; productRef = 492BBB5F2CB5086600C027C6 /* UUIDV7 */; };
 		494DC94B2CCFDB49002147AC /* RoomItemViewButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494DC94A2CCFDB49002147AC /* RoomItemViewButtonStyle.swift */; };
 		494DC94D2CD3CBE2002147AC /* DialogViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494DC94C2CD3CBE2002147AC /* DialogViewModifier.swift */; };
+		498645C42CD8F3C100A2C6C2 /* SettingToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498645C32CD8F3C100A2C6C2 /* SettingToggleView.swift */; };
+		498645C72CD8F52100A2C6C2 /* SettingNickNameTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498645C62CD8F52100A2C6C2 /* SettingNickNameTextFieldView.swift */; };
+		498645C92CD8F8D900A2C6C2 /* SettingBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498645C82CD8F8D900A2C6C2 /* SettingBodyView.swift */; };
 		49A3B7202CB65A2F002C6FA6 /* MatchingLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */; };
 		49A6EC602CD8886400E397F3 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 49A6EC5F2CD8886400E397F3 /* FirebaseAnalytics */; };
 		49A6EC622CD8886400E397F3 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 49A6EC612CD8886400E397F3 /* FirebaseMessaging */; };
@@ -101,6 +104,9 @@
 		492BBB5C2CB5022300C027C6 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		494DC94A2CCFDB49002147AC /* RoomItemViewButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomItemViewButtonStyle.swift; sourceTree = "<group>"; };
 		494DC94C2CD3CBE2002147AC /* DialogViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModifier.swift; sourceTree = "<group>"; };
+		498645C32CD8F3C100A2C6C2 /* SettingToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingToggleView.swift; sourceTree = "<group>"; };
+		498645C62CD8F52100A2C6C2 /* SettingNickNameTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingNickNameTextFieldView.swift; sourceTree = "<group>"; };
+		498645C82CD8F8D900A2C6C2 /* SettingBodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingBodyView.swift; sourceTree = "<group>"; };
 		499584A92C8DEBDB00A77646 /* ranchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ranchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingLoadingView.swift; sourceTree = "<group>"; };
 		49A6EC632CD88D7900E397F3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -259,6 +265,7 @@
 		492B63FB2CB3B34B000CB1A3 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				498645C52CD8F3C800A2C6C2 /* CustomView */,
 				492B63FA2CB3B34B000CB1A3 /* SettingView.swift */,
 				49B515DF2CB550A4002F8875 /* SettingViewModel.swift */,
 			);
@@ -286,6 +293,16 @@
 				492B63F92CB3B34B000CB1A3 /* Preview Content */,
 			);
 			path = ranchat;
+			sourceTree = "<group>";
+		};
+		498645C52CD8F3C800A2C6C2 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				498645C32CD8F3C100A2C6C2 /* SettingToggleView.swift */,
+				498645C62CD8F52100A2C6C2 /* SettingNickNameTextFieldView.swift */,
+				498645C82CD8F8D900A2C6C2 /* SettingBodyView.swift */,
+			);
+			path = CustomView;
 			sourceTree = "<group>";
 		};
 		499584A02C8DEBDB00A77646 = {
@@ -505,6 +522,7 @@
 				492B64082CB3B34B000CB1A3 /* DosStyleTextField.swift in Sources */,
 				492B64092CB3B34B000CB1A3 /* MainButtonView.swift in Sources */,
 				494DC94D2CD3CBE2002147AC /* DialogViewModifier.swift in Sources */,
+				498645C42CD8F3C100A2C6C2 /* SettingToggleView.swift in Sources */,
 				49A3B7202CB65A2F002C6FA6 /* MatchingLoadingView.swift in Sources */,
 				49F2DA6E2CBA03C30060E4AB /* ExitDialogView.swift in Sources */,
 				492B640A2CB3B34B000CB1A3 /* Font+DungGeunMo.swift in Sources */,
@@ -534,11 +552,13 @@
 				494DC94B2CCFDB49002147AC /* RoomItemViewButtonStyle.swift in Sources */,
 				49F2DA812CC278AF0060E4AB /* ExitRoomDialogView.swift in Sources */,
 				492B64172CB3B34B000CB1A3 /* UserData.swift in Sources */,
+				498645C72CD8F52100A2C6C2 /* SettingNickNameTextFieldView.swift in Sources */,
 				492B64182CB3B34B000CB1A3 /* DefaultResponse.swift in Sources */,
 				49F2DA6C2CB6C9B50060E4AB /* ReportDialogView.swift in Sources */,
 				49B515E02CB550A4002F8875 /* SettingViewModel.swift in Sources */,
 				492B64192CB3B34B000CB1A3 /* SettingView.swift in Sources */,
 				49F2DA662CB6A9990060E4AB /* ChatInputView.swift in Sources */,
+				498645C92CD8F8D900A2C6C2 /* SettingBodyView.swift in Sources */,
 				492B641A2CB3B34B000CB1A3 /* ContentView.swift in Sources */,
 				492B641B2CB3B34B000CB1A3 /* Item.swift in Sources */,
 				49F2DA6A2CB6B6F40060E4AB /* ChatScrollView.swift in Sources */,

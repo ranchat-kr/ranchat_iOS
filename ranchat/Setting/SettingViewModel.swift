@@ -129,6 +129,7 @@ class SettingViewModel {
         if DefaultData.shared.permissionForNotification == nil {
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 DefaultData.shared.permissionForNotification = (settings.authorizationStatus == .authorized)
+                DefaultData.shared.isNotificationEnabled = DefaultData.shared.permissionForNotification ?? false
             }
         }
     }
