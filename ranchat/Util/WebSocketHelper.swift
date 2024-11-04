@@ -19,7 +19,7 @@ enum WebSocketHelperError: Error {
 @Observable
 class WebSocketHelper {
     private let className = "WebSocketHelper"
-    private let socketURL = "wss://\(DefaultData.domain)/endpoint"
+    private let socketURL = "wss://\(DefaultData.shared.domain)/endpoint"
     private var idHelper: IdHelper?
     private var matchingSuccessDestination: String?
     private var receivingMessageDestination: String?
