@@ -22,6 +22,28 @@ struct ranchatApp: App {
         WindowGroup {
             ContentView()
                 .onAppear {
+                    if DefaultData.shared.permissionForNotification == nil {
+                        UNUserNotificationCenter.current().getNotificationSettings { settings in
+                            DefaultData.shared.permissionForNotification = (settings.authorizationStatus == .authorized)
+                        }
+                    }
+                    
+                    if DefaultData.shared.isFirstLaunch {
+                        Task {
+                            do {
+                                try await ApiHelper.shared.createNotifications(
+                                    allowsNotification: DefaultData.shared.permissionForNotification ?? false,
+                                    agentId: DefaultData.shared.agentId ?? "",
+                                    osType: "IOS",
+                                    deviceName: UIDevice.current.name
+                                )
+                                DefaultData.shared.isFirstLaunch = false
+                            } catch {
+                                
+                            }
+                        }
+                    }
+                    
                     ApiHelper.shared.setIdHelper(idHelper: idHelper)
                     webSocketHelper.setIdHelper(idHelper: idHelper)
                 }
@@ -59,12 +81,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         Messaging.messaging().delegate = self
         
         UNUserNotificationCenter.current().delegate = self
+        
         return true
     }
     
     // fcm 토근이 등록 되었을 때
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Logger.shared.log("AppDelegate", #function, "Device Token: \(deviceToken)")
+        DefaultData.shared.agentId = deviceToken.base64EncodedString()
         
         Messaging.messaging().apnsToken = deviceToken
     }
