@@ -92,7 +92,14 @@ struct ChattingView: View {
         }
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
             if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
-                
+                Task {
+                    if !viewModel.isRoomDetailDataLoaded {
+                        await viewModel.getRoomDetailData()
+                    }
+                    if !viewModel.isMessageDataListLoaded {
+                        await viewModel.getMessageList()
+                    }
+                }
             }
         }
         .onChange(of: viewModel.showReportDialog, { oldValue, newValue in
@@ -101,7 +108,7 @@ struct ChattingView: View {
             }
         })
         .dialog(
-            isPresented: $viewModel.showNetworkErrorAlert,
+            isPresented: $viewModel.showNetworkErrorDialog,
             title: "인터넷 연결 오류",
             content: "인터넷 연결을 확인해주세요.",
             primaryButtonText: "확인",

@@ -12,14 +12,17 @@ class ChattingViewModel {
     let className = "ChattingViewModel"
     
     var messageDataList: [MessageData] = []
+    
     var isLoading: Bool = false
+    var isRoomDetailDataLoaded: Bool = false
+    var isMessageDataListLoaded: Bool = false
     
     var inputText: String = ""
     var roomDetailData: RoomDetailData?
     
     var showReportDialog: Bool = false
     var showExitDialog: Bool = false
-    var showNetworkErrorAlert: Bool = false
+    var showNetworkErrorDialog: Bool = false
     
     var selectedReason: String?
     var reportText: String = ""
@@ -58,9 +61,10 @@ class ChattingViewModel {
         do {
             let roomDetailData = try await ApiHelper.shared.getRoomDetail()
             self.roomDetailData = roomDetailData
+            self.isRoomDetailDataLoaded = true
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get room detail data: \(error.localizedDescription)", .error)
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
         
         isLoading = false
@@ -75,9 +79,10 @@ class ChattingViewModel {
             self.totalCount = messagesListResponseData.totalCount
             self.messageDataList.removeAll()
             self.messageDataList += messagesListResponseData.items
+            self.isMessageDataListLoaded = true
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get message list: \(error.localizedDescription)", .error)
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
         
         isLoading = false
@@ -93,7 +98,7 @@ class ChattingViewModel {
         } catch {
             Logger.shared.log(self.className, #function, "Failed to fetch message list: \(error.localizedDescription)", .error)
             currentPage -= 1
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
     }
     
@@ -102,7 +107,7 @@ class ChattingViewModel {
         if message.isEmpty { return }
         
         if !(networkMonitor?.isConnected ?? false) {
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
             return
         }
         
@@ -112,11 +117,11 @@ class ChattingViewModel {
                 inputText = ""
             } else {
                 Logger.shared.log(self.className, #function, "webSocketHelper is nil", .error)
-                showNetworkErrorAlert = true
+                showNetworkErrorDialog = true
             }
         } catch {
             Logger.shared.log(self.className, #function, "Failed to send message: \(error.localizedDescription)", .error)
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
     }
     
@@ -126,7 +131,7 @@ class ChattingViewModel {
         guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != idHelper?.getUserId() })?.userId else {
             Logger.shared.log(self.className, #function, "reportedUserId is nil", .error)
             
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
             return
         }
         
@@ -140,7 +145,7 @@ class ChattingViewModel {
             )
         } catch {
             Logger.shared.log(self.className, #function, "Failed to report user: \(error.localizedDescription)", .error)
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
         
         isLoading = false
@@ -148,7 +153,7 @@ class ChattingViewModel {
     
     func exitRoom() async {
         if !(networkMonitor?.isConnected ?? false) {
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
             return
         }
         
@@ -160,11 +165,11 @@ class ChattingViewModel {
                 (dismiss ?? {})()
             } catch {
                 Logger.shared.log(self.className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
-                showNetworkErrorAlert = true
+                showNetworkErrorDialog = true
             }
         } else {
             Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil", .error)
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
         
         isLoading = false
@@ -172,7 +177,7 @@ class ChattingViewModel {
     
     func tempExit() {
         if !(networkMonitor?.isConnected ?? false) {
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
             return
         }
         
@@ -181,7 +186,7 @@ class ChattingViewModel {
             (dismiss ?? {})()
         } catch {
             Logger.shared.log(self.className, #function, "Failed to unSubscribe message: \(error.localizedDescription)")
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
     }
     
@@ -191,12 +196,12 @@ class ChattingViewModel {
                 try webSocketHelper.unsubscribeFromRecieveMessage(roomId: roomId)
             } catch {
                 Logger.shared.log(self.className, #function, "Failed to unsubscribe from recieve message: \(error.localizedDescription)")
-                showNetworkErrorAlert = true
+                showNetworkErrorDialog = true
                 throw WebSocketHelperError.connectError
             }
         } else {
             Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil")
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
             throw IdHelperError.nilError
         }
     }
@@ -207,11 +212,11 @@ class ChattingViewModel {
                 try webSocketHelper.activateParticipant()
             } catch {
                 Logger.shared.log(self.className, #function, "Failed to activate participant: \(error.localizedDescription)")
-                showNetworkErrorAlert = true
+                showNetworkErrorDialog = true
             }
         } else {
             Logger.shared.log(self.className, #function, "webSocketHelper is nil")
-            showNetworkErrorAlert = true
+            showNetworkErrorDialog = true
         }
     }
     

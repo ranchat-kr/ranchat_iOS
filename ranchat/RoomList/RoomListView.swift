@@ -11,6 +11,7 @@ struct RoomListView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
+    @Environment(NetworkMonitor.self) var networkMonitor
     
     @State var viewModel = RoomListViewModel()
     
@@ -51,8 +52,18 @@ struct RoomListView: View {
             
             .onAppear {
                 viewModel.setHelper(webSocketHelper, idHelper)
+                viewModel.setNetworkMonitor(networkMonitor)
                 Task {
                     await viewModel.getRoomList()
+                }
+            }
+            .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
+                if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
+                    Task {
+                        if !viewModel.isInitialLized {
+                            await viewModel.getRoomList()
+                        }
+                    }
                 }
             }
             .toolbar {

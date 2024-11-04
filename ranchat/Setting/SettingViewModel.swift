@@ -21,8 +21,9 @@ class SettingViewModel {
     let className = "SettingViewModel"
     
     var isLoading: Bool = false
-    var showNetworkErrorAlert: Bool = false
-    var showCheckNickNameAlert: Bool = false
+    var isInitialized: Bool = false
+    var showNetworkErrorDialog: Bool = false
+    var showCheckNickNameDialog: Bool = false
     var showSuccessToast: Bool = false
     var showInValidToast: Bool = false
     var isToggleOn: Bool = DefaultData.shared.isNotificationEnabled
@@ -39,8 +40,9 @@ class SettingViewModel {
         Task {
             do {
                 user = try await ApiHelper.shared.getUser()
+                self.isInitialized = true
             } catch {
-                showNetworkErrorAlert = true
+                showNetworkErrorDialog = true
                 
                 Logger.shared.log(self.className, #function, "Failed to get user: \(error.localizedDescription)", .error)
             }
@@ -59,7 +61,7 @@ class SettingViewModel {
                 editNickName = ""
                 showSuccessToast = true
             } catch {
-                showNetworkErrorAlert = true
+                showNetworkErrorDialog = true
                 
                 Logger.shared.log(self.className, #function, "Failed to update user name: \(error.localizedDescription)", .error)
             }
@@ -139,7 +141,7 @@ class SettingViewModel {
                     allowsNotification: isToggleOn
                 )
             } catch {
-                
+                showNetworkErrorDialog = true
             }
         }
     }

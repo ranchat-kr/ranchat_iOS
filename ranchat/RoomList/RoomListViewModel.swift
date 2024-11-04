@@ -11,6 +11,8 @@ class RoomListViewModel {
     let className = "RoomListViewModel"
     
     var isLoading: Bool = false
+    var isInitialLized: Bool = false
+    
     var showExitRoomDialog: Bool = false
     var showNetworkErrorDialog: Bool = false
     var goToChat: Bool = false
@@ -23,10 +25,15 @@ class RoomListViewModel {
     
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
+    var networkMonitor: NetworkMonitor?
     
     func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
+    }
+    
+    func setNetworkMonitor(_ networkMonitor: NetworkMonitor) {
+        self.networkMonitor = networkMonitor
     }
     
     func navigateToChat() {
@@ -51,18 +58,21 @@ class RoomListViewModel {
                 return
             }
             roomItems.append(contentsOf: roomList.data.items)
-            
-//            if roomPage == 1 {
-//                try await Task.sleep(for: .seconds(2))
-//            }
+            self.isInitialLized = true
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get room list: \(error.localizedDescription)", .error)
+            showNetworkErrorDialog = true
         }
         
         // isLoading = false
     }
     
     func enterRoom(at: Int) {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorDialog = true
+            return
+        }
+        
         let roomId: String = String(roomItems[at].id)
         
         guard let webSocketHelper, let idHelper else {
@@ -77,10 +87,16 @@ class RoomListViewModel {
             navigateToChat()
         } catch {
             Logger.shared.log(self.className, #function, "Failed to enter room: \(error.localizedDescription)", .error)
+            showNetworkErrorDialog = true
         }
     }
     
     func exitRoom(at: Int) {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorDialog = true
+            return
+        }
+        
         let roomId: String = String(roomItems[at].id)
         
         if let webSocketHelper {
@@ -89,9 +105,11 @@ class RoomListViewModel {
                 roomItems.remove(at: at)
             } catch {
                 Logger.shared.log(self.className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
+                showNetworkErrorDialog = true
             }
         } else {
             Logger.shared.log(self.className, #function, "webSocketHelper is nil", .error)
+            showNetworkErrorDialog = true
         }
     }
 }

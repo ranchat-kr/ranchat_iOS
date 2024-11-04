@@ -87,7 +87,7 @@ struct SettingView: View {
                 
                 Button {
                     if viewModel.isValidNickname() {
-                        viewModel.showCheckNickNameAlert = true
+                        viewModel.showCheckNickNameDialog = true
                     }
                 } label: {
                     Text("변경하기")
@@ -128,19 +128,19 @@ struct SettingView: View {
             viewModel.setUser()
         }
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
-            if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
+            if oldValue == false && newValue == true && !viewModel.isInitialized {  // 네트워크가 연결 되었을 때
                 viewModel.setUser()
             }
         }
         .dialog(
-            isPresented: $viewModel.showNetworkErrorAlert,
+            isPresented: $viewModel.showNetworkErrorDialog,
             title: "인터넷 연결 오류",
             content: "인터넷 연결을 확인해주세요.",
             primaryButtonText: "확인",
             onPrimaryButton: {}
         )
         .dialog(
-            isPresented: $viewModel.showCheckNickNameAlert,
+            isPresented: $viewModel.showCheckNickNameDialog,
             title: "닉네임 변경",
             content: "닉네임을 '\(viewModel.editNickName)'\n(으)로 변경하시겠습니까?",
             primaryButtonText: "확인",

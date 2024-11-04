@@ -12,10 +12,11 @@ import SwiftUI
 class HomeViewModel {
     let className = "HomeViewModel"
     
-    var showAlert = false
+    var showNetworkErrorDialog = false
     var isLoading = false
     var isMatching = false
     var isRoomExist = false
+    var isInitialized = false
     
     var goToSetting = false
     var goToChat = false
@@ -49,6 +50,11 @@ class HomeViewModel {
     }
     
     func setUser() {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorDialog = true
+            return
+        }
+        
         isLoading = true
         
         //        @AppStorage("user_id") var user: String?
@@ -75,10 +81,11 @@ class HomeViewModel {
                 }
                 try webSocketHelper.connectToWebSocket()
                 await checkRoomExist()
+                self.isInitialized = true
             } catch {
-                showAlert = true
+                showNetworkErrorDialog = true
                 
-                Logger.shared.log(self.className, #function, "Faile to set user: \(error.localizedDescription)", .error)
+                Logger.shared.log(self.className, #function, "Failed to set user: \(error.localizedDescription)", .error)
             }
         }
         
@@ -86,6 +93,11 @@ class HomeViewModel {
     }
     
     func successMatching() {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorDialog = true
+            return
+        }
+        
         guard let webSocketHelper else {
             Logger.shared.log(self.className, #function, "webSocketHelper is nil")
             
@@ -98,15 +110,20 @@ class HomeViewModel {
             try webSocketHelper.enterRoom()
             navigateToChat()
         } catch {
-            showAlert = true
+            showNetworkErrorDialog = true
             
             Logger.shared.log(self.className, #function, "Failed to success matching: \(error.localizedDescription)", .error)
         }
     }
     
     func requestMatching() {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorDialog = true
+            return
+        }
+        
         if let networkMonitor, !networkMonitor.isConnected {
-            showAlert = true
+            showNetworkErrorDialog = true
             return
         }
         
@@ -123,7 +140,7 @@ class HomeViewModel {
             checkMatching()
         } catch {
             isMatching = false
-            showAlert = true
+            showNetworkErrorDialog = true
     
             Logger.shared.log(self.className, #function, "Failed to request matching: \(error.localizedDescription)", .error)
         }
@@ -152,7 +169,7 @@ class HomeViewModel {
                 navigateToChat()
             } catch {
                 isMatching = false
-                showAlert = true
+                showNetworkErrorDialog = true
                 
                 Logger.shared.log(self.className, #function, "Failed to check matching: \(error.localizedDescription)", .error)
             }
@@ -166,7 +183,7 @@ class HomeViewModel {
             do {
                 self.isRoomExist = try await ApiHelper.shared.checkRoomExist()
             } catch {
-                showAlert = true
+                showNetworkErrorDialog = true
                 
                 Logger.shared.log(self.className, #function, "Failed to check room exist: \(error.localizedDescription)", .error)
             }

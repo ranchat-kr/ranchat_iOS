@@ -109,7 +109,7 @@ struct HomeView: View {
         }
         
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
-            if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
+            if oldValue == false && newValue == true && !viewModel.isInitialized {  // 네트워크가 연결 되었을 때
                 viewModel.setUser()
             }
         }
@@ -120,7 +120,7 @@ struct HomeView: View {
             }
         }
         .dialog(
-            isPresented: $viewModel.showAlert,
+            isPresented: $viewModel.showNetworkErrorDialog,
             title: "인터넷 연결 오류",
             content: "인터넷 연결을 확인해주세요.",
             primaryButtonText: "확인",
