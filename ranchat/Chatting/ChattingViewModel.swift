@@ -51,21 +51,6 @@ class ChattingViewModel {
         //messageDataList.append(messageData)
     }
     
-    func tempExit() {
-        if !(networkMonitor?.isConnected ?? false) {
-            showNetworkErrorAlert = true
-            return
-        }
-        
-        do {
-            try unSubscribeMessage()
-            (dismiss ?? {})()
-        } catch {
-            Logger.shared.log(self.className, #function, "Failed to unSubscribe message: \(error.localizedDescription)")
-            showNetworkErrorAlert = true
-        }
-    }
-    
     //MARK: - Require Network
     func getRoomDetailData() async {
         isLoading = true
@@ -185,6 +170,21 @@ class ChattingViewModel {
         isLoading = false
     }
     
+    func tempExit() {
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorAlert = true
+            return
+        }
+        
+        do {
+            try unSubscribeMessage()
+            (dismiss ?? {})()
+        } catch {
+            Logger.shared.log(self.className, #function, "Failed to unSubscribe message: \(error.localizedDescription)")
+            showNetworkErrorAlert = true
+        }
+    }
+    
     func unSubscribeMessage() throws {
         if let idHelper, let roomId = idHelper.getRoomId(), let webSocketHelper {
             do {
@@ -198,6 +198,20 @@ class ChattingViewModel {
             Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil")
             showNetworkErrorAlert = true
             throw IdHelperError.nilError
+        }
+    }
+    
+    func activateParticipant() {
+        if let webSocketHelper {
+            do {
+                try webSocketHelper.activateParticipant()
+            } catch {
+                Logger.shared.log(self.className, #function, "Failed to activate participant: \(error.localizedDescription)")
+                showNetworkErrorAlert = true
+            }
+        } else {
+            Logger.shared.log(self.className, #function, "webSocketHelper is nil")
+            showNetworkErrorAlert = true
         }
     }
     

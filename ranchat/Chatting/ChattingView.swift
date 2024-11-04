@@ -14,11 +14,7 @@ struct ChattingView: View {
     @Environment(NetworkMonitor.self) var networkMonitor
     @State var isTextFieldFocused: Bool = true
     @State var isReportDialogTextFieldFocused: Bool = false
-    @State var keyboardHeight: CGFloat = 0 {
-        didSet {
-            print("keyboardHeight: \(keyboardHeight)")
-        }
-    }
+    @State var timer: Timer?
     @State var viewModel = ChattingViewModel()
     
     var body: some View {
@@ -87,7 +83,12 @@ struct ChattingView: View {
                 viewModel.webSocketHelper?.setChattingViewModel(viewModel)
                 await viewModel.getRoomDetailData()
                 await viewModel.getMessageList()
+                startTimer()
             }
+        }
+        .onDisappear {
+            activateParticipant()
+            stopTimer()
         }
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
             if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
@@ -122,6 +123,21 @@ struct ChattingView: View {
     
     func send() {
         viewModel.sendMessage()
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true, block: { _ in
+            activateParticipant()
+        })
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    func activateParticipant() {
+        viewModel.activateParticipant()
     }
 }
 

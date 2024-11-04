@@ -236,6 +236,26 @@ class WebSocketHelper {
         }
     }
     
+    func activateParticipant() throws {
+        let roomId = try getRoomId()
+        let userId = try getUserId()
+        let activateParticipantDestination = "/v1/rooms/\(roomId)/activate-participant"
+        let payloadObject: [String: Any] = ["userId": userId]
+        
+        if stompClient.isConnected() {
+            stompClient.sendJSONForDict(
+                dict: payloadObject as AnyObject,
+                toDestination: activateParticipantDestination
+            )
+            
+            Logger.shared.log(self.className, #function, "Success to activate participant roomId: \(roomId)")
+        } else {
+            logForStompNotConnected(#function)
+            
+            throw WebSocketHelperError.connectError
+        }
+    }
+    
     //MARK: - ETC
     func setChattingViewModel(_ chattingViewModel: ChattingViewModel) {
         self.chattingViewModel = chattingViewModel
