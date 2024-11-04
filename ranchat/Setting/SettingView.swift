@@ -61,6 +61,12 @@ struct SettingView: View {
                         .padding()
                         .font(.dungGeunMo20)
                         .foregroundColor(.white)
+                        .onChange(of: viewModel.editNickName) { _, nickName in
+                            if nickName.count > 10 {
+                                let index = nickName.index(nickName.startIndex, offsetBy: 10)
+                                viewModel.editNickName = String(nickName[..<index])
+                            }
+                        }
                     
                     Button {
                         viewModel.editNickName = ""
