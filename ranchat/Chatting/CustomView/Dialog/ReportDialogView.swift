@@ -41,7 +41,7 @@ struct ReportDialogView: View {
                 } label: {
                     HStack {
                         Text("신고 사유 선택")
-                            .font(.dungGeunMo20)
+                            .font(.dungGeunMo16)
                             .foregroundStyle(.black)
                         
                         Text((selectedReason == reportReasons[0] ? "" : selectedReason) ?? "")
@@ -65,7 +65,7 @@ struct ReportDialogView: View {
                         Text("신고 내용을 입력하세요.")
                             .foregroundColor(.gray) // 원하는 색상으로 변경
                             .padding(.horizontal, 20)
-                            .font(.dungGeunMo24)
+                            .font(.dungGeunMo20)
                             .frame(maxHeight: .infinity, alignment: .center)
                     }
                     
