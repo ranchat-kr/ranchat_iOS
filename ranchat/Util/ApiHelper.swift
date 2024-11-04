@@ -34,6 +34,71 @@ class ApiHelper {
         self.idHelper = idHelper
     }
     
+    //MARK: - Notifications
+    /// 앱 알림 생성
+    func createNotifications(allowsNotification: Bool, agentId: String, osType: String, deviceName: String) async throws {
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/app-notifications")
+        
+        let param: [String: Any] = [
+            "allowsNotification": allowsNotification,
+            "agentId": agentId,
+            "osType": osType,
+            "deviceName": deviceName,
+            "userId": userId
+            ]
+        
+        do {
+            let response = try await AF.request(url, method: .post, parameters: param, encoding: JSONEncoding.default, headers: headers)
+                .validate(statusCode: 200..<300)
+                .serializingDecodable(DefaultResponse.self)
+                .value
+            
+            if response.status == Status.success.rawValue {
+                Logger.shared.log(self.className, #function, "Success to create notifications: \(response)")
+            } else {
+                Logger.shared.log(self.className, #function, "Failed to create notifications with error: \(response.message)", .error)
+                
+                throw ApiHelperError.networkError(response.message)
+            }
+        } catch {
+            Logger.shared.log(self.className, #function, "Failed to create notifications with error: \(error.localizedDescription)", .error)
+            
+            throw ApiHelperError.networkError(error.localizedDescription)
+        }
+    }
+    
+    /// 앱 알림 수정
+    func updateAppNotifications(agentId: String, allowsNotification: Bool) async throws {
+        let userId = try getUserId()
+        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/app-Notifications")
+        
+        let param: [String: Any] = [
+            "userId": userId,
+            "agentId": agentId,
+            "allowsNotification": allowsNotification
+        ]
+        
+        do {
+            let response = try await AF.request(url, method: .put, parameters: param, encoding: JSONEncoding.default, headers: headers)
+                .validate(statusCode: 200..<300)
+                .serializingDecodable(DefaultResponse.self)
+                .value
+            
+            if response.status == Status.success.rawValue {
+                Logger.shared.log(self.className, #function, "Success to update app notifications: \(response)")
+            } else {
+                Logger.shared.log(self.className, #function, "Failed to update app notifications with error: \(response.message)", .error)
+                
+                throw ApiHelperError.networkError(response.message)
+            }
+        } catch {
+            Logger.shared.log(self.className, #function, "Failed to update app notifications with error: \(error.localizedDescription)", .error)
+            
+            throw ApiHelperError.networkError(error.localizedDescription)
+        }
+    }
+    
     //MARK: - Report
     /// 유저 신고하기
     func reportUser(reportedUserId: String, reportReason: String, reportType: String) async throws {
