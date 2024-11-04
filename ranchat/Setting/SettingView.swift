@@ -13,6 +13,7 @@ struct SettingView: View {
     @Environment(NetworkMonitor.self) var networkMonitor
     @FocusState private var isTextFieldFocused: Bool
     @State private var viewModel = SettingViewModel()
+    @AppStorage("permissionForNotification") var permissionForNotification = false
     
     var body: some View {
         ZStack {
@@ -29,8 +30,24 @@ struct SettingView: View {
                 
                 Spacer()
                 
+                Toggle(isOn: $viewModel.isToggleOn) {
+                    Text("알림")
+                        .font(.dungGeunMo20)
+                        .foregroundStyle(permissionForNotification ? .white : .gray)
+                }
+                .padding()
+                .toggleStyle(SwitchToggleStyle(tint: .red))
+                .disabled(!permissionForNotification)
+                .onChange(of: viewModel.isToggleOn) {
+                    viewModel.updateNotification()
+                    DefaultData.shared.isNotificationEnabled = viewModel.isToggleOn
+                }
+                
+                Divider()
+                    .padding(.vertical, 10)
+                
                 if let name = viewModel.user?.name {
-                    Text(name)
+                    Text(" \(name) ")
                         .font(.dungGeunMo24)
                         .padding(.bottom, 20)
                 }
@@ -99,6 +116,7 @@ struct SettingView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
+            viewModel.getPermissionForNotification()
             viewModel.setUser()
         }
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in

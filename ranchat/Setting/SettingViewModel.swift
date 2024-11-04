@@ -25,6 +25,7 @@ class SettingViewModel {
     var showCheckNickNameAlert: Bool = false
     var showSuccessToast: Bool = false
     var showInValidToast: Bool = false
+    var isToggleOn: Bool = DefaultData.shared.isNotificationEnabled
     
     var user: UserData?
     
@@ -114,5 +115,26 @@ class SettingViewModel {
             }
         }
         return true
+    }
+    
+    func getPermissionForNotification() {
+        if DefaultData.shared.permissionForNotification == nil {
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                DefaultData.shared.permissionForNotification = (settings.authorizationStatus == .authorized)
+            }
+        }
+    }
+    
+    func updateNotification() {
+        Task {
+            do {
+                try await ApiHelper.shared.updateAppNotifications(
+                    agentId: DefaultData.shared.agentId ?? "",
+                    allowsNotification: isToggleOn
+                )
+            } catch {
+                
+            }
+        }
     }
 }
