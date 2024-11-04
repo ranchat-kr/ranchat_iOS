@@ -71,7 +71,7 @@ class ApiHelper {
     /// 앱 알림 수정
     func updateAppNotifications(agentId: String, allowsNotification: Bool) async throws {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/app-Notifications")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/app-notifications")
         
         let param: [String: Any] = [
             "userId": userId,
