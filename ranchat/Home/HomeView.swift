@@ -105,7 +105,7 @@ struct HomeView: View {
         .onAppear {
             viewModel.setHelper(webSocketHelper, idHelper)
             viewModel.setNetworkMonitor(networkMonitor)
-            viewModel.setUser()
+            //viewModel.setUser()
         }
         
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in

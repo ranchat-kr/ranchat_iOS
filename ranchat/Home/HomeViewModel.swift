@@ -67,7 +67,10 @@ class HomeViewModel {
             
             return
         }
-        
+        if !(networkMonitor?.isConnected ?? false) {
+            showNetworkErrorDialog = true
+            return
+        }
         Task {
             do {
                 if let user {  // 기존 유저
