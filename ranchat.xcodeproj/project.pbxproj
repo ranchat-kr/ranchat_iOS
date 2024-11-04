@@ -104,6 +104,7 @@
 		499584A92C8DEBDB00A77646 /* ranchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ranchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingLoadingView.swift; sourceTree = "<group>"; };
 		49A6EC632CD88D7900E397F3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		49A6EC652CD88FF000E397F3 /* ranchat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ranchat.entitlements; sourceTree = "<group>"; };
 		49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingView.swift; sourceTree = "<group>"; };
 		49AA2E042CB68CEC0030BDF0 /* ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingViewModel.swift; sourceTree = "<group>"; };
 		49B515DD2CB5306A002F8875 /* IdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdHelper.swift; sourceTree = "<group>"; };
@@ -267,6 +268,7 @@
 		492B64032CB3B34B000CB1A3 /* ranchat */ = {
 			isa = PBXGroup;
 			children = (
+				49A6EC652CD88FF000E397F3 /* ranchat.entitlements */,
 				49A6EC632CD88D7900E397F3 /* GoogleService-Info.plist */,
 				492B64012CB3B34B000CB1A3 /* ranchatApp.swift */,
 				492B63FD2CB3B34B000CB1A3 /* ContentView.swift */,
@@ -673,6 +675,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = ranchat/ranchat.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -709,6 +712,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = ranchat/ranchat.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
