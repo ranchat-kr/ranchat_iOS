@@ -44,12 +44,14 @@ struct SettingView: View {
                 }
                 
                 Divider()
-                    .padding(.vertical, 10)
+                    .frame(height: 2)
+                    .background(.gray)
+                    .padding(10)
                 
                 if let name = viewModel.user?.name {
                     Text(" \(name) ")
                         .font(.dungGeunMo24)
-                        .padding(.bottom, 20)
+                        .padding(.vertical, 20)
                 }
                 
                 
