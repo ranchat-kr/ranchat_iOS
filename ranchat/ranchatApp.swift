@@ -7,12 +7,22 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCore
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
+}
 
 @main
 struct ranchatApp: App {
     private var webSocketHelper = WebSocketHelper()
     private var idHelper = IdHelper()
     private var networkMotinor = NetworkMonitor()
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
 //    var sharedModelContainer: ModelContainer = {
 //        let schema = Schema([

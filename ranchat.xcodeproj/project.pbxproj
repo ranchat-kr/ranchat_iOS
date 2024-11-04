@@ -36,6 +36,9 @@
 		494DC94B2CCFDB49002147AC /* RoomItemViewButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494DC94A2CCFDB49002147AC /* RoomItemViewButtonStyle.swift */; };
 		494DC94D2CD3CBE2002147AC /* DialogViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494DC94C2CD3CBE2002147AC /* DialogViewModifier.swift */; };
 		49A3B7202CB65A2F002C6FA6 /* MatchingLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */; };
+		49A6EC602CD8886400E397F3 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 49A6EC5F2CD8886400E397F3 /* FirebaseAnalytics */; };
+		49A6EC622CD8886400E397F3 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 49A6EC612CD8886400E397F3 /* FirebaseMessaging */; };
+		49A6EC642CD88D7900E397F3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49A6EC632CD88D7900E397F3 /* GoogleService-Info.plist */; };
 		49AA2E022CB68BFF0030BDF0 /* ChattingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */; };
 		49AA2E052CB68CEC0030BDF0 /* ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA2E042CB68CEC0030BDF0 /* ChattingViewModel.swift */; };
 		49B515DE2CB5306A002F8875 /* IdHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B515DD2CB5306A002F8875 /* IdHelper.swift */; };
@@ -100,6 +103,7 @@
 		494DC94C2CD3CBE2002147AC /* DialogViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModifier.swift; sourceTree = "<group>"; };
 		499584A92C8DEBDB00A77646 /* ranchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ranchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49A3B71F2CB65A2F002C6FA6 /* MatchingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingLoadingView.swift; sourceTree = "<group>"; };
+		49A6EC632CD88D7900E397F3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		49AA2E012CB68BFF0030BDF0 /* ChattingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingView.swift; sourceTree = "<group>"; };
 		49AA2E042CB68CEC0030BDF0 /* ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingViewModel.swift; sourceTree = "<group>"; };
 		49B515DD2CB5306A002F8875 /* IdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdHelper.swift; sourceTree = "<group>"; };
@@ -125,8 +129,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49A6EC622CD8886400E397F3 /* FirebaseMessaging in Frameworks */,
 				492BBB602CB5086600C027C6 /* UUIDV7 in Frameworks */,
 				8BB9142D288CAEA528D533D8 /* Pods_ranchat.framework in Frameworks */,
+				49A6EC602CD8886400E397F3 /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +267,7 @@
 		492B64032CB3B34B000CB1A3 /* ranchat */ = {
 			isa = PBXGroup;
 			children = (
+				49A6EC632CD88D7900E397F3 /* GoogleService-Info.plist */,
 				492B64012CB3B34B000CB1A3 /* ranchatApp.swift */,
 				492B63FD2CB3B34B000CB1A3 /* ContentView.swift */,
 				492B63DF2CB3B34B000CB1A3 /* Common */,
@@ -421,6 +428,7 @@
 			mainGroup = 499584A02C8DEBDB00A77646;
 			packageReferences = (
 				492BBB5E2CB5086600C027C6 /* XCRemoteSwiftPackageReference "UUIDV7" */,
+				49A6EC5E2CD8886400E397F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 499584AA2C8DEBDB00A77646 /* Products */;
 			projectDirPath = "";
@@ -437,6 +445,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				492B64042CB3B34B000CB1A3 /* Preview Assets.xcassets in Resources */,
+				49A6EC642CD88D7900E397F3 /* GoogleService-Info.plist in Resources */,
 				492B64052CB3B34B000CB1A3 /* Assets.xcassets in Resources */,
 				492B64062CB3B34B000CB1A3 /* DungGeunMo.ttf in Resources */,
 			);
@@ -663,6 +672,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -671,6 +681,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ranchat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Ran-Talk";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -697,6 +708,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -705,6 +717,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ranchat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Ran-Talk";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -757,6 +770,14 @@
 				kind = branch;
 			};
 		};
+		49A6EC5E2CD8886400E397F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.4.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -764,6 +785,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 492BBB5E2CB5086600C027C6 /* XCRemoteSwiftPackageReference "UUIDV7" */;
 			productName = UUIDV7;
+		};
+		49A6EC5F2CD8886400E397F3 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49A6EC5E2CD8886400E397F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		49A6EC612CD8886400E397F3 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49A6EC5E2CD8886400E397F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
