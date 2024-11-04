@@ -38,7 +38,7 @@ class ApiHelper {
     /// 앱 알림 생성
     func createNotifications(allowsNotification: Bool, agentId: String, osType: String, deviceName: String) async throws {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/app-notifications")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/app-notifications")
         
         let param: [String: Any] = [
             "allowsNotification": allowsNotification,
@@ -71,7 +71,7 @@ class ApiHelper {
     /// 앱 알림 수정
     func updateAppNotifications(agentId: String, allowsNotification: Bool) async throws {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/app-Notifications")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/app-Notifications")
         
         let param: [String: Any] = [
             "userId": userId,
@@ -104,7 +104,7 @@ class ApiHelper {
     func reportUser(reportedUserId: String, reportReason: String, reportType: String) async throws {
         let userId = try getUserId()
         let roomId = try getRoomId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/reports")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/reports")
         
         let param: [String: Any] = [
             "roomId": roomId,
@@ -139,7 +139,7 @@ class ApiHelper {
     /// CONTINUE! 화면에서 나오는 방 리스트 호출
     func getRooms(page: Int = 0, size: Int = 10) async throws -> RoomDataList {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms?page=\(page)&size=\(size)&userId=\(userId)")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms?page=\(page)&size=\(size)&userId=\(userId)")
                 
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -166,7 +166,7 @@ class ApiHelper {
     /// HOME화면에서 CONTINUE! 버튼의 Visible유무를 판단하기 위한 방 존재 여부 호출
     func checkRoomExist() async throws -> Bool {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms/exists-by-userId?userId=\(userId)")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms/exists-by-userId?userId=\(userId)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -203,7 +203,7 @@ class ApiHelper {
     func getRoomDetail() async throws -> RoomDetailData {
         let userId = try getUserId()
         let roomId = try getRoomId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms/\(roomId)?userId=\(userId)")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms/\(roomId)?userId=\(userId)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -230,7 +230,7 @@ class ApiHelper {
     /// 매칭 시간이 끝났는데도 매칭이 안 됐을 경우 GPT와 같이 들어갈 방 생성
     func createRoom() async throws -> String {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms")
         
         let param: [String: Any] = [
             "userIds": [userId],
@@ -276,7 +276,7 @@ class ApiHelper {
     /// 앱을 처음 실행 시 유저 생성
     func createUser(name: String) async throws {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/users")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/users")
         
         let param: [String: Any] = [
             "id": userId,
@@ -306,7 +306,7 @@ class ApiHelper {
     /// 회원 정보를 조회하기 위한 회원 상세조회
     func getUser() async throws -> UserData {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/users/\(userId)")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/users/\(userId)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -345,7 +345,7 @@ class ApiHelper {
     /// 회원 닉네임 수정을 위한 회원 수정
     func updateUserName(name: String) async throws {
         let userId = try getUserId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/users/\(userId)")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/users/\(userId)")
         
         let param: [String: Any] = [
             "name": name,
@@ -375,7 +375,7 @@ class ApiHelper {
     /// 기존에 채팅한 목록 조회
     func getMessages(page: Int = 0, size: Int = 20) async throws -> MessagesListResponseData {
         let roomId = try getRoomId()
-        let url = try getUrl(for: "https://\(DefaultData.domain)/v1/rooms/\(roomId)/messages?page=\(page)&size=\(size)")
+        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms/\(roomId)/messages?page=\(page)&size=\(size)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
