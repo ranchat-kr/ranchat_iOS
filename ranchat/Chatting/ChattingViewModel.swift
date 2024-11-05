@@ -5,7 +5,7 @@
 //  Created by 김견 on 10/9/24.
 //
 
-import Foundation
+import SwiftUI
 
 @Observable
 class ChattingViewModel {
@@ -238,5 +238,9 @@ class ChattingViewModel {
         default:
             return ""
         }
+    }
+    
+    func getPermissionForNotification() {
+        DefaultData.shared.getPermissionForNotification()
     }
 }

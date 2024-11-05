@@ -83,22 +83,6 @@ extension AppDelegate: MessagingDelegate {
         Logger.shared.log("AppDelegate", #function, "dataDict: \(dataDict)")
         
         DefaultData.shared.agentId = fcmToken
-        
-        if DefaultData.shared.isFirstLaunch {
-            Task {
-                do {
-                    try await ApiHelper.shared.createNotifications(
-                        allowsNotification: DefaultData.shared.permissionForNotification ?? false,
-                        agentId: DefaultData.shared.agentId ?? "",
-                        osType: "IOS",
-                        deviceName: UIDevice.current.name
-                    )
-                    DefaultData.shared.isFirstLaunch = false
-                } catch {
-                    
-                }
-            }
-        }
     }
 }
 

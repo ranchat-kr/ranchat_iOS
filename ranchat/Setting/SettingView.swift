@@ -86,12 +86,13 @@ struct SettingView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.getPermissionForNotification()
             viewModel.setUser()
+            viewModel.getPermissionForNotification()
         }
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
             if oldValue == false && newValue == true && !viewModel.isInitialized {  // 네트워크가 연결 되었을 때
                 viewModel.setUser()
+                viewModel.getPermissionForNotification()
             }
         }
         .dialog(
