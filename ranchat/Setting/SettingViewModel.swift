@@ -132,10 +132,6 @@ class SettingViewModel {
         return true
     }
     
-    func getPermissionForNotification() {
-        DefaultData.shared.getPermissionForNotification()
-    }
-    
     func updateNotification() {
         Task {
             do {

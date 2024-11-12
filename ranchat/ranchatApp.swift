@@ -46,9 +46,25 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             
             let authOption: UNAuthorizationOptions = [.alert, .badge, .sound]
             UNUserNotificationCenter.current().requestAuthorization(
-                options: authOption,
-                completionHandler: {_, _ in}
-            )
+                options: authOption
+            ) { granted, error in
+                Logger.shared.log("AppDelegate", #function, "requestAuthorization: ")
+                if let error {
+                    Logger.shared.log("AppDelegate", #function, "Failed to request authorization: \(error.localizedDescription)")
+                } else if !DefaultData.shared.saveToNotificationServerSuccess {
+                    DefaultData.shared.permissionForNotification = granted
+                    if let token = DefaultData.shared.agentId {
+                        Task {
+                            try await ApiHelper.shared.createNotifications(
+                                allowsNotification: granted,
+                                agentId: token,
+                                deviceName: UIDevice.current.name
+                            )
+                        }
+                    }
+                }
+                
+            }
         } else {
             let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
             application.registerUserNotificationSettings(settings)
@@ -82,7 +98,34 @@ extension AppDelegate: MessagingDelegate {
         
         Logger.shared.log("AppDelegate", #function, "dataDict: \(dataDict)")
         
+        if DefaultData.shared.saveToNotificationServerSuccess && DefaultData.shared.agentId == fcmToken {
+            
+            return
+        }
+        
+        if let permissionForNotification = DefaultData.shared.permissionForNotification, DefaultData.shared.agentId != fcmToken {
+            Logger.shared.log("AppDelegate", #function, "permission, token, createNotifications")
+            Task {
+                try await ApiHelper.shared.createNotifications(
+                    allowsNotification: permissionForNotification,
+                    agentId: fcmToken ?? "",
+                    deviceName: UIDevice.current.name
+                )
+            }
+        }
         DefaultData.shared.agentId = fcmToken
+        
+//        Task {
+//            let settings = await UNUserNotificationCenter.current().notificationSettings()
+//            let authorizationStatus = settings.authorizationStatus == .authorized
+//            
+//            try await ApiHelper.shared.createNotifications(
+//                allowsNotification: authorizationStatus,
+//                agentId: fcmToken ?? "",
+//                osType: "IOS",
+//                deviceName: UIDevice.current.name
+//            )
+//        }
     }
 }
 

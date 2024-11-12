@@ -81,7 +81,6 @@ struct ChattingView: View {
                 }
                 viewModel.setNetworkMonitor(networkMonitor)
                 viewModel.webSocketHelper?.setChattingViewModel(viewModel)
-                viewModel.getPermissionForNotification()
                 await viewModel.getRoomDetailData()
                 await viewModel.getMessageList()
                 startTimer()
@@ -101,7 +100,6 @@ struct ChattingView: View {
                         await viewModel.getMessageList()
                     }
                 }
-                viewModel.getPermissionForNotification()
             }
         }
         .onChange(of: viewModel.showReportDialog, { oldValue, newValue in

@@ -239,8 +239,4 @@ class ChattingViewModel {
             return ""
         }
     }
-    
-    func getPermissionForNotification() {
-        DefaultData.shared.getPermissionForNotification()
-    }
 }

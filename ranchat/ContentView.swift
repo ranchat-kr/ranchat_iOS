@@ -25,11 +25,21 @@ struct ContentView: View {
         HomeView()
             .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
                 if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
-//                    do {
-//                        try webSocketHelper.connectToWebSocket()
-//                    } catch {
-//                        Logger.shared.log("ContentView", #function, "Failed to connect to WebSocket", .error)
-//                    }
+                    do {
+                        try webSocketHelper.connectToWebSocket()
+                    } catch {
+                        Logger.shared.log("ContentView", #function, "Failed to connect to WebSocket", .error)
+                    }
+                    
+                    if !DefaultData.shared.saveToNotificationServerSuccess {
+                        Task {
+                            try await ApiHelper.shared.createNotifications(
+                                allowsNotification: DefaultData.shared.permissionForNotification ?? false,
+                                agentId: DefaultData.shared.agentId ?? "",
+                                deviceName: UIDevice.current.name
+                            )
+                        }
+                    }
                 }
             }
     }

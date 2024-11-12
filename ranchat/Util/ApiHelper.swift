@@ -36,7 +36,7 @@ class ApiHelper {
     
     //MARK: - Notifications
     /// 앱 알림 생성
-    func createNotifications(allowsNotification: Bool, agentId: String, osType: String, deviceName: String) async throws {
+    func createNotifications(allowsNotification: Bool, agentId: String, osType: String = "IOS", deviceName: String) async throws {
         let userId = try getUserId()
         let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/app-notifications")
         
@@ -56,6 +56,7 @@ class ApiHelper {
             
             if response.status == Status.success.rawValue {
                 Logger.shared.log(self.className, #function, "Success to create notifications: \(response)")
+                DefaultData.shared.saveToNotificationServerSuccess = true
             } else {
                 Logger.shared.log(self.className, #function, "Failed to create notifications with error: \(response.message)", .error)
                 
