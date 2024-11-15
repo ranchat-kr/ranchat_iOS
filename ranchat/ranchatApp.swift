@@ -48,11 +48,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             UNUserNotificationCenter.current().requestAuthorization(
                 options: authOption
             ) { granted, error in
-                Logger.shared.log("AppDelegate", #function, "requestAuthorization: ")
+                Logger.shared.log("AppDelegate", #function, "granted: \(granted) requestAuthorization: ")
+                DefaultData.shared.permissionForNotification = granted
                 if let error {
                     Logger.shared.log("AppDelegate", #function, "Failed to request authorization: \(error.localizedDescription)")
                 } else if !DefaultData.shared.saveToNotificationServerSuccess {
-                    DefaultData.shared.permissionForNotification = granted
+                    
                     if let token = DefaultData.shared.agentId {
                         Task {
                             try await ApiHelper.shared.createNotifications(
