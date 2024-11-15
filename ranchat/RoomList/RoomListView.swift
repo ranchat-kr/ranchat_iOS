@@ -21,23 +21,27 @@ struct RoomListView: View {
                 
                 RoomItemView(roomData: roomData, action: {
                     viewModel.enterRoom(at: index)
+                }, swipeAction: {
+                    viewModel.selectedRoom = roomData
+                    viewModel.selectedRoomIndex = index
+                    viewModel.showExitRoomDialog = true
                 })
                 .listRowInsets(EdgeInsets())
                 .listRowSeparator(.hidden)
-                .swipeActions(edge: .trailing) {
-                    Button(role: .cancel) {
-                        
-                        viewModel.selectedRoom = roomData
-                        viewModel.selectedRoomIndex = index
-                        viewModel.showExitRoomDialog = true
-                    } label: {
-                        Text("나가기")
-                            .font(.dungGeunMo16)
-                            .foregroundStyle(.white)
-                            .padding()
-                    }
-                    .tint(.red)
-                }
+                //                .swipeActions(edge: .trailing) {
+                //                    Button(role: .cancel) {
+                //
+                //                        viewModel.selectedRoom = roomData
+                //                        viewModel.selectedRoomIndex = index
+                //                        viewModel.showExitRoomDialog = true
+                //                    } label: {
+                //                        Text("나가기")
+                //                            .font(.dungGeunMo16)
+                //                            .foregroundStyle(.white)
+                //                            .padding()
+                //                    }
+                //                    .tint(.red)
+                //                }
                 .onAppear {
                     if viewModel.roomItems.last?.id == roomData.id {
                         Task {
@@ -105,13 +109,13 @@ struct RoomListView: View {
                 viewModel.showExitRoomDialog = false
             }
         
-        .dialog(
-            isPresented: $viewModel.showNetworkErrorDialog,
-            title: "인터넷 연결 오류",
-            content: "인터넷 연결을 확인해주세요.",
-            primaryButtonText: "확인",
-            onPrimaryButton: {}
-        )
+            .dialog(
+                isPresented: $viewModel.showNetworkErrorDialog,
+                title: "인터넷 연결 오류",
+                content: "인터넷 연결을 확인해주세요.",
+                primaryButtonText: "확인",
+                onPrimaryButton: {}
+            )
     }
 }
 

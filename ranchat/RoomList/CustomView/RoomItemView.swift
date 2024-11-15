@@ -23,6 +23,7 @@ struct DateData {
 struct RoomItemView: View {
     var roomData: RoomData
     var action: () -> Void
+    var swipeAction: () -> Void
     
     @State var timeFormatState: TimeFormatState = .none
     @State var isClicked: Bool = false
@@ -60,8 +61,21 @@ struct RoomItemView: View {
                 dateText = parseToRoomDateFormat()
                 dateFont = fontByTimeFormat()
             }
+            .contentShape(Rectangle()) // 버튼 크기 명확히 지정
         }
+        
         .buttonStyle(RoomItemViewButtonStyle())
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button(role: .destructive) {
+                swipeAction()
+            } label: {
+                Text("나가기")
+                    .font(.dungGeunMo16)
+                    .foregroundStyle(.white)
+                    .padding()
+            }
+            .tint(.red)
+        }
     }
     
     func fontByTimeFormat() -> Font {
@@ -109,5 +123,5 @@ struct RoomItemView: View {
 }
 
 #Preview {
-    RoomItemView(roomData: RoomData(id: 1, title: "즐거운바다dasdasdqdqwdwqdqwdqwdqwdqwdqwdqwdqwqwdqwdwqdqwdwq", type: "type", latestMessage: "즐거운바다님이 입장하셨습니다.qwdqwdwqhdhwqdhqwuidhwqiudhisadasljdkladjkasjdl", latestMessageAt: "2024-02-15T21:01:28"), action: {}, dateText: "", dateFont: .dungGeunMo12)
+    RoomItemView(roomData: RoomData(id: 1, title: "즐거운바다dasdasdqdqwdwqdqwdqwdqwdqwdqwdqwdqwqwdqwdwqdqwdwq", type: "type", latestMessage: "즐거운바다님이 입장하셨습니다.qwdqwdwqhdhwqdhqwuidhwqiudhisadasljdkladjkasjdl", latestMessageAt: "2024-02-15T21:01:28"), action: {}, swipeAction: {}, dateText: "", dateFont: .dungGeunMo12)
 }
