@@ -35,8 +35,8 @@ struct RoomListView: View {
                             .font(.dungGeunMo16)
                             .foregroundStyle(.white)
                             .padding()
-                            .background(Color.red)
                     }
+                    .tint(.red)
                 }
                 .onAppear {
                     if viewModel.roomItems.last?.id == roomData.id {
