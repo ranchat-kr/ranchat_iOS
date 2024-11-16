@@ -53,10 +53,9 @@ class HomeViewModel {
         
         isLoading = true
         
-        //        @AppStorage("user_id") var user: String?
-        //        user = nil  // 임시. 초기화.
-//        var user: String? = "01929e74-dbf3-7ef4-8d85-dadc68410de7"
-        var user: String?
+                @AppStorage("user_id") var user: String?
+        
+
         
         
         guard let webSocketHelper, let idHelper else {
