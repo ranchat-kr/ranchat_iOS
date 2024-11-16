@@ -59,6 +59,7 @@
 		49F2DA812CC278AF0060E4AB /* ExitRoomDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA802CC278AF0060E4AB /* ExitRoomDialogView.swift */; };
 		49F2DA9E2CC7822F0060E4AB /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F2DA9D2CC782210060E4AB /* Logger.swift */; };
 		49FBE7B72CE72B180074ECEC /* UINavigationController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FBE7B62CE72B110074ECEC /* UINavigationController+.swift */; };
+		49FBE7BB2CE89BB30074ECEC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49FBE7BA2CE89BB30074ECEC /* LaunchScreen.storyboard */; };
 		8BB9142D288CAEA528D533D8 /* Pods_ranchat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E83D129B83EB149794EC952 /* Pods_ranchat.framework */; };
 /* End PBXBuildFile section */
 
@@ -129,6 +130,7 @@
 		49F2DA802CC278AF0060E4AB /* ExitRoomDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitRoomDialogView.swift; sourceTree = "<group>"; };
 		49F2DA9D2CC782210060E4AB /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		49FBE7B62CE72B110074ECEC /* UINavigationController+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+.swift"; sourceTree = "<group>"; };
+		49FBE7BA2CE89BB30074ECEC /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6EBB5E4C9F83FF48F921F323 /* Pods-ranchat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.debug.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.debug.xcconfig"; sourceTree = "<group>"; };
 		B031065110250D7527CFA8C9 /* Pods-ranchat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.release.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -294,6 +296,7 @@
 				492B63FE2CB3B34B000CB1A3 /* DungGeunMo.ttf */,
 				492B63FF2CB3B34B000CB1A3 /* Info.plist */,
 				492B63F92CB3B34B000CB1A3 /* Preview Content */,
+				49FBE7BA2CE89BB30074ECEC /* LaunchScreen.storyboard */,
 			);
 			path = ranchat;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				492B64042CB3B34B000CB1A3 /* Preview Assets.xcassets in Resources */,
 				49A6EC642CD88D7900E397F3 /* GoogleService-Info.plist in Resources */,
 				492B64052CB3B34B000CB1A3 /* Assets.xcassets in Resources */,
+				49FBE7BB2CE89BB30074ECEC /* LaunchScreen.storyboard in Resources */,
 				492B64062CB3B34B000CB1A3 /* DungGeunMo.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -702,7 +706,7 @@
 				CODE_SIGN_ENTITLEMENTS = ranchat/ranchat.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"ranchat/Preview Content\"";
 				DEVELOPMENT_TEAM = 697ACQDW6C;
 				ENABLE_PREVIEWS = YES;
@@ -712,6 +716,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
@@ -739,7 +744,7 @@
 				CODE_SIGN_ENTITLEMENTS = ranchat/ranchat.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"ranchat/Preview Content\"";
 				DEVELOPMENT_TEAM = 697ACQDW6C;
 				ENABLE_PREVIEWS = YES;
@@ -749,6 +754,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
