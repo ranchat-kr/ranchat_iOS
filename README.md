@@ -23,7 +23,9 @@
 
 ## ⚙️ 기술 스택
 
-- **iOS:** Swift, SwiftUI
+- **언어:** Swift
+- **아키텍처:** MVVM
+- **UI:** SwiftUI
 - **데이터 관리**: UserDefaults
 - **네트워크 통신**: Alamofire  
 - **실시간 통신:** WebSocket (StompClient)
