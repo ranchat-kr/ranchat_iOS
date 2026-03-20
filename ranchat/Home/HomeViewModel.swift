@@ -22,8 +22,6 @@ class HomeViewModel {
     var goToChat = false
     var goToRoomList = false
     
-    var navigationPath = NavigationPath()
-    
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
     var networkMonitor: NetworkMonitor?
@@ -50,20 +48,15 @@ class HomeViewModel {
     }
     
     func setUser() {
-        
-        isLoading = true
-        
-                @AppStorage("user_id") var user: String?
-        
+        @AppStorage("user_id") var user: String?
 
-        
-        
         guard let webSocketHelper, let idHelper else {
             Logger.shared.log(self.className, #function, "webSocketHelper or idHelper is nil", .error)
-            
             return
         }
-        
+
+        isLoading = true
+
         Task {
             do {
                 if let user {  // 기존 유저
@@ -73,19 +66,16 @@ class HomeViewModel {
                     user = uuid
                     idHelper.setUserId(uuid)
                     try await ApiHelper.shared.createUser(name: getRandomNickname())
-                    
                 }
                 try webSocketHelper.connectToWebSocket()
                 await checkRoomExist()
                 self.isInitialized = true
             } catch {
                 showNetworkErrorDialog = true
-                
                 Logger.shared.log(self.className, #function, "Failed to set user: \(error.localizedDescription)", .error)
             }
+            isLoading = false
         }
-        
-        isLoading = false
     }
     
     func successMatching() {
@@ -118,12 +108,7 @@ class HomeViewModel {
             showNetworkErrorDialog = true
             return
         }
-        
-        if let networkMonitor, !networkMonitor.isConnected {
-            showNetworkErrorDialog = true
-            return
-        }
-        
+
         isMatching = true
         
         guard let webSocketHelper else {
@@ -181,17 +166,14 @@ class HomeViewModel {
     
     func checkRoomExist() async {
         isLoading = true
-        
-        Task {
-            do {
-                self.isRoomExist = try await ApiHelper.shared.checkRoomExist()
-            } catch {
-                showNetworkErrorDialog = true
-                
-                Logger.shared.log(self.className, #function, "Failed to check room exist: \(error.localizedDescription)", .error)
-            }
+
+        do {
+            self.isRoomExist = try await ApiHelper.shared.checkRoomExist()
+        } catch {
+            showNetworkErrorDialog = true
+            Logger.shared.log(self.className, #function, "Failed to check room exist: \(error.localizedDescription)", .error)
         }
-        
+
         isLoading = false
     }
     

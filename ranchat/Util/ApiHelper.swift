@@ -7,7 +7,6 @@
 
 import Foundation
 import Alamofire
-import SwiftUI
 
 enum ApiHelperError: Error {
     case invalidURLError
@@ -27,9 +26,7 @@ class ApiHelper {
     var idHelper: IdHelper?
     
     let headers: HTTPHeaders = ["Content-Type": "application/json", "Accept": "application/json"]
-//    let roomId: String = "1"
-//    let userId: String = "0190964c-ee3a-7e81-a1f8-231b5d97c2a1"
-    
+
     func setIdHelper(idHelper: IdHelper) {
         self.idHelper = idHelper
     }
@@ -168,6 +165,7 @@ class ApiHelper {
     func checkRoomExist() async throws -> Bool {
         let userId = try getUserId()
         let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms/exists-by-userId?userId=\(userId)")
+        Logger.shared.log(String(describing: self), #function, "url: \(url)")
         
         do {
             let response = try await AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
@@ -262,7 +260,7 @@ class ApiHelper {
                     throw ApiHelperError.responseDataError
                 }
             } else {
-                Logger.shared.log(self.className, #function, "Faile to create room with error: \(response.message)", .error)
+                Logger.shared.log(self.className, #function, "Failed to create room with error: \(response.message)", .error)
                 
                 throw ApiHelperError.networkError(response.message)
             }
@@ -361,12 +359,12 @@ class ApiHelper {
             if response.status == Status.success.rawValue {
                 Logger.shared.log(self.className, #function, "Success to update user name: \(response)")
             } else {
-                Logger.shared.log(self.className, #function, "Faile to update user name: \(response.message)", .error)
+                Logger.shared.log(self.className, #function, "Failed to update user name: \(response.message)", .error)
                 
                 throw ApiHelperError.networkError(response.message)
             }
         } catch {
-            Logger.shared.log(self.className, #function, "Fair to update user name with error: \(error.localizedDescription)", .error)
+            Logger.shared.log(self.className, #function, "Failed to update user name with error: \(error.localizedDescription)", .error)
             
             throw ApiHelperError.networkError(error.localizedDescription)
         }

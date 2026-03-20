@@ -28,9 +28,7 @@ class WebSocketHelper {
     var stompClient = StompClientLib()
     
     var isMatchSuccess: Bool = false
-    
-    var onSuccessMatching: (() -> Void)?
-    
+
     //MARK: - Init Setting
     func connectToWebSocket() throws {
         let userId = try getUserId()
@@ -77,7 +75,7 @@ class WebSocketHelper {
         }
     }
     
-    func subscribeToRecieveMessage() throws {
+    func subscribeToReceiveMessage() throws {
         let roomId = try getRoomId()
         
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
@@ -104,7 +102,7 @@ class WebSocketHelper {
         stompClient.unsubscribe(destination: matchingSuccessDestination)
     }
     
-    func unsubscribeFromRecieveMessage(roomId: String) throws {
+    func unsubscribeFromReceiveMessage(roomId: String) throws {
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
         
         stompClient.unsubscribe(destination: receiveMessageDestination)
@@ -196,9 +194,9 @@ class WebSocketHelper {
             Logger.shared.log(self.className, #function, "Success entering room")
             
             do {
-                try subscribeToRecieveMessage()
+                try subscribeToReceiveMessage()
             } catch {
-                Logger.shared.log(self.className, #function, "Failed to subscribe to recieve message error: \(error.localizedDescription)", .error)
+                Logger.shared.log(self.className, #function, "Failed to subscribe to receive message error: \(error.localizedDescription)", .error)
                 
                 throw WebSocketHelperError.connectError
             }
@@ -216,9 +214,9 @@ class WebSocketHelper {
         
         if stompClient.isConnected() {
             do {
-                try unsubscribeFromRecieveMessage(roomId: roomId)
+                try unsubscribeFromReceiveMessage(roomId: roomId)
             } catch {
-                Logger.shared.log(self.className, #function, "Failed to unsubscribe from recieveMessage: \(error.localizedDescription)", .error)
+                Logger.shared.log(self.className, #function, "Failed to unsubscribe from receiveMessage: \(error.localizedDescription)", .error)
                 
                 throw WebSocketHelperError.connectError
             }
@@ -265,7 +263,7 @@ class WebSocketHelper {
         guard let userId = idHelper?.getUserId() else {
             Logger.shared.log(self.className, #function, "Failed to get user id", .error)
             
-            throw ApiHelperError.nilError
+            throw WebSocketHelperError.nilError
         }
         
         return userId
@@ -275,7 +273,7 @@ class WebSocketHelper {
         guard let roomId = idHelper?.getRoomId() else {
             Logger.shared.log(self.className, #function, "Failed to get room id", .error)
             
-            throw ApiHelperError.nilError
+            throw WebSocketHelperError.nilError
         }
         
         return roomId
@@ -331,7 +329,6 @@ extension WebSocketHelper: StompClientLibDelegate {
     func stompClientDidDisconnect(client: StompClientLib!) {
         Logger.shared.log(self.className, #function, "Stomp client did disconnected")
         do {
-            //try unsubscribeFromMatchingSuccess()
             try connectToWebSocket()
         } catch {
             Logger.shared.log(self.className, #function, "Failed to reconnect to WebSocket server: \(error.localizedDescription)", .error)

@@ -13,15 +13,15 @@ struct MatchingLoadingView: View {
     
     var body: some View {
         Color.black.opacity(0.4)
-            .edgesIgnoringSafeArea(.all)
-        
-        
+            .ignoresSafeArea()
+
+
         VStack(spacing: 20) {
             Text("매칭 중")
                 .font(.dungGeunMo32)
                 .foregroundStyle(.black)
                 .padding(.top, 20)
-            
+
             HStack(spacing: 8) {
                 ForEach(0..<4) { index in
                     buildStep(active: currentStep % 5 == index)
@@ -29,11 +29,11 @@ struct MatchingLoadingView: View {
             }
             .padding(.bottom, 20)
         }
-        .frame(maxWidth: UIScreen.main.bounds.width - 60)
+        .frame(maxWidth: .infinity)
         .frame(height: 120)
         .background(.white)
-        .cornerRadius(10)
-        .padding()
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(.horizontal, 30)
         .onReceive(timer) { _ in
             currentStep = (currentStep + 1) % 5
         }

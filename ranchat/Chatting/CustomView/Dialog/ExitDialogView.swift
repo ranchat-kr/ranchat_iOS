@@ -15,10 +15,11 @@ struct ExitDialogView: View {
     
     var body: some View {
         Color.black.opacity(0.4)
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea()
             .onTapGesture {
                 isPresented = false
             }
+
         
         VStack (alignment: .leading) {
             Text("나가기")

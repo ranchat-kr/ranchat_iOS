@@ -43,7 +43,7 @@ struct DosStyleTextField: View {
     var body: some View {
         ZStack (alignment: .leading) {
             
-            TextField("dd", text: $text)
+            TextField(hint, text: $text)
                 .focused($isTextFieldFocused)
                 .focusEffectDisabled()
                 .background(GeometryReader {proxy in

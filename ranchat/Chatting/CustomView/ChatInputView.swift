@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ChatInputView: View {
     @Binding var inputText: String
-    @Binding var chattingList: [MessageData]
     @Binding var isFocused: Bool
     @FocusState private var isTextFieldFocused: Bool
     var onSend: () -> Void
@@ -60,5 +59,5 @@ struct ChatInputView: View {
 }
 
 #Preview {
-    ChatInputView(inputText: .constant(""), chattingList: .constant([]), isFocused: .constant(true), onSend: {})
+    ChatInputView(inputText: .constant(""), isFocused: .constant(true), onSend: {})
 }

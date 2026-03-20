@@ -13,8 +13,6 @@ struct SettingView: View {
     @Environment(NetworkMonitor.self) var networkMonitor
     @State private var isTextFieldFocused: Bool = false
     @State private var viewModel = SettingViewModel()
-    @AppStorage("permissionForNotification") var permissionForNotification = false
-    
     var body: some View {
         ZStack {
             GeometryReader { geometry in
@@ -43,7 +41,7 @@ struct SettingView: View {
                     .padding(.vertical, 20)
             
                 SettingBodyView(title: "닉네임 변경") {
-                    SettingNickNameTextFieldView(editNickName: $viewModel.editNickName, isFouced: $isTextFieldFocused)
+                    SettingNickNameTextFieldView(editNickName: $viewModel.editNickName, isFocused: $isTextFieldFocused)
                     
                     Button {
                         if viewModel.isValidNickname() {
@@ -114,17 +112,17 @@ struct SettingView: View {
         })
         .toast(isPresenting: $viewModel.showInValidToast, alert: {
             switch viewModel.nicknameError {
-            case .Empty:
+            case .empty:
                 return AlertToast(type: .error(.red), title: "닉네임을 입력해주세요.", style: .style(titleFont: .dungGeunMo16))
-            case .Length:
+            case .length:
                 return AlertToast(type: .error(.red), title: "닉네임은 2자 이상 10자 이하로 입력해주세요.", style: .style(titleFont: .dungGeunMo16))
-            case .ContainsBlank:
+            case .containsBlank:
                 return AlertToast(type: .error(.red), title: "닉네임에 공백이 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
-            case .Duplicate:
+            case .duplicate:
                 return AlertToast(type: .error(.red), title: "이미 사용중인 닉네임입니다.", style: .style(titleFont: .dungGeunMo16))
-            case .SpecialCharacter:
+            case .specialCharacter:
                 return AlertToast(type: .error(.red), title: "닉네임에 특수문자가 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
-            case .ContainsForbiddenCharacter:
+            case .containsForbiddenCharacter:
                 return AlertToast(type: .error(.red), title: "닉네임에 금지된 단어가 포함되어 있습니다.", style: .style(titleFont: .dungGeunMo16))
             default:
                 return AlertToast(type: .error(.red), title: "")

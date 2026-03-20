@@ -15,7 +15,7 @@ struct ExitRoomDialogView: View {
     
     var body: some View {
         Color.black.opacity(0.4)
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea()
             .onTapGesture {
                 isPresented = false
             }

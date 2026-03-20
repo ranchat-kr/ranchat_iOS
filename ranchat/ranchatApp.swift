@@ -14,7 +14,7 @@ import FirebaseMessaging
 struct ranchatApp: App {
     private var webSocketHelper = WebSocketHelper()
     private var idHelper = IdHelper()
-    private var networkMotinor = NetworkMonitor()
+    private var networkMonitor = NetworkMonitor()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
@@ -28,9 +28,8 @@ struct ranchatApp: App {
                 .preferredColorScheme(.dark)
                 .environment(webSocketHelper)
                 .environment(idHelper)
-                .environment(networkMotinor)
+                .environment(networkMonitor)
         }
-        //        .modelContainer(sharedModelContainer)
     }
 }
 
@@ -56,11 +55,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                     
                     if let token = DefaultData.shared.agentId {
                         Task {
-                            try await ApiHelper.shared.createNotifications(
-                                allowsNotification: granted,
-                                agentId: token,
-                                deviceName: UIDevice.current.name
-                            )
+                            do {
+                                try await ApiHelper.shared.createNotifications(
+                                    allowsNotification: granted,
+                                    agentId: token,
+                                    deviceName: UIDevice.current.name
+                                )
+                            } catch {
+                                Logger.shared.log("AppDelegate", #function, "Failed to create notifications: \(error.localizedDescription)", .error)
+                            }
                         }
                     }
                 }
@@ -72,15 +75,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         
         application.registerForRemoteNotifications()
-        
+
         Messaging.messaging().delegate = self
-        
-        UNUserNotificationCenter.current().delegate = self
-        
+
         return true
     }
     
-    // fcm 토근이 등록 되었을 때
+    // fcm 토큰이 등록 되었을 때
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Logger.shared.log("AppDelegate", #function, "Device Token: \(deviceToken.base64EncodedString())")
         
@@ -91,7 +92,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 // Cloud Messaging
 extension AppDelegate: MessagingDelegate {
     
-    // fcm 등록 토근을 받았을 때
+    // fcm 등록 토큰을 받았을 때
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         Logger.shared.log("AppDelegate", #function, "token received: \(fcmToken ?? "")")
         
@@ -107,26 +108,18 @@ extension AppDelegate: MessagingDelegate {
         if let permissionForNotification = DefaultData.shared.permissionForNotification, DefaultData.shared.agentId != fcmToken {
             Logger.shared.log("AppDelegate", #function, "permission, token, createNotifications")
             Task {
-                try await ApiHelper.shared.createNotifications(
-                    allowsNotification: permissionForNotification,
-                    agentId: fcmToken ?? "",
-                    deviceName: UIDevice.current.name
-                )
+                do {
+                    try await ApiHelper.shared.createNotifications(
+                        allowsNotification: permissionForNotification,
+                        agentId: fcmToken ?? "",
+                        deviceName: UIDevice.current.name
+                    )
+                } catch {
+                    Logger.shared.log("AppDelegate", #function, "Failed to create notifications: \(error.localizedDescription)", .error)
+                }
             }
         }
         DefaultData.shared.agentId = fcmToken
-        
-//        Task {
-//            let settings = await UNUserNotificationCenter.current().notificationSettings()
-//            let authorizationStatus = settings.authorizationStatus == .authorized
-//            
-//            try await ApiHelper.shared.createNotifications(
-//                allowsNotification: authorizationStatus,
-//                agentId: fcmToken ?? "",
-//                osType: "IOS",
-//                deviceName: UIDevice.current.name
-//            )
-//        }
     }
 }
 
@@ -144,7 +137,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         Logger.shared.log("AppDelegate", #function, "userinfo: \(userInfo)")
         
-        completionHandler([[.banner, .badge, .sound]])
+        completionHandler([])
     }
     
     // 푸시 알림 받았을 때

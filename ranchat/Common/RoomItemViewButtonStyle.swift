@@ -12,6 +12,6 @@ struct RoomItemViewButtonStyle: ButtonStyle {
         configuration.label
             .padding()
             .background(configuration.isPressed ? .gray.opacity(0.3) : .clear)
-            .foregroundColor(.white)
+            .foregroundStyle(.white)
     }
 }

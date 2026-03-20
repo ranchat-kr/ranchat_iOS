@@ -6,63 +6,50 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct HomeView: View {
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
     @Environment(NetworkMonitor.self) var networkMonitor
-    //    @Query private var user: User?
     @State private var isAnimating = false
     @State var viewModel = HomeViewModel()
-    
-    
-    let screenHeight = UIScreen.main.bounds.height
-    
+
     var body: some View {
+        GeometryReader { geometry in
         NavigationStack {
-            
+
             ZStack {
                 VStack {
                     Text("Ran-Talk")
                         .font(.dungGeunMo80)
-                        .offset(y: isAnimating ? 0 : -screenHeight / 2)
+                        .offset(y: isAnimating ? 0 : -geometry.size.height / 2)
                         .onAppear {
                             withAnimation(.easeInOut(duration: 1.0)) {
                                 isAnimating = true
                             }
                         }
                         .padding(.bottom, 30)
-                    
+
                     MainButtonView(text: "START!") {
                         viewModel.requestMatching()
                     }
                     .opacity(isAnimating ? 1.0 : 0.0)
-                    
-                    ZStack {
-                        
-                            MainButtonView(text: "CONTINUE!") {
-                                viewModel.navigateToRoomList()
-                                    
-                            }
-                            .opacity(isAnimating ? 1.0 : 0.0)
 
-                        
-                        
-                        Color.black.frame(height: viewModel.isRoomExist ? 0 : 50)
+                    MainButtonView(text: "CONTINUE!") {
+                        viewModel.navigateToRoomList()
                     }
+                    .opacity(isAnimating && viewModel.isRoomExist ? 1.0 : 0.0)
+                    .disabled(!viewModel.isRoomExist)
                 }
-                
-                
+
                 if viewModel.isLoading {
                     CenterLoadingView()
                 }
-                
+
                 if viewModel.isMatching && !webSocketHelper.isMatchSuccess {
                     MatchingLoadingView()
-                } 
+                }
             }
-//            .animation(.easeInOut, value: viewModel.isMatching)
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Text("Copyright © KJI Corp. 2024 All Rights Reserved.")
@@ -101,7 +88,8 @@ struct HomeView: View {
                     }
             })
         }
-        
+        } // GeometryReader
+
         .onAppear {
             viewModel.setHelper(webSocketHelper, idHelper)
             viewModel.setNetworkMonitor(networkMonitor)

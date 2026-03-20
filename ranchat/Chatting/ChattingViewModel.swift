@@ -51,7 +51,6 @@ class ChattingViewModel {
     
     func addMessage(messageData: MessageData) {
         messageDataList.insert(messageData, at: 0)
-        //messageDataList.append(messageData)
     }
     
     //MARK: - Require Network
@@ -182,20 +181,20 @@ class ChattingViewModel {
         }
         
         do {
-            try unSubscribeMessage()
+            try unsubscribeMessage()
             (dismiss ?? {})()
         } catch {
-            Logger.shared.log(self.className, #function, "Failed to unSubscribe message: \(error.localizedDescription)")
+            Logger.shared.log(self.className, #function, "Failed to unsubscribe message: \(error.localizedDescription)")
             showNetworkErrorDialog = true
         }
     }
-    
-    func unSubscribeMessage() throws {
+
+    func unsubscribeMessage() throws {
         if let idHelper, let roomId = idHelper.getRoomId(), let webSocketHelper {
             do {
-                try webSocketHelper.unsubscribeFromRecieveMessage(roomId: roomId)
+                try webSocketHelper.unsubscribeFromReceiveMessage(roomId: roomId)
             } catch {
-                Logger.shared.log(self.className, #function, "Failed to unsubscribe from recieve message: \(error.localizedDescription)")
+                Logger.shared.log(self.className, #function, "Failed to unsubscribe from receive message: \(error.localizedDescription)")
                 showNetworkErrorDialog = true
                 throw WebSocketHelperError.connectError
             }

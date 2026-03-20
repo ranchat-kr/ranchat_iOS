@@ -11,10 +11,6 @@ struct UserData: Codable {
     var id: String
     var name: String
     
-    func getName() -> String {
-        name
-    }
-    
     mutating func setName(_ newName: String) {
         name = newName
     }

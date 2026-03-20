@@ -21,10 +21,8 @@ struct ChattingView: View {
         ZStack {
             VStack {
                 ChatScrollView(chattingList: $viewModel.messageDataList, fetchMessages: viewModel.fetchMessageList)
-                    //.padding(.bottom, keyboardHeight)
-                    
-                
-                ChatInputView(inputText: $viewModel.inputText, chattingList: $viewModel.messageDataList, isFocused: $isTextFieldFocused, onSend: send)
+
+                ChatInputView(inputText: $viewModel.inputText, isFocused: $isTextFieldFocused, onSend: send)
             }
             .onTapGesture {
                 isTextFieldFocused = false

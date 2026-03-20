@@ -11,7 +11,7 @@ class RoomListViewModel {
     let className = "RoomListViewModel"
     
     var isLoading: Bool = false
-    var isInitialLized: Bool = false
+    var isInitialized: Bool = false
     
     var showExitRoomDialog: Bool = false
     var showNetworkErrorDialog: Bool = false
@@ -42,8 +42,6 @@ class RoomListViewModel {
     
     //MARK: - Require Network
     func getRoomList(isRefresh: Bool = false) async {
-        //isLoading = true
-        
         do {
             var roomList: RoomDataList
             if isRefresh {
@@ -58,13 +56,11 @@ class RoomListViewModel {
                 return
             }
             roomItems.append(contentsOf: roomList.data.items)
-            self.isInitialLized = true
+            self.isInitialized = true
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get room list: \(error.localizedDescription)", .error)
             showNetworkErrorDialog = true
         }
-        
-        // isLoading = false
     }
     
     func enterRoom(at: Int) {

@@ -65,7 +65,7 @@ public struct DialogViewModifier: ViewModifier {
                         .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                         )
                     }
                 }

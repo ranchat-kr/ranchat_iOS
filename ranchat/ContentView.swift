@@ -33,11 +33,15 @@ struct ContentView: View {
                     
                     if !DefaultData.shared.saveToNotificationServerSuccess {
                         Task {
-                            try await ApiHelper.shared.createNotifications(
-                                allowsNotification: DefaultData.shared.permissionForNotification ?? false,
-                                agentId: DefaultData.shared.agentId ?? "",
-                                deviceName: UIDevice.current.name
-                            )
+                            do {
+                                try await ApiHelper.shared.createNotifications(
+                                    allowsNotification: DefaultData.shared.permissionForNotification ?? false,
+                                    agentId: DefaultData.shared.agentId ?? "",
+                                    deviceName: UIDevice.current.name
+                                )
+                            } catch {
+                                Logger.shared.log("ContentView", #function, "Failed to create notifications: \(error.localizedDescription)", .error)
+                            }
                         }
                     }
                 }

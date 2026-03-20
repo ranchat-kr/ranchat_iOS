@@ -21,7 +21,7 @@ struct MainButtonView: View {
                 .foregroundStyle(.white)
                 .background {
                     Rectangle()
-                        .foregroundColor(.clear)
+                        .foregroundStyle(.clear)
                         .border(.white, width: 5)
                 }
         }

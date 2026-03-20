@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum nickNameError {
-    case Empty
-    case Length
-    case ContainsBlank
-    case Duplicate
-    case SpecialCharacter
-    case ContainsForbiddenCharacter
-    case None
+enum NicknameError {
+    case empty
+    case length
+    case containsBlank
+    case duplicate
+    case specialCharacter
+    case containsForbiddenCharacter
+    case none
 }
 
 @Observable
@@ -31,30 +31,28 @@ class SettingViewModel {
     
     var user: UserData?
     
-    var nicknameError: nickNameError = .None
+    var nicknameError: NicknameError = .none
     
     var editNickName: String = ""
     
     func setUser() {
         isLoading = true
-        
+
         Task {
             do {
                 user = try await ApiHelper.shared.getUser()
                 self.isInitialized = true
             } catch {
                 showNetworkErrorDialog = true
-                
                 Logger.shared.log(self.className, #function, "Failed to get user: \(error.localizedDescription)", .error)
             }
+            isLoading = false
         }
-        
-        isLoading = false
     }
-    
+
     func setNickname() {
         isLoading = true
-        
+
         Task {
             do {
                 try await ApiHelper.shared.updateUserName(name: editNickName)
@@ -63,12 +61,10 @@ class SettingViewModel {
                 showSuccessToast = true
             } catch {
                 showNetworkErrorDialog = true
-                
                 Logger.shared.log(self.className, #function, "Failed to update user name: \(error.localizedDescription)", .error)
             }
+            isLoading = false
         }
-        
-        isLoading = false
     }
     
     func isValidNickname() -> Bool {
@@ -85,25 +81,25 @@ class SettingViewModel {
         let specialCharRegex = "[^\\p{L}\\p{N}]"
         
         if editNickName.isEmpty {
-            nicknameError = .Empty
+            nicknameError = .empty
             
             showInValidToast = true
             
             return false
         } else if editNickName.count < 2 || editNickName.count > 10 {
-            nicknameError = .Length
+            nicknameError = .length
             
             showInValidToast = true
             
             return false
         } else if editNickName.contains(" ") {
-            nicknameError = .ContainsBlank
+            nicknameError = .containsBlank
             
             showInValidToast = true
             
             return false
         } else if let user, user.name == editNickName {
-            nicknameError = .Duplicate
+            nicknameError = .duplicate
             
             showInValidToast = true
             
@@ -112,7 +108,7 @@ class SettingViewModel {
             let range = NSRange(location: 0, length: editNickName.utf16.count)
             let matchFound = regex.firstMatch(in: editNickName, options: [], range: range) != nil
             if matchFound {
-                nicknameError = .SpecialCharacter
+                nicknameError = .specialCharacter
                 
                 showInValidToast = true
                 
@@ -122,7 +118,7 @@ class SettingViewModel {
         
         for forbiddenWord in forbiddenWords {
             if editNickName.contains(forbiddenWord) {
-                nicknameError = .ContainsForbiddenCharacter
+                nicknameError = .containsForbiddenCharacter
                 
                 showInValidToast = true
                 

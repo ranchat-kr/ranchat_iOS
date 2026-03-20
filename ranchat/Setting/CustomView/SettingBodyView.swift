@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingBodyView<Content: View>: View {
     let content: Content
-    @State var title: String
+    let title: String
     
     init(title: String, @ViewBuilder content: () -> Content) {
         self.title = title

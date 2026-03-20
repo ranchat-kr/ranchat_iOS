@@ -15,9 +15,9 @@ class NetworkMonitor {
     var isConnected = false
     
     init() {
-        networkMonitor.pathUpdateHandler = { path in
+        networkMonitor.pathUpdateHandler = { [weak self] path in
             DispatchQueue.main.async {
-                self.isConnected = path.status == .satisfied
+                self?.isConnected = path.status == .satisfied
             }
         }
         networkMonitor.start(queue: workerQueue)

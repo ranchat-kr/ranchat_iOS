@@ -10,13 +10,13 @@ import SwiftUI
 struct CenterLoadingView: View {
     var body: some View {
         Color.black.opacity(0.4)
-            .edgesIgnoringSafeArea(.all)
-        
+            .ignoresSafeArea()
+
         ProgressView("Loading...")
             .progressViewStyle(CircularProgressViewStyle())
             .padding()
             .background(.gray)
-            .cornerRadius(10)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             .shadow(radius: 10)
     }
 }

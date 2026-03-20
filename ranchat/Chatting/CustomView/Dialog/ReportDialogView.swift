@@ -24,7 +24,7 @@ struct ReportDialogView: View {
     
     var body: some View {
         Color.black.opacity(0.4)
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea()
             .onTapGesture {
                 optionClear()
             }
@@ -63,7 +63,7 @@ struct ReportDialogView: View {
                     
                     if reportText.isEmpty {
                         Text("신고 내용을 입력하세요.")
-                            .foregroundColor(.gray) // 원하는 색상으로 변경
+                            .foregroundStyle(.gray)
                             .padding(.horizontal, 20)
                             .font(.dungGeunMo20)
                             .frame(maxHeight: .infinity, alignment: .center)

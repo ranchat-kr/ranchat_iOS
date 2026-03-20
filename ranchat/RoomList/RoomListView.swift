@@ -28,20 +28,6 @@ struct RoomListView: View {
                 })
                 .listRowInsets(EdgeInsets())
                 .listRowSeparator(.hidden)
-                //                .swipeActions(edge: .trailing) {
-                //                    Button(role: .cancel) {
-                //
-                //                        viewModel.selectedRoom = roomData
-                //                        viewModel.selectedRoomIndex = index
-                //                        viewModel.showExitRoomDialog = true
-                //                    } label: {
-                //                        Text("나가기")
-                //                            .font(.dungGeunMo16)
-                //                            .foregroundStyle(.white)
-                //                            .padding()
-                //                    }
-                //                    .tint(.red)
-                //                }
                 .onAppear {
                     if viewModel.roomItems.last?.id == roomData.id {
                         Task {
@@ -64,7 +50,7 @@ struct RoomListView: View {
             .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
                 if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
                     Task {
-                        if !viewModel.isInitialLized {
+                        if !viewModel.isInitialized {
                             await viewModel.getRoomList()
                         }
                     }
