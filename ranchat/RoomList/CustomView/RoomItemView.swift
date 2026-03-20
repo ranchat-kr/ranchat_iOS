@@ -24,12 +24,39 @@ struct RoomItemView: View {
     var roomData: RoomData
     var action: () -> Void
     var swipeAction: () -> Void
-    
+
     @State var timeFormatState: TimeFormatState = .none
     @State var isClicked: Bool = false
     @State var dateText: String = ""
     @State var dateFont: Font = .dungGeunMo12
-    
+
+    private static let isoFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return f
+    }()
+
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "a h:mm"
+        f.locale = Locale(identifier: "ko_KR")
+        return f
+    }()
+
+    private static let monthDayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "M월 d일"
+        f.locale = Locale(identifier: "ko_KR")
+        return f
+    }()
+
+    private static let fullDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy. MM. dd"
+        f.locale = Locale(identifier: "ko_KR")
+        return f
+    }()
+
     var body: some View {
         Button {
             action()
@@ -40,30 +67,30 @@ struct RoomItemView: View {
                         .lineLimit(1)
                         .font(.dungGeunMo20)
                         .foregroundStyle(.pink)
-                    
+
                     Spacer()
-                    
+
                     Text(dateText)
                         .font(dateFont)
                         .foregroundStyle(.gray)
                 }
                 .padding(.bottom, 5)
-                
+
                 Text(roomData.latestMessage)
                     .lineLimit(1)
                     .font(.dungGeunMo12)
                     .foregroundStyle(.white)
             }
-            
+
             .padding(.vertical, 10)
-            
+
             .onAppear {
                 dateText = parseToRoomDateFormat()
                 dateFont = fontByTimeFormat()
             }
-            .contentShape(Rectangle()) // 버튼 크기 명확히 지정
+            .contentShape(Rectangle())
         }
-        
+
         .buttonStyle(RoomItemViewButtonStyle())
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
@@ -77,7 +104,7 @@ struct RoomItemView: View {
             .tint(.red)
         }
     }
-    
+
     func fontByTimeFormat() -> Font {
         switch timeFormatState {
         case .today, .thisYear:
@@ -90,36 +117,27 @@ struct RoomItemView: View {
             return .dungGeunMo12
         }
     }
-    
+
     func parseToRoomDateFormat() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        
-        guard let messageDate = formatter.date(from: roomData.latestMessageAt) else { return ""
-        }
-        
+        guard let messageDate = Self.isoFormatter.date(from: roomData.latestMessageAt) else { return "" }
+
         let currentDate = Date()
         let calendar = Calendar.current
-        
-        // 같은 해, 같은 달, 같은 날인지 확인
+
         if calendar.isDateInToday(messageDate) {
-            formatter.dateFormat = "a h:mm"  // 오전/오후 h:mm 형식
             timeFormatState = .today
+            return Self.timeFormatter.string(from: messageDate)
         } else if calendar.isDateInYesterday(messageDate) {
             timeFormatState = .yesterday
             return "어제"
         } else if calendar.component(.year, from: messageDate) == calendar.component(.year, from: currentDate) {
-            formatter.dateFormat = "M월 d일"
             timeFormatState = .thisYear
+            return Self.monthDayFormatter.string(from: messageDate)
         } else {
-            formatter.dateFormat = "yyyy. MM. dd"
             timeFormatState = .anotherYear
+            return Self.fullDateFormatter.string(from: messageDate)
         }
-        
-        formatter.locale = Locale(identifier: "ko_KR")  // 한국어 형식 설정
-        return formatter.string(from: messageDate)
     }
-    
 }
 
 #Preview {

@@ -12,13 +12,13 @@ struct RoomListView: View {
     @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
     @Environment(NetworkMonitor.self) var networkMonitor
-    
+
     @State var viewModel = RoomListViewModel()
-    
+
     var body: some View {
         ZStack {
             List(Array(viewModel.roomItems.enumerated()), id: \.element.id) { index, roomData in
-                
+
                 RoomItemView(roomData: roomData, action: {
                     viewModel.enterRoom(at: index)
                 }, swipeAction: {
@@ -35,11 +35,13 @@ struct RoomListView: View {
                         }
                     }
                 }
-                
+            }
+            .refreshable {
+                await viewModel.getRoomList(isRefresh: true)
             }
             .animation(.snappy, value: viewModel.roomItems)
             .listStyle(.plain)
-            
+
             .onAppear {
                 viewModel.setHelper(webSocketHelper, idHelper)
                 viewModel.setNetworkMonitor(networkMonitor)
@@ -48,7 +50,7 @@ struct RoomListView: View {
                 }
             }
             .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
-                if oldValue == false && newValue == true {  // 네트워크가 연결 되었을 때
+                if oldValue == false && newValue == true {
                     Task {
                         if !viewModel.isInitialized {
                             await viewModel.getRoomList()
@@ -61,7 +63,7 @@ struct RoomListView: View {
                     Text("Continue")
                         .font(.dungGeunMo24)
                 }
-                
+
                 ToolbarItem(placement: .topBarLeading) {
                     ToolbarButton(action: {
                         dismiss()
@@ -70,7 +72,11 @@ struct RoomListView: View {
             }
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
-            
+
+            if viewModel.isInitialized && viewModel.roomItems.isEmpty {
+                EmptyRoomListView()
+            }
+
             if viewModel.isLoading {
                 CenterLoadingView()
             }
@@ -94,7 +100,7 @@ struct RoomListView: View {
                 }
                 viewModel.showExitRoomDialog = false
             }
-        
+
             .dialog(
                 isPresented: $viewModel.showNetworkErrorDialog,
                 title: "인터넷 연결 오류",

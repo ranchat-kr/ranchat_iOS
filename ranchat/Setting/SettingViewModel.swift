@@ -20,7 +20,7 @@ enum NicknameError {
 @Observable
 class SettingViewModel {
     let className = "SettingViewModel"
-    
+
     var isLoading: Bool = false
     var isInitialized: Bool = false
     var showNetworkErrorDialog: Bool = false
@@ -28,19 +28,33 @@ class SettingViewModel {
     var showSuccessToast: Bool = false
     var showInValidToast: Bool = false
     var isToggleOn: Bool = DefaultData.shared.isNotificationEnabled
-    
-    var user: UserData?
-    
-    var nicknameError: NicknameError = .none
-    
-    var editNickName: String = ""
-    
-    func setUser() {
-        isLoading = true
 
+    var user: UserData?
+    var nicknameError: NicknameError = .none
+    var editNickName: String = ""
+
+    private var userRepository: UserRepository
+    private var notificationRepository: NotificationRepository
+
+    init(
+        userRepository: UserRepository = DefaultUserRepository(),
+        notificationRepository: NotificationRepository = DefaultNotificationRepository()
+    ) {
+        self.userRepository = userRepository
+        self.notificationRepository = notificationRepository
+    }
+
+    func setUser() {
+        guard let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "userId is nil", .error)
+            showNetworkErrorDialog = true
+            return
+        }
+
+        isLoading = true
         Task {
             do {
-                user = try await ApiHelper.shared.getUser()
+                user = try await userRepository.getUser(userId: userId)
                 self.isInitialized = true
             } catch {
                 showNetworkErrorDialog = true
@@ -51,11 +65,16 @@ class SettingViewModel {
     }
 
     func setNickname() {
-        isLoading = true
+        guard let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "userId is nil", .error)
+            showNetworkErrorDialog = true
+            return
+        }
 
+        isLoading = true
         Task {
             do {
-                try await ApiHelper.shared.updateUserName(name: editNickName)
+                try await userRepository.updateUserName(userId: userId, name: editNickName)
                 user?.setName(editNickName)
                 editNickName = ""
                 showSuccessToast = true
@@ -66,7 +85,7 @@ class SettingViewModel {
             isLoading = false
         }
     }
-    
+
     func isValidNickname() -> Bool {
         let forbiddenWords = [
             "씨발", "좆", "개새끼", "병신", "미친놈", "엿", "썅", "엿같은", "시발", "썩을", "멍청이", "바보", "븅신", "좃같은", "엿먹어",
@@ -77,61 +96,55 @@ class SettingViewModel {
             "도박", "대출", "사기", "불법", "복권", "대포통장", "카드깡", "마약", "필로폰", "대마초", "아편", "마약사범", "범죄",
             "우울증", "정신병", "발암", "암덩어리", "병자", "쓸모없는", "혐오", "무가치", "비참한", "저주"
         ]
-        
+
         let specialCharRegex = "[^\\p{L}\\p{N}]"
-        
+
         if editNickName.isEmpty {
             nicknameError = .empty
-            
             showInValidToast = true
-            
             return false
         } else if editNickName.count < 2 || editNickName.count > 10 {
             nicknameError = .length
-            
             showInValidToast = true
-            
             return false
         } else if editNickName.contains(" ") {
             nicknameError = .containsBlank
-            
             showInValidToast = true
-            
             return false
         } else if let user, user.name == editNickName {
             nicknameError = .duplicate
-            
             showInValidToast = true
-            
             return false
         } else if let regex = try? NSRegularExpression(pattern: specialCharRegex, options: []) {
             let range = NSRange(location: 0, length: editNickName.utf16.count)
             let matchFound = regex.firstMatch(in: editNickName, options: [], range: range) != nil
             if matchFound {
                 nicknameError = .specialCharacter
-                
                 showInValidToast = true
-                
                 return false
             }
         }
-        
+
         for forbiddenWord in forbiddenWords {
             if editNickName.contains(forbiddenWord) {
                 nicknameError = .containsForbiddenCharacter
-                
                 showInValidToast = true
-                
                 return false
             }
         }
         return true
     }
-    
+
     func updateNotification() {
+        guard let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "userId is nil", .error)
+            return
+        }
+
         Task {
             do {
-                try await ApiHelper.shared.updateAppNotifications(
+                try await notificationRepository.updateAppNotifications(
+                    userId: userId,
                     agentId: DefaultData.shared.agentId ?? "",
                     allowsNotification: isToggleOn
                 )

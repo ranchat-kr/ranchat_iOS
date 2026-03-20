@@ -10,70 +10,90 @@ import SwiftUI
 @Observable
 class ChattingViewModel {
     let className = "ChattingViewModel"
-    
+
     var messageDataList: [MessageData] = []
-    
+
     var isLoading: Bool = false
     var isRoomDetailDataLoaded: Bool = false
     var isMessageDataListLoaded: Bool = false
-    
+
     var inputText: String = ""
     var roomDetailData: RoomDetailData?
-    
+
     var showReportDialog: Bool = false
     var showExitDialog: Bool = false
     var showNetworkErrorDialog: Bool = false
-    
+
     var selectedReason: String?
     var reportText: String = ""
-    
+
     var currentPage: Int = 0
     let pageSize: Int = 50
     var totalCount: Int = 0
-    
+
     var webSocketHelper: WebSocketHelper?
     var idHelper: IdHelper?
     var dismiss: (() -> Void)?
     var networkMonitor: NetworkMonitor?
-    
-    func setHelper(_ webSocketHelper: WebSocketHelper,_ idHelper: IdHelper) {
+
+    private var roomRepository: RoomRepository
+    private var chatRepository: ChatRepository
+
+    init(
+        roomRepository: RoomRepository = DefaultRoomRepository(),
+        chatRepository: ChatRepository = DefaultChatRepository()
+    ) {
+        self.roomRepository = roomRepository
+        self.chatRepository = chatRepository
+    }
+
+    func setHelper(_ webSocketHelper: WebSocketHelper, _ idHelper: IdHelper) {
         self.webSocketHelper = webSocketHelper
         self.idHelper = idHelper
     }
-    
+
     func setDismiss(_ dismiss: @escaping () -> Void) {
         self.dismiss = dismiss
     }
-    
+
     func setNetworkMonitor(_ networkMonitor: NetworkMonitor) {
         self.networkMonitor = networkMonitor
     }
-    
+
     func addMessage(messageData: MessageData) {
         messageDataList.insert(messageData, at: 0)
     }
-    
+
     //MARK: - Require Network
     func getRoomDetailData() async {
+        guard let userId = idHelper?.getUserId(), let roomId = idHelper?.getRoomId() else {
+            Logger.shared.log(className, #function, "userId or roomId is nil", .error)
+            showNetworkErrorDialog = true
+            return
+        }
+
         isLoading = true
-        
         do {
-            let roomDetailData = try await ApiHelper.shared.getRoomDetail()
+            let roomDetailData = try await roomRepository.getRoomDetail(userId: userId, roomId: roomId)
             self.roomDetailData = roomDetailData
             self.isRoomDetailDataLoaded = true
         } catch {
             Logger.shared.log(self.className, #function, "Failed to get room detail data: \(error.localizedDescription)", .error)
             showNetworkErrorDialog = true
         }
-        
         isLoading = false
     }
-    
+
     func getMessageList() async {
+        guard let roomId = idHelper?.getRoomId() else {
+            Logger.shared.log(className, #function, "roomId is nil", .error)
+            showNetworkErrorDialog = true
+            return
+        }
+
         isLoading = true
-        
         do {
-            let messagesListResponseData = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize * 2)
+            let messagesListResponseData = try await chatRepository.getMessages(roomId: roomId, page: currentPage, size: pageSize * 2)
             self.currentPage += 1
             self.totalCount = messagesListResponseData.totalCount
             self.messageDataList.removeAll()
@@ -83,15 +103,19 @@ class ChattingViewModel {
             Logger.shared.log(self.className, #function, "Failed to get message list: \(error.localizedDescription)", .error)
             showNetworkErrorDialog = true
         }
-        
         isLoading = false
     }
-    
+
     func fetchMessageList() async {
+        guard let roomId = idHelper?.getRoomId() else {
+            Logger.shared.log(className, #function, "roomId is nil", .error)
+            return
+        }
+
         do {
             if messageDataList.count >= (currentPage + 1) * pageSize || messageDataList.count < self.totalCount {
                 currentPage += 1
-                let messagesListResponseData = try await ApiHelper.shared.getMessages(page: currentPage, size: pageSize)
+                let messagesListResponseData = try await chatRepository.getMessages(roomId: roomId, page: currentPage, size: pageSize)
                 self.messageDataList += messagesListResponseData.items
             }
         } catch {
@@ -100,16 +124,16 @@ class ChattingViewModel {
             showNetworkErrorDialog = true
         }
     }
-    
+
     func sendMessage() {
         let message = inputText
         if message.isEmpty { return }
-        
+
         if !(networkMonitor?.isConnected ?? false) {
             showNetworkErrorDialog = true
             return
         }
-        
+
         do {
             if let webSocketHelper {
                 try webSocketHelper.sendMessage(message)
@@ -123,41 +147,46 @@ class ChattingViewModel {
             showNetworkErrorDialog = true
         }
     }
-    
+
     func reportUser() async {
-        isLoading = true
-        
-        guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != idHelper?.getUserId() })?.userId else {
-            Logger.shared.log(self.className, #function, "reportedUserId is nil", .error)
-            
+        guard let userId = idHelper?.getUserId(),
+              let roomId = idHelper?.getRoomId() else {
+            Logger.shared.log(className, #function, "userId or roomId is nil", .error)
             showNetworkErrorDialog = true
             return
         }
-        
+
+        guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != userId })?.userId else {
+            Logger.shared.log(self.className, #function, "reportedUserId is nil", .error)
+            showNetworkErrorDialog = true
+            return
+        }
+
+        isLoading = true
         let reportType = getReportType(reason: selectedReason)
-        
         do {
-            try await ApiHelper.shared.reportUser(
+            try await chatRepository.reportUser(
+                roomId: roomId,
+                reporterId: userId,
                 reportedUserId: reportedUserId,
-                reportReason: reportText,
-                reportType: reportType
+                reportType: reportType,
+                reportReason: reportText
             )
         } catch {
             Logger.shared.log(self.className, #function, "Failed to report user: \(error.localizedDescription)", .error)
             showNetworkErrorDialog = true
         }
-        
         isLoading = false
     }
-    
+
     func exitRoom() async {
         if !(networkMonitor?.isConnected ?? false) {
             showNetworkErrorDialog = true
             return
         }
-        
+
         isLoading = true
-        
+
         if let idHelper, let roomId = idHelper.getRoomId(), let webSocketHelper {
             do {
                 try webSocketHelper.exitRoom(roomId: roomId)
@@ -170,16 +199,16 @@ class ChattingViewModel {
             Logger.shared.log(self.className, #function, "idHelper or webSocketHelper is nil", .error)
             showNetworkErrorDialog = true
         }
-        
+
         isLoading = false
     }
-    
+
     func tempExit() {
         if !(networkMonitor?.isConnected ?? false) {
             showNetworkErrorDialog = true
             return
         }
-        
+
         do {
             try unsubscribeMessage()
             (dismiss ?? {})()
@@ -204,7 +233,7 @@ class ChattingViewModel {
             throw IdHelperError.nilError
         }
     }
-    
+
     func activateParticipant() {
         if let webSocketHelper {
             do {
@@ -218,7 +247,7 @@ class ChattingViewModel {
             showNetworkErrorDialog = true
         }
     }
-    
+
     //MARK: - ETC
     func getReportType(reason: String?) -> String {
         switch reason {

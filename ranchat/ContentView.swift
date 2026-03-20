@@ -31,10 +31,12 @@ struct ContentView: View {
                         Logger.shared.log("ContentView", #function, "Failed to connect to WebSocket", .error)
                     }
                     
-                    if !DefaultData.shared.saveToNotificationServerSuccess {
+                    if !DefaultData.shared.saveToNotificationServerSuccess,
+                       let userId = KeychainHelper.shared.getUserId() {
                         Task {
                             do {
-                                try await ApiHelper.shared.createNotifications(
+                                try await DefaultNotificationRepository().createNotifications(
+                                    userId: userId,
                                     allowsNotification: DefaultData.shared.permissionForNotification ?? false,
                                     agentId: DefaultData.shared.agentId ?? "",
                                     deviceName: UIDevice.current.name
