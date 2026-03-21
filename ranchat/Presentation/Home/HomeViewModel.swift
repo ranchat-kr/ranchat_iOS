@@ -66,6 +66,7 @@ class HomeViewModel {
     }
 
     func setUser() {
+        guard !isLoading else { return }
         guard let webSocketService, let idHelper else {
             Logger.shared.log(className, #function, "webSocketService or idHelper is nil", .error)
             return
