@@ -1,58 +1,108 @@
 # 랜톡 (Ran-Talk)
 
-익명 랜덤 채팅 iOS 앱
+> 익명 랜덤 매칭 실시간 채팅 iOS 앱
 
-## 앱 소개
+![Swift](https://img.shields.io/badge/Swift-5.9-orange) ![iOS](https://img.shields.io/badge/iOS-17.0+-blue) ![Xcode](https://img.shields.io/badge/Xcode-16.0+-lightgrey)
 
-랜톡은 실시간 랜덤 매칭을 통해 낯선 사람과 익명으로 대화할 수 있는 채팅 앱입니다. 매칭 대기 중에는 WebSocket으로 자동 매칭되며, 8초 내 매칭이 안 될 경우 AI(GPT)와 대화할 수 있는 방이 자동 생성됩니다.
+<br>
 
-## 🟢 주요 기능
+## 스크린샷
 
-- **랜덤 매칭** — START 버튼 클릭 시 다른 사용자와 랜덤 매칭, 8초 내 상대 없으면 AI와 매칭
-- **채팅 관리** — 기존 매칭된 채팅방 재입장, 신고 및 방 나가기, 닉네임 변경
-- **푸시 알림** — Firebase Cloud Messaging 기반 메시지 수신 알림 + 딥링크로 채팅방 이동
+| 홈 | 채팅방 목록 | 채팅 | 설정 |
+|:---:|:---:|:---:|:---:|
+| <img src="assets/home.png" width="200"> | <img src="assets/room_list.png" width="200"> | <img src="assets/chatting.png" width="200"> | <img src="assets/setting.png" width="200"> |
 
-## ⚙️ 기술 스택
+<br>
 
-| 분류 | 기술 |
-|---|---|
+## 주요 기능
+
+| 기능 | 설명 |
+|------|------|
+| 랜덤 매칭 | START 버튼으로 랜덤 사용자와 즉시 매칭 |
+| AI 매칭 | 8초 내 상대가 없으면 GPT와 대화하는 방 자동 생성 |
+| 채팅 | 실시간 메시지 송수신, 발신 시간 표시, 무한 스크롤 |
+| 채팅방 목록 | 기존 매칭된 방 재입장, Pull-to-Refresh |
+| 신고 | 채팅 상대방 신고 (스팸·욕설·광고 등 분류) |
+| 설정 | 닉네임 변경, 푸시 알림 ON/OFF |
+| 푸시 알림 | FCM 기반 메시지 수신 알림, 탭 시 채팅방 목록으로 딥링크 이동 |
+
+<br>
+
+## 기술 스택
+
+| 분류 | 사용 기술 |
+|------|----------|
 | 언어 | Swift 5.9 |
-| UI 프레임워크 | SwiftUI |
+| UI | SwiftUI |
 | 아키텍처 | Clean Architecture (MVVM + UseCase + Repository) |
 | 상태 관리 | @Observable (Swift Observation) |
-| 네트워크 | Alamofire, WebSocket (STOMP) |
+| 비동기 | async/await, @MainActor |
+| 네트워크 | Alamofire, WebSocket (STOMP / StompClientLib) |
 | 보안 | Keychain Services |
-| 푸시 알림 | Firebase Cloud Messaging |
+| 푸시 알림 | Firebase Cloud Messaging (FCM) |
 | 테스트 | Swift Testing (`@Test`, `#expect`) |
 | 의존성 관리 | CocoaPods, Swift Package Manager |
 
-## 🏗️ 아키텍처
+<br>
 
+## 아키텍처
+
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph TB
+    classDef pres fill:#bfdbfe,stroke:#3b82f6,color:#1e3a5f
+    classDef dom  fill:#bbf7d0,stroke:#16a34a,color:#14532d
+    classDef dat  fill:#fed7aa,stroke:#ea580c,color:#7c2d12
+    classDef infra fill:#e9d5ff,stroke:#7c3aed,color:#3b0764
+
+    subgraph Presentation["📱 Presentation Layer"]
+        View["Views (SwiftUI)\n(HomeView · RoomListView\nChattingView · SettingView)"]
+        VM["ViewModels (@Observable)\n(HomeVM · RoomListVM\nChattingVM · SettingVM)"]
+        View --> VM
+    end
+
+    subgraph Domain["🏛️ Domain Layer (순수 Swift)"]
+        UseCase["UseCases\n(User · Room · Chat · Notification)"]
+        RepoProto["Repository Protocols\n(UserRepository · RoomRepository\nChatRepository · NotificationRepository)"]
+        ServiceProto["WebSocketService Protocol"]
+        Entity["Entities\n(User · Room · Message · RoomDetail\nReportType · NicknameError 등)"]
+        UseCase --> RepoProto
+        UseCase --> Entity
+    end
+
+    subgraph Data["🗄️ Data Layer"]
+        Repo["Repositories\n(DefaultUserRepository\nDefaultRoomRepository 등)"]
+        DTO["DTOs (+toDomain())\n(UserDTO · RoomDTO · MessageDTO 등)"]
+        Network["NetworkClient\n(AlamofireNetworkClient)"]
+        Repo --> DTO
+        Repo --> Network
+    end
+
+    subgraph Infrastructure["⚙️ Infrastructure Layer"]
+        WS["WebSocketHelper\n(STOMP, StompClientLib)"]
+        Keychain["KeychainHelper"]
+        NM["NetworkMonitor"]
+        IdH["IdHelper"]
+        Logger["Logger"]
+        WS -->|"implements"| ServiceProto
+    end
+
+    VM -->|"UseCase Protocol 호출"| UseCase
+    Repo -->|"Protocol 구현"| RepoProto
+    VM -->|"setup(webSocketService:)"| WS
+
+    class View,VM pres
+    class UseCase,RepoProto,ServiceProto,Entity dom
+    class Repo,DTO,Network dat
+    class WS,Keychain,NM,IdH,Logger infra
 ```
-View (SwiftUI)
- └─ ViewModel (@Observable, @MainActor)
-      └─ UseCase (Domain 비즈니스 로직)
-           └─ Repository Protocol (Domain 인터페이스)
-                └─ DefaultRepository (Data — Alamofire 구현)
-```
 
-### 레이어별 역할
+**WebSocket Callback 패턴**
 
-| 레이어 | 역할 | 의존 가능 |
-|---|---|---|
-| Domain | Entity, Repository 프로토콜, UseCase | Foundation만 |
-| Data | DTO, NetworkClient, Repository 구현체 | Domain, Alamofire |
-| Infrastructure | WebSocket, Keychain, NetworkMonitor, Logger | Domain(Service 프로토콜) |
-| Presentation | ViewModel, View | Domain(UseCase/Entity) |
-
-**Clean Architecture 도입 이유**
-
-기존 구조에서는 두 가지 핵심 의존성 위반이 있었습니다.
-
-1. **Infrastructure → Presentation 직접 참조**: `WebSocketHelper`가 `ChattingViewModel`을 직접 들고 있어 의존성 방향이 역전되었습니다. `WebSocketService` 프로토콜과 callback 패턴으로 해소했습니다.
+기존 구조는 `WebSocketHelper(Infrastructure)`가 `ChattingViewModel(Presentation)`을 직접 참조하는 의존성 위반이 있었습니다. callback 패턴으로 방향을 역전했습니다.
 
 ```swift
-// Before (위반)
+// Before (위반 — Infrastructure → Presentation 직접 참조)
 class WebSocketHelper {
     weak var chattingViewModel: ChattingViewModel?
 }
@@ -68,10 +118,12 @@ webSocketService.setOnMessageReceived { [weak self] message in
 }
 ```
 
-2. **ViewModel → Repository 직접 호출**: 비즈니스 로직이 ViewModel에 흩어져 테스트가 어려웠습니다. UseCase 계층을 도입해 로직을 분리하고 ViewModel은 UseCase만 호출합니다.
+**UseCase 의존성 주입**
+
+ViewModel은 UseCase 프로토콜만 의존하여 프로덕션과 테스트 코드 변경 없이 교체 가능합니다.
 
 ```swift
-// ViewModel init — 프로덕션은 Default, 테스트는 Mock
+// 프로덕션은 Default, 테스트는 Mock UseCase 주입
 init(
     checkRoomExistUseCase: any CheckRoomExistUseCase = DefaultCheckRoomExistUseCase(),
     createRoomUseCase: any CreateRoomUseCase = DefaultCreateRoomUseCase()
@@ -80,14 +132,16 @@ init(
 
 **보안**
 
-`@AppStorage` (UserDefaults 평문)로 저장하던 userId를 iOS Keychain으로 마이그레이션했습니다.
+`@AppStorage`(UserDefaults 평문)로 저장하던 userId를 iOS Keychain으로 마이그레이션했습니다.
 
 ```swift
 KeychainHelper.shared.saveUserId(uuid)
 KeychainHelper.shared.getUserId()
 ```
 
-## 📁 프로젝트 구조
+<br>
+
+## 프로젝트 구조
 
 ```
 ranchat/
@@ -106,10 +160,8 @@ ranchat/
 │   │                    # MessageDTO, RoomPageDTO, MessagePageDTO (+toDomain())
 │   ├── DataSource/      # NetworkClient 프로토콜 + AlamofireNetworkClient
 │   ├── LocalStorage/    # SearchKeyword
-│   ├── Repository/      # DefaultUserRepository, DefaultRoomRepository,
-│   │                    # DefaultChatRepository, DefaultNotificationRepository
-│   ├── APIEndpoint.swift
-│   └── NetworkError.swift
+│   └── Repository/      # DefaultUserRepository, DefaultRoomRepository,
+│                        # DefaultChatRepository, DefaultNotificationRepository
 ├── Infrastructure/
 │   ├── WebSocket/       # WebSocketHelper (WebSocketService 구현, STOMP)
 │   ├── Keychain/        # KeychainHelper
@@ -121,25 +173,18 @@ ranchat/
     ├── RoomList/        # RoomListView, RoomListViewModel
     ├── Chatting/        # ChattingView, ChattingViewModel
     ├── Setting/         # SettingView, SettingViewModel
-    ├── Common/          # CenterLoadingView, DialogViewModifier, DosStyleTextField, ...
+    ├── Common/          # CenterLoadingView, DialogViewModifier, ...
     └── Extension/       # Font+DungGeunMo, UINavigationController+
 
 Tests/ranchatTests/
 ├── Mock/
-│   ├── MockCheckRoomExistUseCase.swift
-│   ├── MockCreateRoomUseCase.swift
-│   ├── MockCreateUserUseCase.swift
-│   ├── MockGetRoomsUseCase.swift
-│   ├── MockGetRoomDetailUseCase.swift
-│   ├── MockGetMessagesUseCase.swift
-│   ├── MockGetUserUseCase.swift
-│   ├── MockUpdateUserNameUseCase.swift
-│   ├── MockValidateNicknameUseCase.swift
-│   ├── MockReportUserUseCase.swift
+│   ├── MockCheckRoomExistUseCase.swift  MockCreateRoomUseCase.swift
+│   ├── MockCreateUserUseCase.swift      MockGetRoomsUseCase.swift
+│   ├── MockGetRoomDetailUseCase.swift   MockGetMessagesUseCase.swift
+│   ├── MockGetUserUseCase.swift         MockUpdateUserNameUseCase.swift
+│   ├── MockValidateNicknameUseCase.swift MockReportUserUseCase.swift
 │   ├── MockWebSocketService.swift
-│   ├── MockUserRepository.swift
-│   ├── MockRoomRepository.swift
-│   └── MockChatRepository.swift
+│   ├── MockUserRepository.swift  MockRoomRepository.swift  MockChatRepository.swift
 ├── HomeViewModelTests.swift
 ├── RoomListViewModelTests.swift
 ├── ChattingViewModelTests.swift
@@ -147,13 +192,7 @@ Tests/ranchatTests/
 └── ValidateNicknameUseCaseTests.swift
 ```
 
-## 📱 UI/UX 특징
-
-- 단순하고 직관적인 인터페이스, START 버튼 중심으로 빠른 접근
-- AI 매칭 기능으로 대기 시간 최소화
-- Pull-to-Refresh로 채팅방 목록 갱신
-- 메시지 발신 시간 표시 (채팅 말풍선 옆)
-- FCM 푸시 알림 탭 시 채팅방 목록으로 딥링크 이동
+<br>
 
 ## 🚀 실행 방법
 
