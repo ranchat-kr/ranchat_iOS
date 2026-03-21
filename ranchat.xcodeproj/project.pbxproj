@@ -13,7 +13,6 @@
 		492B64082CB3B34B000CB1A3 /* DosStyleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B63DD2CB3B34B000CB1A3 /* DosStyleTextField.swift */; };
 		492B64092CB3B34B000CB1A3 /* MainButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B63DE2CB3B34B000CB1A3 /* MainButtonView.swift */; };
 		492B640A2CB3B34B000CB1A3 /* Font+DungGeunMo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B63E02CB3B34B000CB1A3 /* Font+DungGeunMo.swift */; };
-		492B640B2CB3B34B000CB1A3 /* ApiHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B63E22CB3B34B000CB1A3 /* ApiHelper.swift */; };
 		492B640C2CB3B34B000CB1A3 /* DefaultData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B63E32CB3B34B000CB1A3 /* DefaultData.swift */; };
 		492B640D2CB3B34B000CB1A3 /* WebSocketHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B63E42CB3B34B000CB1A3 /* WebSocketHelper.swift */; };
 		492B640E2CB3B34B000CB1A3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492B63E62CB3B34B000CB1A3 /* HomeView.swift */; };
@@ -71,7 +70,33 @@
 		AA080001000000000000002 /* DefaultChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA080001000000000000001 /* DefaultChatRepository.swift */; };
 		AA090001000000000000002 /* DefaultNotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA090001000000000000001 /* DefaultNotificationRepository.swift */; };
 		AA100001000000000000002 /* EmptyRoomListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100001000000000000001 /* EmptyRoomListView.swift */; };
+		CC010001000000000000002 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC010001000000000000001 /* NetworkError.swift */; };
+		BB010001000000000000002 /* ranchatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB010001000000000000001 /* ranchatTests.swift */; };
+		BB020001000000000000002 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB020001000000000000001 /* HomeViewModelTests.swift */; };
+		BB030001000000000000002 /* SettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB030001000000000000001 /* SettingViewModelTests.swift */; };
+		BB040001000000000000002 /* RoomListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB040001000000000000001 /* RoomListViewModelTests.swift */; };
+		BB050001000000000000002 /* MockUserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB050001000000000000001 /* MockUserRepository.swift */; };
+		BB060001000000000000002 /* MockRoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB060001000000000000001 /* MockRoomRepository.swift */; };
+		BB070001000000000000002 /* MockChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB070001000000000000001 /* MockChatRepository.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BB900001000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 499584A12C8DEBDB00A77646 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 499584A82C8DEBDB00A77646;
+			remoteInfo = ranchat;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		BB800001000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 499584A82C8DEBDB00A77646 /* ranchat */;
+			targetProxy = BB900001000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		499633C42CB3C61B00ED66EC /* Embed Frameworks */ = {
@@ -91,7 +116,6 @@
 		492B63DD2CB3B34B000CB1A3 /* DosStyleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DosStyleTextField.swift; sourceTree = "<group>"; };
 		492B63DE2CB3B34B000CB1A3 /* MainButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButtonView.swift; sourceTree = "<group>"; };
 		492B63E02CB3B34B000CB1A3 /* Font+DungGeunMo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+DungGeunMo.swift"; sourceTree = "<group>"; };
-		492B63E22CB3B34B000CB1A3 /* ApiHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiHelper.swift; sourceTree = "<group>"; };
 		492B63E32CB3B34B000CB1A3 /* DefaultData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultData.swift; sourceTree = "<group>"; };
 		492B63E42CB3B34B000CB1A3 /* WebSocketHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketHelper.swift; sourceTree = "<group>"; };
 		492B63E62CB3B34B000CB1A3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -153,6 +177,15 @@
 		AA090001000000000000001 /* DefaultNotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNotificationRepository.swift; sourceTree = "<group>"; };
 		AA100001000000000000001 /* EmptyRoomListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRoomListView.swift; sourceTree = "<group>"; };
 		B031065110250D7527CFA8C9 /* Pods-ranchat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchat.release.xcconfig"; path = "Target Support Files/Pods-ranchat/Pods-ranchat.release.xcconfig"; sourceTree = "<group>"; };
+		CC010001000000000000001 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		BB000001000000000000001 /* ranchatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ranchatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB010001000000000000001 /* ranchatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ranchatTests.swift; sourceTree = "<group>"; };
+		BB020001000000000000001 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
+		BB030001000000000000001 /* SettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModelTests.swift; sourceTree = "<group>"; };
+		BB040001000000000000001 /* RoomListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomListViewModelTests.swift; sourceTree = "<group>"; };
+		BB050001000000000000001 /* MockUserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserRepository.swift; sourceTree = "<group>"; };
+		BB060001000000000000001 /* MockRoomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoomRepository.swift; sourceTree = "<group>"; };
+		BB070001000000000000001 /* MockChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChatRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +197,13 @@
 				492BBB602CB5086600C027C6 /* UUIDV7 in Frameworks */,
 				8BB9142D288CAEA528D533D8 /* Pods_ranchat.framework in Frameworks */,
 				49A6EC602CD8886400E397F3 /* FirebaseAnalytics in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB600001000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,7 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				49F2DA9D2CC782210060E4AB /* Logger.swift */,
-				492B63E22CB3B34B000CB1A3 /* ApiHelper.swift */,
+				CC010001000000000000001 /* NetworkError.swift */,
 				492B63E32CB3B34B000CB1A3 /* DefaultData.swift */,
 				492B63E42CB3B34B000CB1A3 /* WebSocketHelper.swift */,
 				492BBB5C2CB5022300C027C6 /* NetworkMonitor.swift */,
@@ -347,6 +387,7 @@
 			isa = PBXGroup;
 			children = (
 				499584A92C8DEBDB00A77646 /* ranchat.app */,
+				BB000001000000000000001 /* ranchatTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -450,6 +491,36 @@
 			path = Repository;
 			sourceTree = "<group>";
 		};
+		BB130001000000000000001 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				BB050001000000000000001 /* MockUserRepository.swift */,
+				BB060001000000000000001 /* MockRoomRepository.swift */,
+				BB070001000000000000001 /* MockChatRepository.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		BB120001000000000000001 /* ranchatTests */ = {
+			isa = PBXGroup;
+			children = (
+				BB130001000000000000001 /* Mock */,
+				BB010001000000000000001 /* ranchatTests.swift */,
+				BB020001000000000000001 /* HomeViewModelTests.swift */,
+				BB030001000000000000001 /* SettingViewModelTests.swift */,
+				BB040001000000000000001 /* RoomListViewModelTests.swift */,
+			);
+			path = ranchatTests;
+			sourceTree = "<group>";
+		};
+		BB110001000000000000001 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				BB120001000000000000001 /* ranchatTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -472,6 +543,24 @@
 			productName = ranchat;
 			productReference = 499584A92C8DEBDB00A77646 /* ranchat.app */;
 			productType = "com.apple.product-type.application";
+		};
+		BB100001000000000000001 /* ranchatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB200001000000000000001 /* Build configuration list for PBXNativeTarget "ranchatTests" */;
+			buildPhases = (
+				BB500001000000000000001 /* Sources */,
+				BB600001000000000000001 /* Frameworks */,
+				BB700001000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BB800001000000000000001 /* PBXTargetDependency */,
+			);
+			name = ranchatTests;
+			productName = ranchatTests;
+			productReference = BB000001000000000000001 /* ranchatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -506,6 +595,7 @@
 			projectRoot = "";
 			targets = (
 				499584A82C8DEBDB00A77646 /* ranchat */,
+				BB100001000000000000001 /* ranchatTests */,
 			);
 		};
 /* End PBXProject section */
@@ -520,6 +610,13 @@
 				492B64052CB3B34B000CB1A3 /* Assets.xcassets in Resources */,
 				49FBE7BB2CE89BB30074ECEC /* LaunchScreen.storyboard in Resources */,
 				492B64062CB3B34B000CB1A3 /* DungGeunMo.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB700001000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,7 +683,7 @@
 				492B640A2CB3B34B000CB1A3 /* Font+DungGeunMo.swift in Sources */,
 				49AA2E052CB68CEC0030BDF0 /* ChattingViewModel.swift in Sources */,
 				49F2DA682CB6B1030060E4AB /* ChatElementView.swift in Sources */,
-				492B640B2CB3B34B000CB1A3 /* ApiHelper.swift in Sources */,
+				CC010001000000000000002 /* NetworkError.swift in Sources */,
 				492B640C2CB3B34B000CB1A3 /* DefaultData.swift in Sources */,
 				49FBE7B72CE72B180074ECEC /* UINavigationController+.swift in Sources */,
 				49F2DA732CC12CE10060E4AB /* RoomListView.swift in Sources */,
@@ -631,6 +728,20 @@
 				AA080001000000000000002 /* DefaultChatRepository.swift in Sources */,
 				AA090001000000000000002 /* DefaultNotificationRepository.swift in Sources */,
 				AA100001000000000000002 /* EmptyRoomListView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB500001000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB010001000000000000002 /* ranchatTests.swift in Sources */,
+				BB020001000000000000002 /* HomeViewModelTests.swift in Sources */,
+				BB030001000000000000002 /* SettingViewModelTests.swift in Sources */,
+				BB040001000000000000002 /* RoomListViewModelTests.swift in Sources */,
+				BB050001000000000000002 /* MockUserRepository.swift in Sources */,
+				BB060001000000000000002 /* MockRoomRepository.swift in Sources */,
+				BB070001000000000000002 /* MockChatRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +953,51 @@
 			};
 			name = Release;
 		};
+		BB300001000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kihyeon.rantalk.Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ranchat.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ranchat";
+			};
+			name = Debug;
+		};
+		BB400001000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kihyeon.rantalk.Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ranchat.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ranchat";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -859,6 +1015,15 @@
 			buildConfigurations = (
 				499584BA2C8DEBDD00A77646 /* Debug */,
 				499584BB2C8DEBDD00A77646 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB200001000000000000001 /* Build configuration list for PBXNativeTarget "ranchatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB300001000000000000001 /* Debug */,
+				BB400001000000000000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
