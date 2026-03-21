@@ -22,4 +22,8 @@ final class NetworkMonitor {
         }
         networkMonitor.start(queue: workerQueue)
     }
+
+    deinit {
+        networkMonitor.cancel()
+    }
 }
