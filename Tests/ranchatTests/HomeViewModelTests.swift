@@ -10,12 +10,13 @@ import Testing
 struct HomeViewModelTests {
 
     @Test func test_checkRoomExist_whenRoomExists_setsIsRoomExistTrue() async {
-        let mockRoomRepo = MockRoomRepository()
-        mockRoomRepo.mockRoomExist = true
+        let mockUseCase = MockCheckRoomExistUseCase()
+        mockUseCase.mockRoomExist = true
 
         let viewModel = HomeViewModel(
-            userRepository: MockUserRepository(),
-            roomRepository: mockRoomRepo
+            createUserUseCase: MockCreateUserUseCase(),
+            checkRoomExistUseCase: mockUseCase,
+            createRoomUseCase: MockCreateRoomUseCase()
         )
 
         let idHelper = IdHelper()
@@ -26,16 +27,17 @@ struct HomeViewModelTests {
 
         #expect(viewModel.isRoomExist == true)
         #expect(viewModel.showNetworkErrorDialog == false)
-        #expect(mockRoomRepo.checkRoomExistCallCount == 1)
+        #expect(mockUseCase.callCount == 1)
     }
 
     @Test func test_checkRoomExist_whenRoomNotExists_setsIsRoomExistFalse() async {
-        let mockRoomRepo = MockRoomRepository()
-        mockRoomRepo.mockRoomExist = false
+        let mockUseCase = MockCheckRoomExistUseCase()
+        mockUseCase.mockRoomExist = false
 
         let viewModel = HomeViewModel(
-            userRepository: MockUserRepository(),
-            roomRepository: mockRoomRepo
+            createUserUseCase: MockCreateUserUseCase(),
+            checkRoomExistUseCase: mockUseCase,
+            createRoomUseCase: MockCreateRoomUseCase()
         )
 
         let idHelper = IdHelper()
@@ -48,12 +50,13 @@ struct HomeViewModelTests {
     }
 
     @Test func test_checkRoomExist_whenNetworkError_showsDialog() async {
-        let mockRoomRepo = MockRoomRepository()
-        mockRoomRepo.shouldThrow = true
+        let mockUseCase = MockCheckRoomExistUseCase()
+        mockUseCase.shouldThrow = true
 
         let viewModel = HomeViewModel(
-            userRepository: MockUserRepository(),
-            roomRepository: mockRoomRepo
+            createUserUseCase: MockCreateUserUseCase(),
+            checkRoomExistUseCase: mockUseCase,
+            createRoomUseCase: MockCreateRoomUseCase()
         )
 
         let idHelper = IdHelper()
@@ -65,18 +68,19 @@ struct HomeViewModelTests {
         #expect(viewModel.showNetworkErrorDialog == true)
     }
 
-    @Test func test_checkRoomExist_whenUserIdNil_doesNotCallRepository() async {
-        let mockRoomRepo = MockRoomRepository()
+    @Test func test_checkRoomExist_whenUserIdNil_doesNotCallUseCase() async {
+        let mockUseCase = MockCheckRoomExistUseCase()
 
         let viewModel = HomeViewModel(
-            userRepository: MockUserRepository(),
-            roomRepository: mockRoomRepo
+            createUserUseCase: MockCreateUserUseCase(),
+            checkRoomExistUseCase: mockUseCase,
+            createRoomUseCase: MockCreateRoomUseCase()
         )
         // idHelper not set → getUserId() returns nil
 
         await viewModel.checkRoomExist()
 
-        #expect(mockRoomRepo.checkRoomExistCallCount == 0)
+        #expect(mockUseCase.callCount == 0)
     }
 
     @Test func test_getRandomNickname_returnsNonEmpty() {

@@ -16,13 +16,13 @@ struct RoomListViewModelTests {
     }
 
     @Test func test_getRoomList_loadsRooms() async {
-        let mockRepo = MockRoomRepository()
-        mockRepo.mockRooms = [
-            RoomData(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "안녕하세요", latestMessageAt: "2024-01-01T12:00:00"),
-            RoomData(id: 2, title: "Room 2", type: "NORMAL", latestMessage: "반가워요", latestMessageAt: "2024-01-02T12:00:00")
+        let mockUseCase = MockGetRoomsUseCase()
+        mockUseCase.mockRooms = [
+            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "안녕하세요", latestMessageAt: "2024-01-01T12:00:00"),
+            Room(id: 2, title: "Room 2", type: "NORMAL", latestMessage: "반가워요", latestMessageAt: "2024-01-02T12:00:00")
         ]
 
-        let vm = RoomListViewModel(roomRepository: mockRepo)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
         vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
@@ -33,10 +33,10 @@ struct RoomListViewModelTests {
     }
 
     @Test func test_getRoomList_whenNetworkError_showsDialog() async {
-        let mockRepo = MockRoomRepository()
-        mockRepo.shouldThrow = true
+        let mockUseCase = MockGetRoomsUseCase()
+        mockUseCase.shouldThrow = true
 
-        let vm = RoomListViewModel(roomRepository: mockRepo)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
         vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
@@ -46,30 +46,30 @@ struct RoomListViewModelTests {
     }
 
     @Test func test_getRoomList_whenUserIdNil_doesNotLoad() async {
-        let mockRepo = MockRoomRepository()
-        mockRepo.mockRooms = [
-            RoomData(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
+        let mockUseCase = MockGetRoomsUseCase()
+        mockUseCase.mockRooms = [
+            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
         ]
 
-        let vm = RoomListViewModel(roomRepository: mockRepo)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
         // idHelper not set
 
         await vm.getRoomList()
 
         #expect(vm.roomItems.isEmpty)
-        #expect(mockRepo.getRoomsCallCount == 0)
+        #expect(mockUseCase.callCount == 0)
     }
 
     @Test func test_getRoomList_isRefresh_clearsAndReloads() async {
-        let mockRepo = MockRoomRepository()
-        mockRepo.mockRooms = [
-            RoomData(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
+        let mockUseCase = MockGetRoomsUseCase()
+        mockUseCase.mockRooms = [
+            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
         ]
 
-        let vm = RoomListViewModel(roomRepository: mockRepo)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
         vm.idHelper = makeIdHelper()
         vm.roomItems = [
-            RoomData(id: 99, title: "Old", type: "NORMAL", latestMessage: "Old", latestMessageAt: "2024-01-01T12:00:00")
+            Room(id: 99, title: "Old", type: "NORMAL", latestMessage: "Old", latestMessageAt: "2024-01-01T12:00:00")
         ]
 
         await vm.getRoomList(isRefresh: true)
@@ -79,12 +79,12 @@ struct RoomListViewModelTests {
     }
 
     @Test func test_getRoomList_pagination_incrementsPage() async {
-        let mockRepo = MockRoomRepository()
-        mockRepo.mockRooms = [
-            RoomData(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
+        let mockUseCase = MockGetRoomsUseCase()
+        mockUseCase.mockRooms = [
+            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
         ]
 
-        let vm = RoomListViewModel(roomRepository: mockRepo)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
         vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
@@ -92,14 +92,14 @@ struct RoomListViewModelTests {
 
         // 두 번째 호출 - 서버에서 같은 totalCount 반환 시 중단
         await vm.getRoomList()
-        #expect(mockRepo.getRoomsCallCount == 2)
+        #expect(mockUseCase.callCount == 2)
     }
 
     @Test func test_getRoomList_emptyResult_setsInitialized() async {
-        let mockRepo = MockRoomRepository()
-        mockRepo.mockRooms = []
+        let mockUseCase = MockGetRoomsUseCase()
+        mockUseCase.mockRooms = []
 
-        let vm = RoomListViewModel(roomRepository: mockRepo)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
         vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()

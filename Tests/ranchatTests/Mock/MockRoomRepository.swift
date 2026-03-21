@@ -8,23 +8,15 @@
 class MockRoomRepository: RoomRepository {
     var shouldThrow = false
     var mockRoomExist = false
-    var mockRooms: [RoomData] = []
+    var mockRooms: [Room] = []
     var mockRoomId = "999"
     var getRoomsCallCount = 0
     var checkRoomExistCallCount = 0
 
-    func getRooms(userId: String, page: Int, size: Int) async throws -> RoomDataList {
+    func getRooms(userId: String, page: Int, size: Int) async throws -> RoomPage {
         getRoomsCallCount += 1
         if shouldThrow { throw ApiHelperError.networkError("mock error") }
-        let data = RoomDataListResponseData(
-            items: mockRooms,
-            page: page,
-            size: size,
-            totalCount: mockRooms.count,
-            totalPage: 1,
-            empty: mockRooms.isEmpty
-        )
-        return RoomDataList(status: "SUCCESS", message: "", serverDateTime: "", data: data)
+        return RoomPage(items: mockRooms, totalCount: mockRooms.count)
     }
 
     func checkRoomExist(userId: String) async throws -> Bool {
@@ -33,9 +25,9 @@ class MockRoomRepository: RoomRepository {
         return mockRoomExist
     }
 
-    func getRoomDetail(userId: String, roomId: String) async throws -> RoomDetailData {
+    func getRoomDetail(userId: String, roomId: String) async throws -> RoomDetail {
         if shouldThrow { throw ApiHelperError.networkError("mock error") }
-        return RoomDetailData(id: 1, title: "테스트방", type: "NORMAL", participants: [])
+        return RoomDetail(id: 1, title: "테스트방", type: "NORMAL", participants: [])
     }
 
     func createRoom(userId: String) async throws -> String {

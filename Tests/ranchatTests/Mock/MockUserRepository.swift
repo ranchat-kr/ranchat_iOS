@@ -7,7 +7,7 @@
 
 class MockUserRepository: UserRepository {
     var shouldThrow = false
-    var mockUser = UserData(id: "test-user-id", name: "테스트유저")
+    var mockUser = User(id: "test-user-id", name: "테스트유저")
     var createUserCallCount = 0
     var updateUserNameCallCount = 0
     var lastUpdatedName: String?
@@ -17,7 +17,7 @@ class MockUserRepository: UserRepository {
         if shouldThrow { throw ApiHelperError.networkError("mock error") }
     }
 
-    func getUser(userId: String) async throws -> UserData {
+    func getUser(userId: String) async throws -> User {
         if shouldThrow { throw ApiHelperError.networkError("mock error") }
         return mockUser
     }

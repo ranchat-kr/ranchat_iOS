@@ -2,8 +2,6 @@
 //  ranchatApp.swift
 //  ranchat
 //
-//  Created by 김견 on 9/8/24.
-//
 
 import SwiftUI
 import FirebaseCore
@@ -21,9 +19,6 @@ struct ranchatApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .onAppear {
-                    webSocketHelper.setIdHelper(idHelper: idHelper)
-                }
                 .preferredColorScheme(.dark)
                 .environment(webSocketHelper)
                 .environment(idHelper)
@@ -34,7 +29,7 @@ struct ranchatApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
-    private let notificationRepository: NotificationRepository = DefaultNotificationRepository()
+    private let createNotificationUseCase: any CreateNotificationUseCase = DefaultCreateNotificationUseCase()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -56,7 +51,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                        let userId = KeychainHelper.shared.getUserId() {
                         Task {
                             do {
-                                try await self.notificationRepository.createNotifications(
+                                try await self.createNotificationUseCase.execute(
                                     userId: userId,
                                     allowsNotification: granted,
                                     agentId: token,
@@ -110,7 +105,7 @@ extension AppDelegate: MessagingDelegate {
             Logger.shared.log("AppDelegate", #function, "permission, token, createNotifications")
             Task {
                 do {
-                    try await notificationRepository.createNotifications(
+                    try await createNotificationUseCase.execute(
                         userId: userId,
                         allowsNotification: permissionForNotification,
                         agentId: fcmToken ?? "",

@@ -41,7 +41,7 @@ struct SettingViewModelTests {
 
     @Test func test_isValidNickname_duplicate_returnsFalse() {
         let vm = SettingViewModel()
-        vm.user = UserData(id: "id", name: "기존닉네임")
+        vm.user = User(id: "id", name: "기존닉네임")
         vm.editNickName = "기존닉네임"
         #expect(vm.isValidNickname() == false)
         #expect(vm.nicknameError == .duplicate)
@@ -88,15 +88,13 @@ struct SettingViewModelTests {
     // MARK: - setUser with mock
 
     @Test func test_setUser_whenNetworkError_showsDialog() async throws {
-        let mockRepo = MockUserRepository()
-        mockRepo.shouldThrow = true
+        let mockGetUser = MockGetUserUseCase()
+        mockGetUser.shouldThrow = true
 
-        let vm = SettingViewModel(userRepository: mockRepo)
+        let vm = SettingViewModel(getUserUseCase: mockGetUser)
         // Keychain에 userId가 없으면 showNetworkErrorDialog가 바로 set됨
-        // (실제 디바이스에서는 Keychain 값이 있어야 네트워크 호출)
         vm.setUser()
 
-        // userId가 Keychain에 없으면 즉시 에러 상태
         try await Task.sleep(for: .milliseconds(100))
         #expect(vm.isLoading == false)
     }
@@ -104,13 +102,14 @@ struct SettingViewModelTests {
     // MARK: - setNickname with mock
 
     @Test func test_setNickname_success_clearsEditNickname() async throws {
-        let mockRepo = MockUserRepository()
-        let vm = SettingViewModel(userRepository: mockRepo)
-        vm.user = UserData(id: "test-id", name: "기존이름")
+        let vm = SettingViewModel(
+            getUserUseCase: MockGetUserUseCase(),
+            updateUserNameUseCase: MockUpdateUserNameUseCase()
+        )
+        vm.user = User(id: "test-id", name: "기존이름")
         vm.editNickName = "새닉네임"
 
         // Keychain에 userId가 없으면 즉시 리턴
-        // 실제 테스트는 Keychain이 설정된 환경에서 동작
         vm.setNickname()
         try await Task.sleep(for: .milliseconds(100))
 
