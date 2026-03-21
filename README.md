@@ -12,7 +12,7 @@
 |:---:|:---:|:---:|:---:|
 | <img src="Assets/screenshots/home.png" width="200"> | <img src="Assets/screenshots/chatting_rooms.png" width="200"> | <img src="Assets/screenshots/chatting.png" width="200"> | <img src="Assets/screenshots/report.png" width="200"> |
 
-| 푸시 알림 딥링크 |
+| 푸시 알림 탭 |
 |:---:|
 | <img src="Assets/screenshots/pushNotification_to_ChattingRoom.gif" width="200"> |
 
