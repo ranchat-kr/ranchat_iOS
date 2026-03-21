@@ -135,12 +135,11 @@ final class WebSocketHelper: WebSocketService {
         let receiveMessageDestination = "/topic/v1/rooms/\(roomId)/messages/new"
         stompClient.unsubscribe(destination: receiveMessageDestination)
 
-        do {
-            guard let userId = storedUserId else { throw WebSocketHelperError.nilError }
-            try connect(userId: userId)
-        } catch {
-            Logger.shared.log(className, #function, "Failed to reconnect to websocket: \(error.localizedDescription)")
+        guard let userId = storedUserId else {
+            Logger.shared.log(className, #function, "storedUserId is nil", .error)
+            throw WebSocketHelperError.nilError
         }
+        try connect(userId: userId)
     }
 
     func activateParticipant(userId: String, roomId: String) throws {
