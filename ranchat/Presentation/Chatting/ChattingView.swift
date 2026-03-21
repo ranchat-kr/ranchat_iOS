@@ -70,15 +70,13 @@ struct ChattingView: View {
         .onAppear {
             Task {
                 viewModel.setup(webSocketService: webSocketHelper, idHelper: idHelper, networkMonitor: networkMonitor)
-                viewModel.setDismiss {
-                    DispatchQueue.main.async {
-                        dismiss()
-                    }
-                }
                 await viewModel.getRoomDetailData()
                 await viewModel.getMessageList()
                 startTimer()
             }
+        }
+        .onChange(of: viewModel.shouldDismiss) { _, newValue in
+            if newValue { dismiss() }
         }
         .onDisappear {
             activateParticipant()

@@ -30,13 +30,13 @@ final class DefaultChatRepository: ChatRepository {
         }
     }
 
-    func reportUser(roomId: String, reporterId: String, reportedUserId: String, reportType: String, reportReason: String) async throws {
+    func reportUser(roomId: String, reporterId: String, reportedUserId: String, reportType: ReportType, reportReason: String) async throws {
         let url = try APIEndpoint.reports()
         let param: [String: Any] = [
             "roomId": roomId,
             "reporterId": reporterId,
             "reportedUserId": reportedUserId,
-            "reportType": reportType,
+            "reportType": reportType.rawValue,
             "reportReason": reportReason
         ]
 

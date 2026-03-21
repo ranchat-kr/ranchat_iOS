@@ -15,6 +15,14 @@ struct ChatElementView: View {
     let userId: String
     let content: String
     let messageType: MessageType
+    let createdAt: Date
+
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "a h:mm"
+        f.locale = Locale(identifier: "ko_KR")
+        return f
+    }()
 
     private var displayType: MessageDisplayType {
         switch messageType {
@@ -36,12 +44,20 @@ struct ChatElementView: View {
     }
 
     var body: some View {
-        Text("\(sender)\(content)")
-            .font(.dungGeunMo16)
-            .padding(.vertical, 4)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .foregroundStyle(colorForDisplayType())
-            .id(id)
+        HStack(alignment: .bottom, spacing: 8) {
+            Text("\(sender)\(content)")
+                .font(.dungGeunMo16)
+                .padding(.vertical, 4)
+                .foregroundStyle(colorForDisplayType())
+                .id(id)
+
+            if displayType == .me || displayType == .other {
+                Text(Self.timeFormatter.string(from: createdAt))
+                    .font(.dungGeunMo12)
+                    .foregroundStyle(.gray)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func colorForDisplayType() -> Color {
@@ -59,5 +75,5 @@ struct ChatElementView: View {
 }
 
 #Preview {
-    ChatElementView(id: 1, userId: "testUser", content: "안녕하세요!", messageType: .enter)
+    ChatElementView(id: 1, userId: "testUser", content: "안녕하세요!", messageType: .enter, createdAt: Date())
 }

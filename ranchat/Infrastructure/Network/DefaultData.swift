@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+extension Notification.Name {
+    static let pushNotificationReceived = Notification.Name("pushNotificationReceived")
+}
+
 class DefaultData {
     static let shared = DefaultData()
     

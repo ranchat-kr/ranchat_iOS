@@ -9,7 +9,7 @@ import Firebase
 import FirebaseMessaging
 
 @main
-struct ranchatApp: App {
+struct RanchatApp: App {
     private var webSocketHelper = WebSocketHelper()
     private var idHelper = IdHelper()
     private var networkMonitor = NetworkMonitor()
@@ -35,38 +35,33 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         FirebaseApp.configure()
 
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().delegate = self
 
-            let authOption: UNAuthorizationOptions = [.alert, .badge, .sound]
-            UNUserNotificationCenter.current().requestAuthorization(
-                options: authOption
-            ) { granted, error in
-                Logger.shared.log("AppDelegate", #function, "granted: \(granted) requestAuthorization: ")
-                DefaultData.shared.permissionForNotification = granted
-                if let error {
-                    Logger.shared.log("AppDelegate", #function, "Failed to request authorization: \(error.localizedDescription)")
-                } else if !DefaultData.shared.saveToNotificationServerSuccess {
-                    if let token = DefaultData.shared.agentId,
-                       let userId = KeychainHelper.shared.getUserId() {
-                        Task {
-                            do {
-                                try await self.createNotificationUseCase.execute(
-                                    userId: userId,
-                                    allowsNotification: granted,
-                                    agentId: token,
-                                    deviceName: UIDevice.current.name
-                                )
-                            } catch {
-                                Logger.shared.log("AppDelegate", #function, "Failed to create notifications: \(error.localizedDescription)", .error)
-                            }
+        let authOption: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: authOption
+        ) { granted, error in
+            Logger.shared.log("AppDelegate", #function, "granted: \(granted)")
+            DefaultData.shared.permissionForNotification = granted
+            if let error {
+                Logger.shared.log("AppDelegate", #function, "Failed to request authorization: \(error.localizedDescription)", .error)
+            } else if !DefaultData.shared.saveToNotificationServerSuccess {
+                if let token = DefaultData.shared.agentId,
+                   let userId = KeychainHelper.shared.getUserId() {
+                    Task {
+                        do {
+                            try await self.createNotificationUseCase.execute(
+                                userId: userId,
+                                allowsNotification: granted,
+                                agentId: token,
+                                deviceName: UIDevice.current.name
+                            )
+                        } catch {
+                            Logger.shared.log("AppDelegate", #function, "Failed to create notifications: \(error.localizedDescription)", .error)
                         }
                     }
                 }
             }
-        } else {
-            let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-            application.registerUserNotificationSettings(settings)
         }
 
         application.registerForRemoteNotifications()
@@ -137,7 +132,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         completionHandler([])
     }
 
-    // 푸시 알림 받았을 때
+    // 푸시 알림 탭했을 때 (딥링크)
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
 
@@ -146,6 +141,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
 
         Logger.shared.log("AppDelegate", #function, "userinfo: \(userInfo)")
+
+        if let roomId = userInfo["roomId"] as? String {
+            NotificationCenter.default.post(
+                name: .pushNotificationReceived,
+                object: nil,
+                userInfo: ["roomId": roomId]
+            )
+        }
 
         completionHandler()
     }

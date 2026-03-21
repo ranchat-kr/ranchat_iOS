@@ -19,6 +19,8 @@ class ChattingViewModel {
     var inputText: String = ""
     var roomDetailData: RoomDetail?
 
+    var shouldDismiss: Bool = false
+
     var showReportDialog: Bool = false
     var showExitDialog: Bool = false
     var showNetworkErrorDialog: Bool = false
@@ -34,7 +36,6 @@ class ChattingViewModel {
 
     var webSocketService: (any WebSocketService)?
     var idHelper: IdHelper?
-    var dismiss: (() -> Void)?
     var networkMonitor: NetworkMonitor?
 
     private var getRoomDetailUseCase: any GetRoomDetailUseCase
@@ -59,10 +60,6 @@ class ChattingViewModel {
         webSocketService.setOnMessageReceived { [weak self] message in
             self?.messageDataList.insert(message, at: 0)
         }
-    }
-
-    func setDismiss(_ dismiss: @escaping () -> Void) {
-        self.dismiss = dismiss
     }
 
     // MARK: - Require Network
@@ -180,7 +177,7 @@ class ChattingViewModel {
         }
 
         isLoading = true
-        let reportType = getReportType(reason: selectedReason)
+        let reportType = ReportType(reason: selectedReason)
         do {
             try await reportUserUseCase.execute(
                 roomId: roomId,
@@ -221,7 +218,7 @@ class ChattingViewModel {
 
         do {
             try webSocketService.exitRoom(userId: userId, roomId: roomId)
-            (dismiss ?? {})()
+            shouldDismiss = true
         } catch {
             Logger.shared.log(className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
             setUnknownError()
@@ -240,7 +237,7 @@ class ChattingViewModel {
 
         do {
             try unsubscribeMessage()
-            (dismiss ?? {})()
+            shouldDismiss = true
         } catch {
             Logger.shared.log(className, #function, "Failed to unsubscribe message: \(error.localizedDescription)")
             setUnknownError()
@@ -261,7 +258,7 @@ class ChattingViewModel {
         } catch {
             Logger.shared.log(className, #function, "Failed to unsubscribe from receive message: \(error.localizedDescription)")
             setUnknownError()
-            throw WebSocketHelperError.connectError
+            throw WebSocketServiceError.notConnected
         }
     }
 
@@ -277,27 +274,6 @@ class ChattingViewModel {
             try webSocketService.activateParticipant(userId: userId, roomId: roomId)
         } catch {
             Logger.shared.log(className, #function, "Failed to activate participant: \(error.localizedDescription)")
-        }
-    }
-
-    // MARK: - ETC
-
-    func getReportType(reason: String?) -> String {
-        switch reason {
-        case "스팸":
-            return "SPAM"
-        case "욕설 및 비방":
-            return "HARASSMENT"
-        case "광고":
-            return "ADVERTISEMENT"
-        case "허위 정보":
-            return "MISINFORMATION"
-        case "저작권 침해":
-            return "COPYRIGHT_INFRINGEMENT"
-        case "기타":
-            return "ETC"
-        default:
-            return ""
         }
     }
 

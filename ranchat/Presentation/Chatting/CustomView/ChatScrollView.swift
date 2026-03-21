@@ -19,7 +19,8 @@ struct ChatScrollView: View {
                     id: message.id,
                     userId: message.userId,
                     content: message.content,
-                    messageType: message.messageType
+                    messageType: message.messageType,
+                    createdAt: message.createdAt
                 )
                 .scaleEffect(x: 1, y: -1)
                 .listRowSeparator(.hidden)

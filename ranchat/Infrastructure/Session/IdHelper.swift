@@ -16,7 +16,7 @@ enum IdHelperError: Error {
 }
 
 @Observable
-class IdHelper {
+final class IdHelper {
     private var userId: String?
     private var roomId: String?
     

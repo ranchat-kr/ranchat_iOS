@@ -108,6 +108,9 @@ struct HomeView: View {
                 viewModel.successMatching()
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .pushNotificationReceived)) { _ in
+            viewModel.navigateToRoomList()
+        }
         .dialog(
             isPresented: $viewModel.showNetworkErrorDialog,
             title: viewModel.networkErrorTitle,

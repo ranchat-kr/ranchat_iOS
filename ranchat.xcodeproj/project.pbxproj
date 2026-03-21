@@ -27,6 +27,7 @@
 		A20000000000000000000006 /* MessagePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000006 /* MessagePage.swift */; };
 		A2000000000000000000000R /* RoomType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000R /* RoomType.swift */; };
 		A2000000000000000000000S /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000S /* MessageType.swift */; };
+		A2000000000000000000000U /* ReportType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000U /* ReportType.swift */; };
 		A2000000000000000000000T /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000T /* APIEndpoint.swift */; };
 		A20000000000000000000007 /* NicknameError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000007 /* NicknameError.swift */; };
 		A20000000000000000000008 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000008 /* UserRepository.swift */; };
@@ -105,10 +106,15 @@
 		BB020001000000000000002 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB020001000000000000001 /* HomeViewModelTests.swift */; };
 		BB030001000000000000002 /* SettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB030001000000000000001 /* SettingViewModelTests.swift */; };
 		BB040001000000000000002 /* RoomListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB040001000000000000001 /* RoomListViewModelTests.swift */; };
-		BB050001000000000000002 /* ValidateNicknameUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB050001000000000000001 /* ValidateNicknameUseCaseTests.swift */; };
+		BB0D0001000000000000002 /* ChattingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0D0001000000000000001 /* ChattingViewModelTests.swift */; };
+		BB080001000000000000002 /* ValidateNicknameUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB080001000000000000001 /* ValidateNicknameUseCaseTests.swift */; };
 		BB050001000000000000002 /* MockUserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB050001000000000000001 /* MockUserRepository.swift */; };
 		BB060001000000000000002 /* MockRoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB060001000000000000001 /* MockRoomRepository.swift */; };
 		BB070001000000000000002 /* MockChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB070001000000000000001 /* MockChatRepository.swift */; };
+		BB090001000000000000002 /* MockWebSocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB090001000000000000001 /* MockWebSocketService.swift */; };
+		BB0A0001000000000000002 /* MockGetRoomDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0A0001000000000000001 /* MockGetRoomDetailUseCase.swift */; };
+		BB0B0001000000000000002 /* MockGetMessagesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0B0001000000000000001 /* MockGetMessagesUseCase.swift */; };
+		BB0C0001000000000000002 /* MockReportUserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0C0001000000000000001 /* MockReportUserUseCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +163,7 @@
 		A10000000000000000000006 /* MessagePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagePage.swift; sourceTree = "<group>"; };
 		A1000000000000000000000R /* RoomType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomType.swift; sourceTree = "<group>"; };
 		A1000000000000000000000S /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
+		A1000000000000000000000U /* ReportType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportType.swift; sourceTree = "<group>"; };
 		A1000000000000000000000T /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 		A10000000000000000000007 /* NicknameError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameError.swift; sourceTree = "<group>"; };
 		A10000000000000000000008 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
@@ -237,10 +244,15 @@
 		BB020001000000000000001 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
 		BB030001000000000000001 /* SettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModelTests.swift; sourceTree = "<group>"; };
 		BB040001000000000000001 /* RoomListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomListViewModelTests.swift; sourceTree = "<group>"; };
-		BB050001000000000000001 /* ValidateNicknameUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateNicknameUseCaseTests.swift; sourceTree = "<group>"; };
+		BB0D0001000000000000001 /* ChattingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingViewModelTests.swift; sourceTree = "<group>"; };
+		BB080001000000000000001 /* ValidateNicknameUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateNicknameUseCaseTests.swift; sourceTree = "<group>"; };
 		BB050001000000000000001 /* MockUserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserRepository.swift; sourceTree = "<group>"; };
 		BB060001000000000000001 /* MockRoomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoomRepository.swift; sourceTree = "<group>"; };
 		BB070001000000000000001 /* MockChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChatRepository.swift; sourceTree = "<group>"; };
+		BB090001000000000000001 /* MockWebSocketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebSocketService.swift; sourceTree = "<group>"; };
+		BB0A0001000000000000001 /* MockGetRoomDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGetRoomDetailUseCase.swift; sourceTree = "<group>"; };
+		BB0B0001000000000000001 /* MockGetMessagesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGetMessagesUseCase.swift; sourceTree = "<group>"; };
+		BB0C0001000000000000001 /* MockReportUserUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReportUserUseCase.swift; sourceTree = "<group>"; };
 		E83E75C74D523359A5F76593 /* Pods-ranchatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchatTests.debug.xcconfig"; path = "Target Support Files/Pods-ranchatTests/Pods-ranchatTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -412,6 +424,7 @@
 				A10000000000000000000007 /* NicknameError.swift */,
 				A1000000000000000000000R /* RoomType.swift */,
 				A1000000000000000000000S /* MessageType.swift */,
+				A1000000000000000000000U /* ReportType.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -686,7 +699,8 @@
 				BB020001000000000000001 /* HomeViewModelTests.swift */,
 				BB030001000000000000001 /* SettingViewModelTests.swift */,
 				BB040001000000000000001 /* RoomListViewModelTests.swift */,
-				BB050001000000000000001 /* ValidateNicknameUseCaseTests.swift */,
+				BB0D0001000000000000001 /* ChattingViewModelTests.swift */,
+				BB080001000000000000001 /* ValidateNicknameUseCaseTests.swift */,
 			);
 			path = ranchatTests;
 			sourceTree = "<group>";
@@ -697,6 +711,10 @@
 				BB050001000000000000001 /* MockUserRepository.swift */,
 				BB060001000000000000001 /* MockRoomRepository.swift */,
 				BB070001000000000000001 /* MockChatRepository.swift */,
+				BB090001000000000000001 /* MockWebSocketService.swift */,
+				BB0A0001000000000000001 /* MockGetRoomDetailUseCase.swift */,
+				BB0B0001000000000000001 /* MockGetMessagesUseCase.swift */,
+				BB0C0001000000000000001 /* MockReportUserUseCase.swift */,
 				B10000000000000000000001 /* MockCheckRoomExistUseCase.swift */,
 				B10000000000000000000002 /* MockCreateRoomUseCase.swift */,
 				B10000000000000000000003 /* MockCreateUserUseCase.swift */,
@@ -890,6 +908,7 @@
 				A20000000000000000000007 /* NicknameError.swift in Sources */,
 				A2000000000000000000000R /* RoomType.swift in Sources */,
 				A2000000000000000000000S /* MessageType.swift in Sources */,
+				A2000000000000000000000U /* ReportType.swift in Sources */,
 				A20000000000000000000008 /* UserRepository.swift in Sources */,
 				A20000000000000000000009 /* RoomRepository.swift in Sources */,
 				A2000000000000000000000A /* ChatRepository.swift in Sources */,
@@ -967,10 +986,15 @@
 				BB020001000000000000002 /* HomeViewModelTests.swift in Sources */,
 				BB030001000000000000002 /* SettingViewModelTests.swift in Sources */,
 				BB040001000000000000002 /* RoomListViewModelTests.swift in Sources */,
-				BB050001000000000000002 /* ValidateNicknameUseCaseTests.swift in Sources */,
+				BB0D0001000000000000002 /* ChattingViewModelTests.swift in Sources */,
+				BB080001000000000000002 /* ValidateNicknameUseCaseTests.swift in Sources */,
 				BB050001000000000000002 /* MockUserRepository.swift in Sources */,
 				BB060001000000000000002 /* MockRoomRepository.swift in Sources */,
 				BB070001000000000000002 /* MockChatRepository.swift in Sources */,
+				BB090001000000000000002 /* MockWebSocketService.swift in Sources */,
+				BB0A0001000000000000002 /* MockGetRoomDetailUseCase.swift in Sources */,
+				BB0B0001000000000000002 /* MockGetMessagesUseCase.swift in Sources */,
+				BB0C0001000000000000002 /* MockReportUserUseCase.swift in Sources */,
 				B20000000000000000000001 /* MockCheckRoomExistUseCase.swift in Sources */,
 				B20000000000000000000002 /* MockCreateRoomUseCase.swift in Sources */,
 				B20000000000000000000003 /* MockCreateUserUseCase.swift in Sources */,

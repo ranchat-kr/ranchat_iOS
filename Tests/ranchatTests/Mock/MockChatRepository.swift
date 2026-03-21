@@ -15,7 +15,7 @@ class MockChatRepository: ChatRepository {
         return MessagePage(items: mockMessages, totalCount: mockMessages.count)
     }
 
-    func reportUser(roomId: String, reporterId: String, reportedUserId: String, reportType: String, reportReason: String) async throws {
+    func reportUser(roomId: String, reporterId: String, reportedUserId: String, reportType: ReportType, reportReason: String) async throws {
         reportUserCallCount += 1
         if shouldThrow { throw ApiHelperError.networkError("mock error") }
     }

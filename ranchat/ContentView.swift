@@ -7,6 +7,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(NetworkMonitor.self) var networkMonitor
+    private let createNotificationUseCase: any CreateNotificationUseCase = DefaultCreateNotificationUseCase()
 
     init () {
         let appearance = UINavigationBarAppearance()
@@ -26,7 +27,7 @@ struct ContentView: View {
                        let userId = KeychainHelper.shared.getUserId() {
                         Task {
                             do {
-                                try await DefaultCreateNotificationUseCase().execute(
+                                try await createNotificationUseCase.execute(
                                     userId: userId,
                                     allowsNotification: DefaultData.shared.permissionForNotification ?? false,
                                     agentId: DefaultData.shared.agentId ?? "",

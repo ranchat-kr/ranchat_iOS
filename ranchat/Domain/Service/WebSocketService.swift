@@ -5,6 +5,11 @@
 
 import Foundation
 
+enum WebSocketServiceError: Error {
+    case notConnected
+    case nilParameter
+}
+
 protocol WebSocketService: AnyObject {
     func connect(userId: String) throws
     func disconnect()

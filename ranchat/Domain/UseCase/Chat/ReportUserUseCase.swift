@@ -6,7 +6,7 @@
 import Foundation
 
 protocol ReportUserUseCase {
-    func execute(roomId: String, reporterId: String, reportedUserId: String, reportType: String, reportReason: String) async throws
+    func execute(roomId: String, reporterId: String, reportedUserId: String, reportType: ReportType, reportReason: String) async throws
 }
 
 final class DefaultReportUserUseCase: ReportUserUseCase {
@@ -16,7 +16,7 @@ final class DefaultReportUserUseCase: ReportUserUseCase {
         self.chatRepository = chatRepository
     }
 
-    func execute(roomId: String, reporterId: String, reportedUserId: String, reportType: String, reportReason: String) async throws {
+    func execute(roomId: String, reporterId: String, reportedUserId: String, reportType: ReportType, reportReason: String) async throws {
         try await chatRepository.reportUser(
             roomId: roomId,
             reporterId: reporterId,
