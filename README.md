@@ -10,7 +10,7 @@
 
 - **랜덤 매칭** — START 버튼 클릭 시 다른 사용자와 랜덤 매칭, 8초 내 상대 없으면 AI와 매칭
 - **채팅 관리** — 기존 매칭된 채팅방 재입장, 신고 및 방 나가기, 닉네임 변경
-- **푸시 알림** — Firebase Cloud Messaging 기반 메시지 수신 알림
+- **푸시 알림** — Firebase Cloud Messaging 기반 메시지 수신 알림 + 딥링크로 채팅방 이동
 
 ## ⚙️ 기술 스택
 
@@ -42,12 +42,12 @@ View (SwiftUI)
 |---|---|---|
 | Domain | Entity, Repository 프로토콜, UseCase | Foundation만 |
 | Data | DTO, NetworkClient, Repository 구현체 | Domain, Alamofire |
-| Infrastructure | WebSocket, Keychain, NetworkMonitor | Domain(Service 프로토콜) |
+| Infrastructure | WebSocket, Keychain, NetworkMonitor, Logger | Domain(Service 프로토콜) |
 | Presentation | ViewModel, View | Domain(UseCase/Entity) |
 
 **Clean Architecture 도입 이유**
 
-기존 구조에서는 두 가지 핵심 문제가 있었습니다.
+기존 구조에서는 두 가지 핵심 의존성 위반이 있었습니다.
 
 1. **Infrastructure → Presentation 직접 참조**: `WebSocketHelper`가 `ChattingViewModel`을 직접 들고 있어 의존성 방향이 역전되었습니다. `WebSocketService` 프로토콜과 callback 패턴으로 해소했습니다.
 
@@ -60,6 +60,11 @@ class WebSocketHelper {
 // After (callback 역전)
 protocol WebSocketService {
     func setOnMessageReceived(_ handler: @escaping @MainActor (Message) -> Void)
+}
+
+// ViewModel에서 등록
+webSocketService.setOnMessageReceived { [weak self] message in
+    self?.messageDataList.insert(message, at: 0)
 }
 ```
 
@@ -87,22 +92,37 @@ KeychainHelper.shared.getUserId()
 ```
 ranchat/
 ├── Domain/
-│   ├── Entity/          # 순수 Swift 모델 (User, Room, Message, ...)
-│   ├── Repository/      # Repository 프로토콜
-│   ├── Service/         # WebSocketService 프로토콜
-│   └── UseCase/         # User/ Room/ Chat/ Notification/
+│   ├── Entity/          # User, Room, RoomDetail, Message, RoomPage, MessagePage
+│   │                    # RoomType, MessageType, NicknameError, ReportType
+│   ├── Repository/      # UserRepository, RoomRepository, ChatRepository, NotificationRepository
+│   ├── Service/         # WebSocketService 프로토콜, WebSocketServiceError
+│   └── UseCase/
+│       ├── User/        # CreateUser, GetUser, UpdateUserName, ValidateNickname
+│       ├── Room/        # CheckRoomExist, CreateRoom, GetRooms, GetRoomDetail
+│       ├── Chat/        # GetMessages, ReportUser
+│       └── Notification/ # CreateNotification, UpdateNotification
 ├── Data/
-│   ├── DTO/             # Codable API 응답 + toDomain()
-│   ├── DataSource/      # NetworkClient 프로토콜 + Alamofire 구현
-│   └── Repository/      # Default*Repository (DTO→Domain 변환)
+│   ├── DTO/             # ApiResponseDTO, UserDTO, RoomDTO, RoomDetailDTO,
+│   │                    # MessageDTO, RoomPageDTO, MessagePageDTO (+toDomain())
+│   ├── DataSource/      # NetworkClient 프로토콜 + AlamofireNetworkClient
+│   ├── LocalStorage/    # SearchKeyword
+│   ├── Repository/      # DefaultUserRepository, DefaultRoomRepository,
+│   │                    # DefaultChatRepository, DefaultNotificationRepository
+│   ├── APIEndpoint.swift
+│   └── NetworkError.swift
 ├── Infrastructure/
-│   ├── WebSocket/       # WebSocketHelper (WebSocketService 구현)
+│   ├── WebSocket/       # WebSocketHelper (WebSocketService 구현, STOMP)
 │   ├── Keychain/        # KeychainHelper
 │   ├── Network/         # NetworkMonitor, DefaultData
-│   └── Session/         # IdHelper
+│   ├── Session/         # IdHelper
+│   └── Logger/          # Logger
 └── Presentation/
-    ├── Home/ RoomList/ Chatting/ Setting/
-    └── Common/ Extension/
+    ├── Home/            # HomeView, HomeViewModel
+    ├── RoomList/        # RoomListView, RoomListViewModel
+    ├── Chatting/        # ChattingView, ChattingViewModel
+    ├── Setting/         # SettingView, SettingViewModel
+    ├── Common/          # CenterLoadingView, DialogViewModifier, DosStyleTextField, ...
+    └── Extension/       # Font+DungGeunMo, UINavigationController+
 
 Tests/ranchatTests/
 ├── Mock/
@@ -110,11 +130,19 @@ Tests/ranchatTests/
 │   ├── MockCreateRoomUseCase.swift
 │   ├── MockCreateUserUseCase.swift
 │   ├── MockGetRoomsUseCase.swift
+│   ├── MockGetRoomDetailUseCase.swift
+│   ├── MockGetMessagesUseCase.swift
 │   ├── MockGetUserUseCase.swift
 │   ├── MockUpdateUserNameUseCase.swift
-│   └── MockValidateNicknameUseCase.swift
+│   ├── MockValidateNicknameUseCase.swift
+│   ├── MockReportUserUseCase.swift
+│   ├── MockWebSocketService.swift
+│   ├── MockUserRepository.swift
+│   ├── MockRoomRepository.swift
+│   └── MockChatRepository.swift
 ├── HomeViewModelTests.swift
 ├── RoomListViewModelTests.swift
+├── ChattingViewModelTests.swift
 ├── SettingViewModelTests.swift
 └── ValidateNicknameUseCaseTests.swift
 ```
@@ -124,6 +152,8 @@ Tests/ranchatTests/
 - 단순하고 직관적인 인터페이스, START 버튼 중심으로 빠른 접근
 - AI 매칭 기능으로 대기 시간 최소화
 - Pull-to-Refresh로 채팅방 목록 갱신
+- 메시지 발신 시간 표시 (채팅 말풍선 옆)
+- FCM 푸시 알림 탭 시 채팅방 목록으로 딥링크 이동
 
 ## 🚀 실행 방법
 
