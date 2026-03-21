@@ -125,10 +125,12 @@ class SettingViewModel {
                     allowsNotification: isToggleOn
                 )
             } catch let apiError as ApiHelperError {
+                isToggleOn.toggle()
                 networkErrorTitle = apiError.dialogTitle
                 networkErrorContent = apiError.dialogContent
                 showNetworkErrorDialog = true
             } catch {
+                isToggleOn.toggle()
                 networkErrorTitle = "오류"
                 networkErrorContent = "알 수 없는 오류가 발생했습니다."
                 showNetworkErrorDialog = true
