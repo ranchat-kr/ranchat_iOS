@@ -95,6 +95,11 @@ class RoomListViewModel {
             return
         }
 
+        guard at < roomItems.count else {
+            Logger.shared.log(className, #function, "Index out of bounds: \(at)", .error)
+            return
+        }
+
         let roomId: String = String(roomItems[at].id)
 
         guard let webSocketService, let idHelper else {
@@ -130,6 +135,11 @@ class RoomListViewModel {
             networkErrorTitle = "네트워크 오류"
             networkErrorContent = "인터넷 연결을 확인해주세요."
             showNetworkErrorDialog = true
+            return
+        }
+
+        guard at < roomItems.count else {
+            Logger.shared.log(className, #function, "Index out of bounds: \(at)", .error)
             return
         }
 
