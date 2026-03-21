@@ -15,7 +15,7 @@ final class DefaultUserRepository: UserRepository {
     }
 
     func createUser(id: String, name: String) async throws {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/users")
+        let url = try APIEndpoint.users()
         let param: [String: Any] = ["id": id, "name": name]
 
         let response: ApiResponseDTO<Bool> = try await networkClient.request(url: url, method: .post, params: param)
@@ -27,7 +27,7 @@ final class DefaultUserRepository: UserRepository {
     }
 
     func getUser(userId: String) async throws -> User {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/users/\(userId)")
+        let url = try APIEndpoint.user(id: userId)
 
         let response: ApiResponseDTO<UserDTO> = try await networkClient.request(url: url, method: .get, params: nil)
         if response.status == Status.success.rawValue {
@@ -43,7 +43,7 @@ final class DefaultUserRepository: UserRepository {
     }
 
     func updateUserName(userId: String, name: String) async throws {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/users/\(userId)")
+        let url = try APIEndpoint.user(id: userId)
         let param: [String: Any] = ["name": name]
 
         let response: ApiResponseDTO<Bool> = try await networkClient.request(url: url, method: .put, params: param)
@@ -52,12 +52,5 @@ final class DefaultUserRepository: UserRepository {
             throw ApiHelperError.networkError(response.message)
         }
         Logger.shared.log(className, #function, "Success to update user name")
-    }
-
-    private func getUrl(for path: String) throws -> URL {
-        guard let url = URL(string: path) else {
-            throw ApiHelperError.invalidURLError
-        }
-        return url
     }
 }

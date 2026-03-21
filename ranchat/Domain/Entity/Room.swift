@@ -8,7 +8,7 @@ import Foundation
 struct Room: Identifiable, Equatable {
     let id: Int
     let title: String
-    let type: String
+    let type: RoomType
     let latestMessage: String
-    let latestMessageAt: String
+    let latestMessageAt: Date
 }

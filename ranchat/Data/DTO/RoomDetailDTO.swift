@@ -25,7 +25,7 @@ struct RoomDetailDTO: Codable {
         RoomDetail(
             id: id,
             title: title,
-            type: type,
+            type: RoomType(rawValue: type) ?? .unknown,
             participants: participants.map { $0.toDomain() }
         )
     }

@@ -27,7 +27,7 @@ struct SettingViewModelTests {
 
     @Test func test_isValidNickname_tooLong_returnsFalse() {
         let vm = SettingViewModel()
-        vm.editNickName = "열한글자닉네임초과"  // 11자
+        vm.editNickName = "열한글자닉네임초과다더"  // 11자
         #expect(vm.isValidNickname() == false)
         #expect(vm.nicknameError == .length)
     }

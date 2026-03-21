@@ -15,7 +15,7 @@ final class DefaultRoomRepository: RoomRepository {
     }
 
     func getRooms(userId: String, page: Int, size: Int) async throws -> RoomPage {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms?page=\(page)&size=\(size)&userId=\(userId)")
+        let url = try APIEndpoint.rooms(userId: userId, page: page, size: size)
 
         let response: ApiResponseDTO<RoomPageDTO> = try await networkClient.request(url: url, method: .get, params: nil)
         if response.status == Status.success.rawValue {
@@ -31,7 +31,7 @@ final class DefaultRoomRepository: RoomRepository {
     }
 
     func checkRoomExist(userId: String) async throws -> Bool {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms/exists-by-userId?userId=\(userId)")
+        let url = try APIEndpoint.roomExists(userId: userId)
 
         let response: ApiResponseDTO<Bool> = try await networkClient.request(url: url, method: .get, params: nil)
         if response.status == Status.success.rawValue {
@@ -47,7 +47,7 @@ final class DefaultRoomRepository: RoomRepository {
     }
 
     func getRoomDetail(userId: String, roomId: String) async throws -> RoomDetail {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms/\(roomId)?userId=\(userId)")
+        let url = try APIEndpoint.roomDetail(userId: userId, roomId: roomId)
 
         let response: ApiResponseDTO<RoomDetailDTO> = try await networkClient.request(url: url, method: .get, params: nil)
         if response.status == Status.success.rawValue {
@@ -63,7 +63,7 @@ final class DefaultRoomRepository: RoomRepository {
     }
 
     func createRoom(userId: String) async throws -> String {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms")
+        let url = try APIEndpoint.rooms()
         let param: [String: Any] = [
             "userIds": [userId],
             "roomType": "GPT"
@@ -80,12 +80,5 @@ final class DefaultRoomRepository: RoomRepository {
             Logger.shared.log(className, #function, "Failed to create room: \(response.message)", .error)
             throw ApiHelperError.networkError(response.message)
         }
-    }
-
-    private func getUrl(for path: String) throws -> URL {
-        guard let url = URL(string: path) else {
-            throw ApiHelperError.invalidURLError
-        }
-        return url
     }
 }

@@ -93,6 +93,9 @@ struct HomeView: View {
             viewModel.setup(webSocketService: webSocketHelper, idHelper: idHelper, networkMonitor: networkMonitor)
             viewModel.setUser()
         }
+        .onDisappear {
+            isAnimating = false
+        }
 
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
             if oldValue == false && newValue == true && !viewModel.isInitialized {
@@ -107,8 +110,8 @@ struct HomeView: View {
         }
         .dialog(
             isPresented: $viewModel.showNetworkErrorDialog,
-            title: "인터넷 연결 오류",
-            content: "인터넷 연결을 확인해주세요.",
+            title: viewModel.networkErrorTitle,
+            content: viewModel.networkErrorContent,
             primaryButtonText: "확인",
             onPrimaryButton: {}
             )

@@ -92,16 +92,18 @@ struct RoomListView: View {
             content: "'\(viewModel.selectedRoom?.title ?? "")'\n 채팅방을 나가시겠습니까?",
             primaryButtonText: "나가기",
             secondaryButtonText: "취소") {
-                withAnimation {
-                    viewModel.exitRoom(at: viewModel.selectedRoomIndex ?? -1)
+                if let index = viewModel.selectedRoomIndex {
+                    withAnimation {
+                        viewModel.exitRoom(at: index)
+                    }
                 }
                 viewModel.showExitRoomDialog = false
             }
 
             .dialog(
                 isPresented: $viewModel.showNetworkErrorDialog,
-                title: "인터넷 연결 오류",
-                content: "인터넷 연결을 확인해주세요.",
+                title: viewModel.networkErrorTitle,
+                content: viewModel.networkErrorContent,
                 primaryButtonText: "확인",
                 onPrimaryButton: {}
             )

@@ -5,34 +5,13 @@
 
 import SwiftUI
 
-enum TimeFormatState {
-    case today, yesterday, thisYear, anotherYear, none
-}
-
-struct DateData {
-    var year: String
-    var month: String
-    var day: String
-    var hour: String
-    var minute: String
-    var second: String
-}
-
 struct RoomItemView: View {
     var roomData: Room
     var action: () -> Void
     var swipeAction: () -> Void
 
-    @State var timeFormatState: TimeFormatState = .none
-    @State var isClicked: Bool = false
     @State var dateText: String = ""
     @State var dateFont: Font = .dungGeunMo12
-
-    private static let isoFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        return f
-    }()
 
     private static let timeFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -83,8 +62,7 @@ struct RoomItemView: View {
             .padding(.vertical, 10)
 
             .onAppear {
-                dateText = parseToRoomDateFormat()
-                dateFont = fontByTimeFormat()
+                (dateText, dateFont) = formatDate(roomData.latestMessageAt)
             }
             .contentShape(Rectangle())
         }
@@ -103,41 +81,26 @@ struct RoomItemView: View {
         }
     }
 
-    func fontByTimeFormat() -> Font {
-        switch timeFormatState {
-        case .today, .thisYear:
-            return .dungGeunMo12
-        case .yesterday:
-            return .dungGeunMo16
-        case .anotherYear:
-            return .dungGeunMo12
-        case .none:
-            return .dungGeunMo12
-        }
-    }
-
-    func parseToRoomDateFormat() -> String {
-        guard let messageDate = Self.isoFormatter.date(from: roomData.latestMessageAt) else { return "" }
-
-        let currentDate = Date()
+    private func formatDate(_ date: Date) -> (String, Font) {
         let calendar = Calendar.current
+        let currentDate = Date()
 
-        if calendar.isDateInToday(messageDate) {
-            timeFormatState = .today
-            return Self.timeFormatter.string(from: messageDate)
-        } else if calendar.isDateInYesterday(messageDate) {
-            timeFormatState = .yesterday
-            return "어제"
-        } else if calendar.component(.year, from: messageDate) == calendar.component(.year, from: currentDate) {
-            timeFormatState = .thisYear
-            return Self.monthDayFormatter.string(from: messageDate)
+        if calendar.isDateInToday(date) {
+            return (Self.timeFormatter.string(from: date), .dungGeunMo12)
+        } else if calendar.isDateInYesterday(date) {
+            return ("어제", .dungGeunMo16)
+        } else if calendar.component(.year, from: date) == calendar.component(.year, from: currentDate) {
+            return (Self.monthDayFormatter.string(from: date), .dungGeunMo12)
         } else {
-            timeFormatState = .anotherYear
-            return Self.fullDateFormatter.string(from: messageDate)
+            return (Self.fullDateFormatter.string(from: date), .dungGeunMo12)
         }
     }
 }
 
 #Preview {
-    RoomItemView(roomData: Room(id: 1, title: "즐거운바다", type: "NORMAL", latestMessage: "안녕하세요", latestMessageAt: "2024-02-15T21:01:28"), action: {}, swipeAction: {})
+    RoomItemView(
+        roomData: Room(id: 1, title: "즐거운바다", type: .normal, latestMessage: "안녕하세요", latestMessageAt: Date()),
+        action: {},
+        swipeAction: {}
+    )
 }

@@ -33,7 +33,7 @@ struct ChattingView: View {
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     // 신고 버튼
-                    if viewModel.roomDetailData?.type != "GPT" {
+                    if viewModel.roomDetailData?.type != .gpt {
                         ToolbarButton(action: {
                             viewModel.showReportDialog = true
                         }, imageName: "exclamationmark.bubble.fill")
@@ -84,6 +84,14 @@ struct ChattingView: View {
             activateParticipant()
             stopTimer()
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            stopTimer()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            if timer == nil {
+                startTimer()
+            }
+        }
         .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
             if oldValue == false && newValue == true {
                 Task {
@@ -103,8 +111,8 @@ struct ChattingView: View {
         })
         .dialog(
             isPresented: $viewModel.showNetworkErrorDialog,
-            title: "인터넷 연결 오류",
-            content: "인터넷 연결을 확인해주세요.",
+            title: viewModel.networkErrorTitle,
+            content: viewModel.networkErrorContent,
             primaryButtonText: "확인",
             onPrimaryButton: {}
             )

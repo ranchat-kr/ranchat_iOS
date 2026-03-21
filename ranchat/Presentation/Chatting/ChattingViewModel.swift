@@ -5,6 +5,7 @@
 
 import SwiftUI
 
+@MainActor
 @Observable
 class ChattingViewModel {
     let className = "ChattingViewModel"
@@ -21,6 +22,8 @@ class ChattingViewModel {
     var showReportDialog: Bool = false
     var showExitDialog: Bool = false
     var showNetworkErrorDialog: Bool = false
+    var networkErrorTitle: String = "오류"
+    var networkErrorContent: String = "알 수 없는 오류가 발생했습니다."
 
     var selectedReason: String?
     var reportText: String = ""
@@ -67,7 +70,7 @@ class ChattingViewModel {
     func getRoomDetailData() async {
         guard let userId = idHelper?.getUserId(), let roomId = idHelper?.getRoomId() else {
             Logger.shared.log(className, #function, "userId or roomId is nil", .error)
-            showNetworkErrorDialog = true
+            setError(.nilError)
             return
         }
 
@@ -76,9 +79,12 @@ class ChattingViewModel {
             let roomDetail = try await getRoomDetailUseCase.execute(userId: userId, roomId: roomId)
             self.roomDetailData = roomDetail
             self.isRoomDetailDataLoaded = true
+        } catch let apiError as ApiHelperError {
+            Logger.shared.log(className, #function, "Failed to get room detail data: \(apiError)", .error)
+            setError(apiError)
         } catch {
             Logger.shared.log(className, #function, "Failed to get room detail data: \(error.localizedDescription)", .error)
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
         isLoading = false
     }
@@ -86,7 +92,7 @@ class ChattingViewModel {
     func getMessageList() async {
         guard let roomId = idHelper?.getRoomId() else {
             Logger.shared.log(className, #function, "roomId is nil", .error)
-            showNetworkErrorDialog = true
+            setError(.nilError)
             return
         }
 
@@ -98,9 +104,12 @@ class ChattingViewModel {
             self.messageDataList.removeAll()
             self.messageDataList += messagePage.items
             self.isMessageDataListLoaded = true
+        } catch let apiError as ApiHelperError {
+            Logger.shared.log(className, #function, "Failed to get message list: \(apiError)", .error)
+            setError(apiError)
         } catch {
             Logger.shared.log(className, #function, "Failed to get message list: \(error.localizedDescription)", .error)
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
         isLoading = false
     }
@@ -117,10 +126,14 @@ class ChattingViewModel {
                 let messagePage = try await getMessagesUseCase.execute(roomId: roomId, page: currentPage, size: pageSize)
                 self.messageDataList += messagePage.items
             }
+        } catch let apiError as ApiHelperError {
+            Logger.shared.log(className, #function, "Failed to fetch message list: \(apiError)", .error)
+            currentPage -= 1
+            setError(apiError)
         } catch {
             Logger.shared.log(className, #function, "Failed to fetch message list: \(error.localizedDescription)", .error)
             currentPage -= 1
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
     }
 
@@ -129,6 +142,8 @@ class ChattingViewModel {
         if message.isEmpty { return }
 
         if !(networkMonitor?.isConnected ?? false) {
+            networkErrorTitle = "네트워크 오류"
+            networkErrorContent = "인터넷 연결을 확인해주세요."
             showNetworkErrorDialog = true
             return
         }
@@ -137,7 +152,7 @@ class ChattingViewModel {
               let userId = idHelper?.getUserId(),
               let roomId = idHelper?.getRoomId() else {
             Logger.shared.log(className, #function, "webSocketService or idHelper is nil", .error)
-            showNetworkErrorDialog = true
+            setError(.nilError)
             return
         }
 
@@ -146,7 +161,7 @@ class ChattingViewModel {
             inputText = ""
         } catch {
             Logger.shared.log(className, #function, "Failed to send message: \(error.localizedDescription)", .error)
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
     }
 
@@ -154,13 +169,13 @@ class ChattingViewModel {
         guard let userId = idHelper?.getUserId(),
               let roomId = idHelper?.getRoomId() else {
             Logger.shared.log(className, #function, "userId or roomId is nil", .error)
-            showNetworkErrorDialog = true
+            setError(.nilError)
             return
         }
 
         guard let reportedUserId = roomDetailData?.participants.first(where: { $0.userId != userId })?.userId else {
             Logger.shared.log(className, #function, "reportedUserId is nil", .error)
-            showNetworkErrorDialog = true
+            setError(.nilError)
             return
         }
 
@@ -174,15 +189,20 @@ class ChattingViewModel {
                 reportType: reportType,
                 reportReason: reportText
             )
+        } catch let apiError as ApiHelperError {
+            Logger.shared.log(className, #function, "Failed to report user: \(apiError)", .error)
+            setError(apiError)
         } catch {
             Logger.shared.log(className, #function, "Failed to report user: \(error.localizedDescription)", .error)
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
         isLoading = false
     }
 
     func exitRoom() async {
         if !(networkMonitor?.isConnected ?? false) {
+            networkErrorTitle = "네트워크 오류"
+            networkErrorContent = "인터넷 연결을 확인해주세요."
             showNetworkErrorDialog = true
             return
         }
@@ -194,7 +214,7 @@ class ChattingViewModel {
               let userId = idHelper.getUserId(),
               let webSocketService else {
             Logger.shared.log(className, #function, "idHelper or webSocketService is nil", .error)
-            showNetworkErrorDialog = true
+            setError(.nilError)
             isLoading = false
             return
         }
@@ -204,7 +224,7 @@ class ChattingViewModel {
             (dismiss ?? {})()
         } catch {
             Logger.shared.log(className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
 
         isLoading = false
@@ -212,6 +232,8 @@ class ChattingViewModel {
 
     func tempExit() {
         if !(networkMonitor?.isConnected ?? false) {
+            networkErrorTitle = "네트워크 오류"
+            networkErrorContent = "인터넷 연결을 확인해주세요."
             showNetworkErrorDialog = true
             return
         }
@@ -221,7 +243,7 @@ class ChattingViewModel {
             (dismiss ?? {})()
         } catch {
             Logger.shared.log(className, #function, "Failed to unsubscribe message: \(error.localizedDescription)")
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
     }
 
@@ -230,7 +252,7 @@ class ChattingViewModel {
               let roomId = idHelper.getRoomId(),
               let webSocketService else {
             Logger.shared.log(className, #function, "idHelper or webSocketService is nil")
-            showNetworkErrorDialog = true
+            setError(.nilError)
             throw IdHelperError.nilError
         }
 
@@ -238,7 +260,7 @@ class ChattingViewModel {
             try webSocketService.unsubscribeMessages(roomId: roomId)
         } catch {
             Logger.shared.log(className, #function, "Failed to unsubscribe from receive message: \(error.localizedDescription)")
-            showNetworkErrorDialog = true
+            setUnknownError()
             throw WebSocketHelperError.connectError
         }
     }
@@ -248,7 +270,6 @@ class ChattingViewModel {
               let userId = idHelper?.getUserId(),
               let roomId = idHelper?.getRoomId() else {
             Logger.shared.log(className, #function, "webSocketService or idHelper is nil")
-            showNetworkErrorDialog = true
             return
         }
 
@@ -256,7 +277,6 @@ class ChattingViewModel {
             try webSocketService.activateParticipant(userId: userId, roomId: roomId)
         } catch {
             Logger.shared.log(className, #function, "Failed to activate participant: \(error.localizedDescription)")
-            showNetworkErrorDialog = true
         }
     }
 
@@ -279,5 +299,19 @@ class ChattingViewModel {
         default:
             return ""
         }
+    }
+
+    // MARK: - Private
+
+    private func setError(_ error: ApiHelperError) {
+        networkErrorTitle = error.dialogTitle
+        networkErrorContent = error.dialogContent
+        showNetworkErrorDialog = true
+    }
+
+    private func setUnknownError() {
+        networkErrorTitle = "오류"
+        networkErrorContent = "알 수 없는 오류가 발생했습니다."
+        showNetworkErrorDialog = true
     }
 }

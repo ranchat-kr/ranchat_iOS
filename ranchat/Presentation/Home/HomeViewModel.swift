@@ -6,11 +6,14 @@
 import UUIDV7
 import SwiftUI
 
+@MainActor
 @Observable
 class HomeViewModel {
     let className = "HomeViewModel"
 
     var showNetworkErrorDialog = false
+    var networkErrorTitle = "오류"
+    var networkErrorContent = "알 수 없는 오류가 발생했습니다."
     var isLoading = false
     var isMatching = false
     var isRoomExist = false
@@ -94,7 +97,14 @@ class HomeViewModel {
                 try webSocketService.connect(userId: userId)
                 await checkRoomExist()
                 self.isInitialized = true
+            } catch let apiError as ApiHelperError {
+                networkErrorTitle = apiError.dialogTitle
+                networkErrorContent = apiError.dialogContent
+                showNetworkErrorDialog = true
+                Logger.shared.log(className, #function, "Failed to set user: \(apiError)", .error)
             } catch {
+                networkErrorTitle = "오류"
+                networkErrorContent = "알 수 없는 오류가 발생했습니다."
                 showNetworkErrorDialog = true
                 Logger.shared.log(className, #function, "Failed to set user: \(error.localizedDescription)", .error)
             }
@@ -106,6 +116,8 @@ class HomeViewModel {
         isMatching = false
 
         if !(networkMonitor?.isConnected ?? false) {
+            networkErrorTitle = "네트워크 오류"
+            networkErrorContent = "인터넷 연결을 확인해주세요."
             showNetworkErrorDialog = true
             return
         }
@@ -122,7 +134,14 @@ class HomeViewModel {
             try webSocketService.enterRoom(userId: userId, roomId: roomId)
             isMatchSuccess = false
             navigateToChat()
+        } catch let apiError as ApiHelperError {
+            networkErrorTitle = apiError.dialogTitle
+            networkErrorContent = apiError.dialogContent
+            showNetworkErrorDialog = true
+            Logger.shared.log(className, #function, "Failed to success matching: \(apiError)", .error)
         } catch {
+            networkErrorTitle = "오류"
+            networkErrorContent = "알 수 없는 오류가 발생했습니다."
             showNetworkErrorDialog = true
             Logger.shared.log(className, #function, "Failed to success matching: \(error.localizedDescription)", .error)
         }
@@ -130,6 +149,8 @@ class HomeViewModel {
 
     func requestMatching() {
         if !(networkMonitor?.isConnected ?? false) {
+            networkErrorTitle = "네트워크 오류"
+            networkErrorContent = "인터넷 연결을 확인해주세요."
             showNetworkErrorDialog = true
             return
         }
@@ -145,8 +166,16 @@ class HomeViewModel {
         do {
             try webSocketService.requestMatching(userId: userId)
             checkMatching()
+        } catch let apiError as ApiHelperError {
+            isMatching = false
+            networkErrorTitle = apiError.dialogTitle
+            networkErrorContent = apiError.dialogContent
+            showNetworkErrorDialog = true
+            Logger.shared.log(className, #function, "Failed to request matching: \(apiError)", .error)
         } catch {
             isMatching = false
+            networkErrorTitle = "오류"
+            networkErrorContent = "알 수 없는 오류가 발생했습니다."
             showNetworkErrorDialog = true
             Logger.shared.log(className, #function, "Failed to request matching: \(error.localizedDescription)", .error)
         }
@@ -167,6 +196,8 @@ class HomeViewModel {
                 isMatching = false
 
                 if !(networkMonitor?.isConnected ?? false) {
+                    networkErrorTitle = "네트워크 오류"
+                    networkErrorContent = "인터넷 연결을 확인해주세요."
                     showNetworkErrorDialog = true
                     return
                 }
@@ -189,8 +220,16 @@ class HomeViewModel {
                 try webSocketService.enterRoom(userId: userId, roomId: roomId)
                 isMatchSuccess = false
                 navigateToChat()
+            } catch let apiError as ApiHelperError {
+                isMatching = false
+                networkErrorTitle = apiError.dialogTitle
+                networkErrorContent = apiError.dialogContent
+                showNetworkErrorDialog = true
+                Logger.shared.log(className, #function, "Failed to check matching: \(apiError)", .error)
             } catch {
                 isMatching = false
+                networkErrorTitle = "오류"
+                networkErrorContent = "알 수 없는 오류가 발생했습니다."
                 showNetworkErrorDialog = true
                 Logger.shared.log(className, #function, "Failed to check matching: \(error.localizedDescription)", .error)
             }
@@ -203,14 +242,19 @@ class HomeViewModel {
             return
         }
 
-        isLoading = true
         do {
             self.isRoomExist = try await checkRoomExistUseCase.execute(userId: userId)
+        } catch let apiError as ApiHelperError {
+            networkErrorTitle = apiError.dialogTitle
+            networkErrorContent = apiError.dialogContent
+            showNetworkErrorDialog = true
+            Logger.shared.log(className, #function, "Failed to check room exist: \(apiError)", .error)
         } catch {
+            networkErrorTitle = "오류"
+            networkErrorContent = "알 수 없는 오류가 발생했습니다."
             showNetworkErrorDialog = true
             Logger.shared.log(className, #function, "Failed to check room exist: \(error.localizedDescription)", .error)
         }
-        isLoading = false
     }
 
     func getRandomNickname() -> String {

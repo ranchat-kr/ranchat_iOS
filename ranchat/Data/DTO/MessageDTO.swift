@@ -17,6 +17,13 @@ struct MessageDTO: Codable {
     let senderType: String
     let createdAt: String
 
+    private static let isoFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
     init?(jsonString: [String: AnyObject]) {
         let decoder = JSONDecoder()
         do {
@@ -37,10 +44,10 @@ struct MessageDTO: Codable {
             participantId: participantId,
             participantName: participantName,
             content: content,
-            messageType: messageType,
-            contentType: contentType,
-            senderType: senderType,
-            createdAt: createdAt
+            messageType: MessageType(rawValue: messageType) ?? .unknown,
+            contentType: ContentType(rawValue: contentType) ?? .unknown,
+            senderType: SenderType(rawValue: senderType) ?? .unknown,
+            createdAt: Self.isoFormatter.date(from: createdAt) ?? Date()
         )
     }
 }

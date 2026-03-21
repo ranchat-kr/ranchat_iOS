@@ -15,7 +15,7 @@ final class DefaultChatRepository: ChatRepository {
     }
 
     func getMessages(roomId: String, page: Int, size: Int) async throws -> MessagePage {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/rooms/\(roomId)/messages?page=\(page)&size=\(size)")
+        let url = try APIEndpoint.messages(roomId: roomId, page: page, size: size)
 
         let response: ApiResponseDTO<MessagePageDTO> = try await networkClient.request(url: url, method: .get, params: nil)
         if response.status == Status.success.rawValue {
@@ -31,7 +31,7 @@ final class DefaultChatRepository: ChatRepository {
     }
 
     func reportUser(roomId: String, reporterId: String, reportedUserId: String, reportType: String, reportReason: String) async throws {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/reports")
+        let url = try APIEndpoint.reports()
         let param: [String: Any] = [
             "roomId": roomId,
             "reporterId": reporterId,
@@ -46,12 +46,5 @@ final class DefaultChatRepository: ChatRepository {
             throw ApiHelperError.networkError(response.message)
         }
         Logger.shared.log(className, #function, "Success to report user")
-    }
-
-    private func getUrl(for path: String) throws -> URL {
-        guard let url = URL(string: path) else {
-            throw ApiHelperError.invalidURLError
-        }
-        return url
     }
 }

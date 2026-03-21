@@ -5,6 +5,7 @@
 
 import SwiftUI
 
+@MainActor
 @Observable
 class SettingViewModel {
     let className = "SettingViewModel"
@@ -12,6 +13,8 @@ class SettingViewModel {
     var isLoading: Bool = false
     var isInitialized: Bool = false
     var showNetworkErrorDialog: Bool = false
+    var networkErrorTitle: String = "오류"
+    var networkErrorContent: String = "알 수 없는 오류가 발생했습니다."
     var showCheckNickNameDialog: Bool = false
     var showSuccessToast: Bool = false
     var showInValidToast: Bool = false
@@ -41,6 +44,8 @@ class SettingViewModel {
     func setUser() {
         guard let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "userId is nil", .error)
+            networkErrorTitle = "오류"
+            networkErrorContent = "필요한 정보를 찾을 수 없습니다."
             showNetworkErrorDialog = true
             return
         }
@@ -50,7 +55,14 @@ class SettingViewModel {
             do {
                 user = try await getUserUseCase.execute(userId: userId)
                 self.isInitialized = true
+            } catch let apiError as ApiHelperError {
+                networkErrorTitle = apiError.dialogTitle
+                networkErrorContent = apiError.dialogContent
+                showNetworkErrorDialog = true
+                Logger.shared.log(className, #function, "Failed to get user: \(apiError)", .error)
             } catch {
+                networkErrorTitle = "오류"
+                networkErrorContent = "알 수 없는 오류가 발생했습니다."
                 showNetworkErrorDialog = true
                 Logger.shared.log(className, #function, "Failed to get user: \(error.localizedDescription)", .error)
             }
@@ -61,6 +73,8 @@ class SettingViewModel {
     func setNickname() {
         guard let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "userId is nil", .error)
+            networkErrorTitle = "오류"
+            networkErrorContent = "필요한 정보를 찾을 수 없습니다."
             showNetworkErrorDialog = true
             return
         }
@@ -69,10 +83,17 @@ class SettingViewModel {
         Task {
             do {
                 try await updateUserNameUseCase.execute(userId: userId, name: editNickName)
-                user?.setName(editNickName)
+                user?.name = editNickName
                 editNickName = ""
                 showSuccessToast = true
+            } catch let apiError as ApiHelperError {
+                networkErrorTitle = apiError.dialogTitle
+                networkErrorContent = apiError.dialogContent
+                showNetworkErrorDialog = true
+                Logger.shared.log(className, #function, "Failed to update user name: \(apiError)", .error)
             } catch {
+                networkErrorTitle = "오류"
+                networkErrorContent = "알 수 없는 오류가 발생했습니다."
                 showNetworkErrorDialog = true
                 Logger.shared.log(className, #function, "Failed to update user name: \(error.localizedDescription)", .error)
             }
@@ -103,7 +124,13 @@ class SettingViewModel {
                     agentId: DefaultData.shared.agentId ?? "",
                     allowsNotification: isToggleOn
                 )
+            } catch let apiError as ApiHelperError {
+                networkErrorTitle = apiError.dialogTitle
+                networkErrorContent = apiError.dialogContent
+                showNetworkErrorDialog = true
             } catch {
+                networkErrorTitle = "오류"
+                networkErrorContent = "알 수 없는 오류가 발생했습니다."
                 showNetworkErrorDialog = true
             }
         }

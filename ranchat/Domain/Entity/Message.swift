@@ -12,8 +12,8 @@ struct Message: Identifiable, Equatable, Hashable {
     let participantId: Int
     let participantName: String
     let content: String
-    let messageType: String
-    let contentType: String
-    let senderType: String
-    let createdAt: String
+    let messageType: MessageType
+    let contentType: ContentType
+    let senderType: SenderType
+    let createdAt: Date
 }

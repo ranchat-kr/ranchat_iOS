@@ -27,7 +27,7 @@ class MockRoomRepository: RoomRepository {
 
     func getRoomDetail(userId: String, roomId: String) async throws -> RoomDetail {
         if shouldThrow { throw ApiHelperError.networkError("mock error") }
-        return RoomDetail(id: 1, title: "테스트방", type: "NORMAL", participants: [])
+        return RoomDetail(id: 1, title: "테스트방", type: .normal, participants: [])
     }
 
     func createRoom(userId: String) async throws -> String {

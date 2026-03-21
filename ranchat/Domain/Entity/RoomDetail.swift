@@ -14,6 +14,6 @@ struct Participant {
 struct RoomDetail {
     let id: Int
     let title: String
-    let type: String
+    let type: RoomType
     let participants: [Participant]
 }

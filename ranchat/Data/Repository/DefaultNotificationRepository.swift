@@ -15,7 +15,7 @@ final class DefaultNotificationRepository: NotificationRepository {
     }
 
     func createNotifications(userId: String, allowsNotification: Bool, agentId: String, deviceName: String) async throws {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/app-notifications")
+        let url = try APIEndpoint.notifications()
         let param: [String: Any] = [
             "userId": userId,
             "allowsNotification": allowsNotification,
@@ -35,7 +35,7 @@ final class DefaultNotificationRepository: NotificationRepository {
     }
 
     func updateAppNotifications(userId: String, agentId: String, allowsNotification: Bool) async throws {
-        let url = try getUrl(for: "https://\(DefaultData.shared.domain)/v1/app-notifications")
+        let url = try APIEndpoint.notifications()
         let param: [String: Any] = [
             "userId": userId,
             "agentId": agentId,
@@ -48,12 +48,5 @@ final class DefaultNotificationRepository: NotificationRepository {
             throw ApiHelperError.networkError(response.message)
         }
         Logger.shared.log(className, #function, "Success to update app notifications")
-    }
-
-    private func getUrl(for path: String) throws -> URL {
-        guard let url = URL(string: path) else {
-            throw ApiHelperError.invalidURLError
-        }
-        return url
     }
 }
