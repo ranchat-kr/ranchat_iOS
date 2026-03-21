@@ -105,6 +105,7 @@
 		BB020001000000000000002 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB020001000000000000001 /* HomeViewModelTests.swift */; };
 		BB030001000000000000002 /* SettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB030001000000000000001 /* SettingViewModelTests.swift */; };
 		BB040001000000000000002 /* RoomListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB040001000000000000001 /* RoomListViewModelTests.swift */; };
+		BB050001000000000000002 /* ValidateNicknameUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB050001000000000000001 /* ValidateNicknameUseCaseTests.swift */; };
 		BB050001000000000000002 /* MockUserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB050001000000000000001 /* MockUserRepository.swift */; };
 		BB060001000000000000002 /* MockRoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB060001000000000000001 /* MockRoomRepository.swift */; };
 		BB070001000000000000002 /* MockChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB070001000000000000001 /* MockChatRepository.swift */; };
@@ -236,6 +237,7 @@
 		BB020001000000000000001 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
 		BB030001000000000000001 /* SettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModelTests.swift; sourceTree = "<group>"; };
 		BB040001000000000000001 /* RoomListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomListViewModelTests.swift; sourceTree = "<group>"; };
+		BB050001000000000000001 /* ValidateNicknameUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateNicknameUseCaseTests.swift; sourceTree = "<group>"; };
 		BB050001000000000000001 /* MockUserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserRepository.swift; sourceTree = "<group>"; };
 		BB060001000000000000001 /* MockRoomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoomRepository.swift; sourceTree = "<group>"; };
 		BB070001000000000000001 /* MockChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChatRepository.swift; sourceTree = "<group>"; };
@@ -684,6 +686,7 @@
 				BB020001000000000000001 /* HomeViewModelTests.swift */,
 				BB030001000000000000001 /* SettingViewModelTests.swift */,
 				BB040001000000000000001 /* RoomListViewModelTests.swift */,
+				BB050001000000000000001 /* ValidateNicknameUseCaseTests.swift */,
 			);
 			path = ranchatTests;
 			sourceTree = "<group>";
@@ -964,6 +967,7 @@
 				BB020001000000000000002 /* HomeViewModelTests.swift in Sources */,
 				BB030001000000000000002 /* SettingViewModelTests.swift in Sources */,
 				BB040001000000000000002 /* RoomListViewModelTests.swift in Sources */,
+				BB050001000000000000002 /* ValidateNicknameUseCaseTests.swift in Sources */,
 				BB050001000000000000002 /* MockUserRepository.swift in Sources */,
 				BB060001000000000000002 /* MockRoomRepository.swift in Sources */,
 				BB070001000000000000002 /* MockChatRepository.swift in Sources */,

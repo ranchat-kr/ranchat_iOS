@@ -18,7 +18,7 @@
 |---|---|
 | 언어 | Swift 5.9 |
 | UI 프레임워크 | SwiftUI |
-| 아키텍처 | MVVM + Repository Pattern |
+| 아키텍처 | Clean Architecture (MVVM + UseCase + Repository) |
 | 상태 관리 | @Observable (Swift Observation) |
 | 네트워크 | Alamofire, WebSocket (STOMP) |
 | 보안 | Keychain Services |
@@ -29,27 +29,53 @@
 ## 🏗️ 아키텍처
 
 ```
-View
- └─ ViewModel (@Observable)
-      └─ Repository (Protocol)
-           └─ DefaultRepository (Alamofire 네트워크 구현)
+View (SwiftUI)
+ └─ ViewModel (@Observable, @MainActor)
+      └─ UseCase (Domain 비즈니스 로직)
+           └─ Repository Protocol (Domain 인터페이스)
+                └─ DefaultRepository (Data — Alamofire 구현)
 ```
 
-**Repository Pattern 도입 이유**
+### 레이어별 역할
 
-기존에는 ViewModel이 `ApiHelper.shared` 싱글턴을 직접 호출해 테스트가 불가능한 구조였습니다. Repository 프로토콜을 도입해 의존성을 역전시켜 Mock 객체로 교체 가능한 구조로 개선했습니다.
+| 레이어 | 역할 | 의존 가능 |
+|---|---|---|
+| Domain | Entity, Repository 프로토콜, UseCase | Foundation만 |
+| Data | DTO, NetworkClient, Repository 구현체 | Domain, Alamofire |
+| Infrastructure | WebSocket, Keychain, NetworkMonitor | Domain(Service 프로토콜) |
+| Presentation | ViewModel, View | Domain(UseCase/Entity) |
+
+**Clean Architecture 도입 이유**
+
+기존 구조에서는 두 가지 핵심 문제가 있었습니다.
+
+1. **Infrastructure → Presentation 직접 참조**: `WebSocketHelper`가 `ChattingViewModel`을 직접 들고 있어 의존성 방향이 역전되었습니다. `WebSocketService` 프로토콜과 callback 패턴으로 해소했습니다.
 
 ```swift
-// ViewModel init - 프로덕션은 DefaultRepository, 테스트는 MockRepository
+// Before (위반)
+class WebSocketHelper {
+    weak var chattingViewModel: ChattingViewModel?
+}
+
+// After (callback 역전)
+protocol WebSocketService {
+    func setOnMessageReceived(_ handler: @escaping @MainActor (Message) -> Void)
+}
+```
+
+2. **ViewModel → Repository 직접 호출**: 비즈니스 로직이 ViewModel에 흩어져 테스트가 어려웠습니다. UseCase 계층을 도입해 로직을 분리하고 ViewModel은 UseCase만 호출합니다.
+
+```swift
+// ViewModel init — 프로덕션은 Default, 테스트는 Mock
 init(
-    userRepository: UserRepository = DefaultUserRepository(),
-    roomRepository: RoomRepository = DefaultRoomRepository()
+    checkRoomExistUseCase: any CheckRoomExistUseCase = DefaultCheckRoomExistUseCase(),
+    createRoomUseCase: any CreateRoomUseCase = DefaultCreateRoomUseCase()
 ) { ... }
 ```
 
-**보안 개선**
+**보안**
 
-`@AppStorage` (UserDefaults)로 평문 저장하던 userId를 iOS Keychain으로 마이그레이션했습니다.
+`@AppStorage` (UserDefaults 평문)로 저장하던 userId를 iOS Keychain으로 마이그레이션했습니다.
 
 ```swift
 KeychainHelper.shared.saveUserId(uuid)
@@ -60,26 +86,37 @@ KeychainHelper.shared.getUserId()
 
 ```
 ranchat/
-├── Util/
-│   ├── KeychainHelper.swift       # Keychain userId 관리
-│   └── ...
-├── Repository/
-│   ├── UserRepository.swift       # 프로토콜
-│   ├── RoomRepository.swift
-│   ├── ChatRepository.swift
-│   ├── NotificationRepository.swift
-│   ├── DefaultUserRepository.swift  # 실제 구현
-│   └── ...
-├── Home/ │ RoomList/ │ Chatting/ └── Setting/
+├── Domain/
+│   ├── Entity/          # 순수 Swift 모델 (User, Room, Message, ...)
+│   ├── Repository/      # Repository 프로토콜
+│   ├── Service/         # WebSocketService 프로토콜
+│   └── UseCase/         # User/ Room/ Chat/ Notification/
+├── Data/
+│   ├── DTO/             # Codable API 응답 + toDomain()
+│   ├── DataSource/      # NetworkClient 프로토콜 + Alamofire 구현
+│   └── Repository/      # Default*Repository (DTO→Domain 변환)
+├── Infrastructure/
+│   ├── WebSocket/       # WebSocketHelper (WebSocketService 구현)
+│   ├── Keychain/        # KeychainHelper
+│   ├── Network/         # NetworkMonitor, DefaultData
+│   └── Session/         # IdHelper
+└── Presentation/
+    ├── Home/ RoomList/ Chatting/ Setting/
+    └── Common/ Extension/
 
 Tests/ranchatTests/
 ├── Mock/
-│   ├── MockUserRepository.swift
-│   ├── MockRoomRepository.swift
-│   └── MockChatRepository.swift
+│   ├── MockCheckRoomExistUseCase.swift
+│   ├── MockCreateRoomUseCase.swift
+│   ├── MockCreateUserUseCase.swift
+│   ├── MockGetRoomsUseCase.swift
+│   ├── MockGetUserUseCase.swift
+│   ├── MockUpdateUserNameUseCase.swift
+│   └── MockValidateNicknameUseCase.swift
 ├── HomeViewModelTests.swift
+├── RoomListViewModelTests.swift
 ├── SettingViewModelTests.swift
-└── RoomListViewModelTests.swift
+└── ValidateNicknameUseCaseTests.swift
 ```
 
 ## 📱 UI/UX 특징

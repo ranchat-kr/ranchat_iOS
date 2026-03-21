@@ -57,9 +57,10 @@ class RoomListViewModel {
         do {
             var roomPage: RoomPage
             if isRefresh {
+                let pagesToLoad = max(self.roomPage, 1)
                 roomItems.removeAll()
-                roomPage = try await getRoomsUseCase.execute(userId: userId, page: 0, size: (self.roomPage + 1) * 10)
-                self.roomPage += 1
+                roomPage = try await getRoomsUseCase.execute(userId: userId, page: 0, size: pagesToLoad * 10)
+                self.roomPage = pagesToLoad
             } else {
                 roomPage = try await getRoomsUseCase.execute(userId: userId, page: self.roomPage, size: 10)
                 self.roomPage += 1

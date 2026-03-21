@@ -18,8 +18,8 @@ struct RoomListViewModelTests {
     @Test func test_getRoomList_loadsRooms() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
-            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "안녕하세요", latestMessageAt: "2024-01-01T12:00:00"),
-            Room(id: 2, title: "Room 2", type: "NORMAL", latestMessage: "반가워요", latestMessageAt: "2024-01-02T12:00:00")
+            Room(id: 1, title: "Room 1", type: .normal, latestMessage: "안녕하세요", latestMessageAt: Date()),
+            Room(id: 2, title: "Room 2", type: .normal, latestMessage: "반가워요", latestMessageAt: Date())
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
@@ -48,7 +48,7 @@ struct RoomListViewModelTests {
     @Test func test_getRoomList_whenUserIdNil_doesNotLoad() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
-            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
+            Room(id: 1, title: "Room 1", type: .normal, latestMessage: "Hi", latestMessageAt: Date())
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
@@ -63,13 +63,13 @@ struct RoomListViewModelTests {
     @Test func test_getRoomList_isRefresh_clearsAndReloads() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
-            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
+            Room(id: 1, title: "Room 1", type: .normal, latestMessage: "Hi", latestMessageAt: Date())
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
         vm.idHelper = makeIdHelper()
         vm.roomItems = [
-            Room(id: 99, title: "Old", type: "NORMAL", latestMessage: "Old", latestMessageAt: "2024-01-01T12:00:00")
+            Room(id: 99, title: "Old", type: .normal, latestMessage: "Old", latestMessageAt: Date())
         ]
 
         await vm.getRoomList(isRefresh: true)
@@ -81,7 +81,7 @@ struct RoomListViewModelTests {
     @Test func test_getRoomList_pagination_incrementsPage() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
-            Room(id: 1, title: "Room 1", type: "NORMAL", latestMessage: "Hi", latestMessageAt: "2024-01-01T12:00:00")
+            Room(id: 1, title: "Room 1", type: .normal, latestMessage: "Hi", latestMessageAt: Date())
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
