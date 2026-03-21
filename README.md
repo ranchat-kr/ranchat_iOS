@@ -8,9 +8,13 @@
 
 ## 스크린샷
 
-| 홈 | 채팅방 목록 | 채팅 | 설정 |
+| 홈 | 채팅방 목록 | 채팅 | 신고 |
 |:---:|:---:|:---:|:---:|
-| <img src="assets/home.png" width="200"> | <img src="assets/room_list.png" width="200"> | <img src="assets/chatting.png" width="200"> | <img src="assets/setting.png" width="200"> |
+| <img src="assets/screenshots/home.png" width="200"> | <img src="assets/screenshots/chatting_rooms.png" width="200"> | <img src="assets/screenshots/chatting.png" width="200"> | <img src="assets/screenshots/report.png" width="200"> |
+
+| 푸시 알림 딥링크 |
+|:---:|
+| <img src="assets/screenshots/pushNotification_to_ChattingRoom.gif" width="200"> |
 
 <br>
 
