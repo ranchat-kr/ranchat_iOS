@@ -91,13 +91,19 @@ private var networkMonitor = NetworkMonitor()
 
 ## 주요 규칙 및 패턴
 
-**에러 타입**: `ApiHelperError` (`Data/NetworkError.swift`) — `invalidURLError`, `networkError(String)`, `responseDataError`, `nilError`. 모든 Repository와 UseCase가 이 타입을 throw합니다.
+**에러 타입**:
+- `ApiHelperError` (`Data/NetworkError.swift`) — `invalidURLError`, `networkError(String)`, `responseDataError`, `nilError`. Repository/UseCase에서 사용.
+- `WebSocketHelperError` (`Infrastructure/WebSocket/WebSocketHelper.swift`) — `invalidURLError`, `networkError(String)`, `responseDataError`, `connectError`, `nilError`.
+- `WebSocketServiceError` (`Domain/Service/WebSocketService.swift`) — `notConnected`, `nilParameter`.
+- `IdHelperError` (`Infrastructure/Session/IdHelper.swift`) — `invalidUserIdError`, `invalidRoomIdError`, `nilUserIdError`, `nilRoomIdError`, `nilError`.
 
-**API 응답 구조**: `ApiResponseDTO<T>` — `status == "SUCCESS"` 검사 후 `data`를 언래핑합니다.
+**API 응답 구조**: `ApiResponseDTO<T>` — 필드: `status`, `message`, `serverDateTime`, `data: T?`. `Status.success.rawValue`와 비교 후 `data`를 언래핑합니다 (`status == "SUCCESS"` 문자열 직접 비교 금지).
 
-**userId 흐름**: Keychain(`KeychainHelper.shared`) → `IdHelper.setUserId()` → WebSocket 메서드 파라미터로 전달. `@AppStorage` 사용 금지 (보안 이슈로 Keychain으로 마이그레이션 완료).
+**NetworkClient**: Data 계층은 Alamofire를 직접 호출하지 않고 `NetworkClient` 프로토콜(`Data/DataSource/NetworkClient.swift`)을 통해 요청합니다. 구현체는 `AlamofireNetworkClient`.
 
-**싱글톤**: `KeychainHelper.shared`, `DefaultData.shared`, `Logger.shared` — Infrastructure 레이어에서만 직접 사용.
+**userId 흐름**: `KeychainHelper.shared.getUserId()` → `IdHelper.setUserId()` → WebSocket 메서드 파라미터로 전달. `SettingViewModel` 등 일부 ViewModel은 `IdHelper` 없이 `KeychainHelper.shared`를 직접 참조합니다. `@AppStorage` 사용 금지 (보안 이슈로 Keychain으로 마이그레이션 완료).
+
+**싱글톤**: `KeychainHelper.shared`, `DefaultData.shared`, `Logger.shared` — Infrastructure가 주 사용처이나, Presentation 계층(ViewModel, View)에서도 직접 사용됩니다.
 
 **알림 전역 이벤트**: FCM 탭 → `NotificationCenter.default.post(name: .pushNotificationReceived)` → View에서 `.onReceive`로 수신.
 
