@@ -160,34 +160,33 @@ KeychainHelper.shared.getUserId()
 
 ```
 ranchat/
+├── ranchatApp.swift
+├── ContentView.swift
 ├── Domain/
-│   ├── Entity/           # User, Room, RoomDetail, Message, RoomPage, MessagePage
-│   │                     # RoomType, MessageType, NicknameError, ReportType
-│   ├── Repository/       # UserRepository, RoomRepository, ChatRepository, NotificationRepository
-│   ├── Service/          # WebSocketService 프로토콜, WebSocketServiceError
+│   ├── Entity/
+│   ├── Repository/           # Repository Protocols
+│   ├── Service/              # WebSocketService Protocol
 │   └── UseCase/
-│       ├── User/         # CreateUser, GetUser, UpdateUserName, ValidateNickname
-│       ├── Room/         # CheckRoomExist, CreateRoom, GetRooms, GetRoomDetail
-│       ├── Chat/         # GetMessages, ReportUser
-│       └── Notification/ # CreateNotification, UpdateNotification
+│       ├── User/
+│       ├── Room/
+│       ├── Chat/
+│       └── Notification/
 ├── Data/
-│   ├── DTO/              # ApiResponseDTO, UserDTO, RoomDTO, RoomDetailDTO,
-│   │                     # MessageDTO, RoomPageDTO, MessagePageDTO (+toDomain())
-│   ├── DataSource/       # NetworkClient 프로토콜 + AlamofireNetworkClient
-│   ├── LocalStorage/     # SearchKeyword
-│   └── Repository/       # DefaultUserRepository, DefaultRoomRepository,
-│                         # DefaultChatRepository, DefaultNotificationRepository
+│   ├── DTO/
+│   ├── DataSource/           # NetworkClient
+│   ├── LocalStorage/
+│   └── Repository/
 ├── Infrastructure/
-│   ├── WebSocket/        # WebSocketHelper (WebSocketService 구현, STOMP)
-│   ├── Keychain/         # KeychainHelper
-│   ├── Network/          # NetworkMonitor, DefaultData
-│   ├── Session/          # IdHelper
-│   └── Logger/           # Logger
+│   ├── WebSocket/            # WebSocketHelper (STOMP)
+│   ├── Keychain/
+│   ├── Network/
+│   ├── Session/
+│   └── Logger/
 └── Presentation/
-    ├── Home/             # HomeView, HomeViewModel
-    ├── RoomList/         # RoomListView, RoomListViewModel
-    ├── Chatting/         # ChattingView, ChattingViewModel
-    ├── Setting/          # SettingView, SettingViewModel
-    ├── Common/           # CenterLoadingView, DialogViewModifier, ...
-    └── Extension/        # Font+DungGeunMo, UINavigationController+
+    ├── Home/
+    ├── RoomList/
+    ├── Chatting/
+    ├── Setting/
+    ├── Common/
+    └── Extension/
 ```
