@@ -19,7 +19,7 @@ import Testing
 @MainActor
 struct [Name]ViewModelTests {
 
-    // 공통 헬퍼
+    // WebSocket이 필요한 화면 (ChattingViewModel, HomeViewModel 등)
     private func makeVM(
         someUseCase: any SomeUseCase = MockSomeUseCase()
     ) -> ([Name]ViewModel, MockWebSocketService) {
@@ -31,6 +31,13 @@ struct [Name]ViewModelTests {
         let vm = [Name]ViewModel(someUseCase: someUseCase)
         vm.setup(webSocketService: ws, idHelper: idHelper, networkMonitor: NetworkMonitor())
         return (vm, ws)
+    }
+
+    // WebSocket이 필요 없는 화면 (SettingViewModel 등) — setup() 없이 직접 생성
+    private func makeVM(
+        someUseCase: any SomeUseCase = MockSomeUseCase()
+    ) -> [Name]ViewModel {
+        [Name]ViewModel(someUseCase: someUseCase)
     }
 
     // MARK: - [기능명]
@@ -111,6 +118,11 @@ xcodebuild test \
 3. Mock이 올바른 값을 반환하는지 확인
 4. `@MainActor` 누락, async/await 누락 여부 확인
 5. 필요 시 Mock에 `lastCalledArgs` 프로퍼티 추가해 호출 인자 검증
+
+## 테스트 파일 종류
+
+- **ViewModel 테스트**: `Tests/ranchatTests/[ViewModel명]Tests.swift` — Mock UseCase 조합
+- **UseCase 직접 테스트**: `Tests/ranchatTests/[UseCase명]Tests.swift` — 실제 구현 로직 검증 (예: `ValidateNicknameUseCaseTests.swift`)
 
 ## 기존 Mock 목록 (재사용 가능)
 `Tests/ranchatTests/Mock/` 폴더에서 확인:

@@ -18,9 +18,17 @@ model: sonnet
 
 ## 핵심 패턴
 
-**UseCase**: 프로토콜 + Default 구현체를 같은 파일에 정의. Repository 프로토콜만 init 주입.
+**UseCase**: 프로토콜 + Default 구현체를 같은 파일에 정의. Repository는 bare protocol 타입으로 init 주입 (`any` existential 사용 금지).
+```swift
+// UseCase — bare protocol
+init(userRepository: UserRepository = DefaultUserRepository())
+// ViewModel — any existential
+init(useCase: any XxxUseCase = DefaultXxxUseCase())
+```
 
 **ViewModel DI**: `init(useCase: any XxxUseCase = DefaultXxxUseCase())` — 테스트 시 Mock 교체.
+
+**NetworkClient**: Data 계층은 Alamofire를 직접 호출하지 않고 `NetworkClient` 프로토콜(`Data/DataSource/NetworkClient.swift`)을 통해 요청. 구현체는 `AlamofireNetworkClient`.
 
 **WebSocket 방향**: Infrastructure → Presentation 직접 참조 금지. callback 등록 패턴 사용.
 ```swift

@@ -17,9 +17,9 @@ protocol [Name]UseCase {
 }
 
 final class Default[Name]UseCase: [Name]UseCase {
-    private let repository: any XxxRepository
+    private let repository: XxxRepository   // bare protocol — `any` 사용 금지
 
-    init(repository: any XxxRepository = DefaultXxxRepository()) {
+    init(repository: XxxRepository = DefaultXxxRepository()) {
         self.repository = repository
     }
 
@@ -104,14 +104,16 @@ final class Default[Name]Repository: [Name]Repository {
 
     func method(...) async throws -> DomainEntity {
         let response: ApiResponseDTO<[Name]DTO> = try await networkClient.request(
-            url: try APIEndpoint.endpoint(),
+            url: try APIEndpoint.[목적별메서드](),   // 예: APIEndpoint.users(), APIEndpoint.rooms()
             method: .get,
             params: nil
         )
-        guard response.status == Status.success.rawValue, let dto = response.data else {
-            throw ApiHelperError.responseDataError
+        if response.status == Status.success.rawValue {
+            guard let dto = response.data else { throw ApiHelperError.responseDataError }
+            return dto.toDomain()
+        } else {
+            throw ApiHelperError.networkError(response.message)
         }
-        return dto.toDomain()
     }
 }
 ```

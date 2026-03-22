@@ -66,7 +66,7 @@ class [ScreenName]ViewModel {
 ## 주의사항
 - ViewModel은 `@MainActor @Observable class`
 - UseCase init 기본값으로 `Default` 구현체 지정 (테스트 교체 가능)
-- WebSocket이 필요 없는 화면은 setup() 생략 가능
+- WebSocket이 필요 없는 화면 (예: SettingView): View에서 `@Environment(WebSocketHelper.self)`, `@Environment(IdHelper.self)`, `@Environment(NetworkMonitor.self)` 제거, ViewModel에서 `webSocketService`, `idHelper`, `networkMonitor` 프로퍼티 및 `setup()` 메서드 제거
 - `isLoading = true` 전에 `guard !isLoading else { return }` 추가
 
 ## 화면 이름

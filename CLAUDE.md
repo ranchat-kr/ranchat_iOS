@@ -123,8 +123,8 @@ private var networkMonitor = NetworkMonitor()
 **2단계 — 구현**
 - Domain: `import Foundation`만. 프로토콜 + Default 구현체를 같은 파일에 정의
 - ViewModel: `@MainActor @Observable class`. init 기본값으로 Default UseCase 주입
-- `isLoading = true` 앞에 반드시 `guard !isLoading else { return }` 추가
-- `isLoading = false`는 반드시 do-catch 블록 밖(Task 클로저 최하단)에 위치
+- `isLoading = true` 앞에 반드시 `guard !isLoading else { return }` 추가 (새로 작성하는 메서드 기준)
+- `isLoading = false`는 do-catch 블록 밖(Task 클로저 최하단)에 위치하는 것이 이상적 (기존 코드 일부는 분기별 배치)
 - Repository 직접 참조 금지 — UseCase를 통해야 함
 
 **3단계 — 테스트**

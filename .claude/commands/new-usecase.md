@@ -16,9 +16,9 @@ protocol [Name]UseCase {
 }
 
 final class Default[Name]UseCase: [Name]UseCase {
-    private let [repository]: any [Repository]
+    private let [repository]: [Repository]   // bare protocol — `any` 사용 금지
 
-    init([repository]: any [Repository] = Default[Repository]()) {
+    init([repository]: [Repository] = Default[Repository]()) {
         self.[repository] = [repository]
     }
 
