@@ -46,7 +46,7 @@
 | WebSocket | StompClientLib (STOMP 프로토콜) |
 | 보안 | iOS Keychain Services |
 | 푸시 알림 | Firebase Cloud Messaging (FCM) |
-| 테스트 | Swift Testing (`@Test`, `#expect`) |
+| 테스트 | XCTest |
 | 의존성 관리 | CocoaPods, Swift Package Manager |
 
 <br>
