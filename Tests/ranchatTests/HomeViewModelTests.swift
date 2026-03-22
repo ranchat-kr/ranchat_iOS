@@ -3,13 +3,13 @@
 //  ranchatTests
 //
 
-import Testing
+import XCTest
 @testable import ranchat
 
 @MainActor
-struct HomeViewModelTests {
+final class HomeViewModelTests: XCTestCase {
 
-    @Test func test_checkRoomExist_whenRoomExists_setsIsRoomExistTrue() async {
+    func test_checkRoomExist_whenRoomExists_setsIsRoomExistTrue() async {
         let mockUseCase = MockCheckRoomExistUseCase()
         mockUseCase.mockRoomExist = true
 
@@ -25,12 +25,12 @@ struct HomeViewModelTests {
 
         await viewModel.checkRoomExist()
 
-        #expect(viewModel.isRoomExist == true)
-        #expect(viewModel.showNetworkErrorDialog == false)
-        #expect(mockUseCase.callCount == 1)
+        XCTAssertTrue(viewModel.isRoomExist)
+        XCTAssertFalse(viewModel.showNetworkErrorDialog)
+        XCTAssertEqual(mockUseCase.callCount, 1)
     }
 
-    @Test func test_checkRoomExist_whenRoomNotExists_setsIsRoomExistFalse() async {
+    func test_checkRoomExist_whenRoomNotExists_setsIsRoomExistFalse() async {
         let mockUseCase = MockCheckRoomExistUseCase()
         mockUseCase.mockRoomExist = false
 
@@ -46,10 +46,10 @@ struct HomeViewModelTests {
 
         await viewModel.checkRoomExist()
 
-        #expect(viewModel.isRoomExist == false)
+        XCTAssertFalse(viewModel.isRoomExist)
     }
 
-    @Test func test_checkRoomExist_whenNetworkError_showsDialog() async {
+    func test_checkRoomExist_whenNetworkError_showsDialog() async {
         let mockUseCase = MockCheckRoomExistUseCase()
         mockUseCase.shouldThrow = true
 
@@ -65,10 +65,10 @@ struct HomeViewModelTests {
 
         await viewModel.checkRoomExist()
 
-        #expect(viewModel.showNetworkErrorDialog == true)
+        XCTAssertTrue(viewModel.showNetworkErrorDialog)
     }
 
-    @Test func test_checkRoomExist_whenUserIdNil_doesNotCallUseCase() async {
+    func test_checkRoomExist_whenUserIdNil_doesNotCallUseCase() async {
         let mockUseCase = MockCheckRoomExistUseCase()
 
         let viewModel = HomeViewModel(
@@ -80,20 +80,20 @@ struct HomeViewModelTests {
 
         await viewModel.checkRoomExist()
 
-        #expect(mockUseCase.callCount == 0)
+        XCTAssertEqual(mockUseCase.callCount, 0)
     }
 
-    @Test func test_getRandomNickname_returnsNonEmpty() {
+    func test_getRandomNickname_returnsNonEmpty() {
         let viewModel = HomeViewModel()
         let nickname = viewModel.getRandomNickname()
-        #expect(!nickname.isEmpty)
+        XCTAssertFalse(nickname.isEmpty)
     }
 
-    @Test func test_getRandomNickname_hasMinimumLength() {
+    func test_getRandomNickname_hasMinimumLength() {
         let viewModel = HomeViewModel()
         for _ in 0..<10 {
             let nickname = viewModel.getRandomNickname()
-            #expect(nickname.count >= 2)
+            XCTAssertGreaterThanOrEqual(nickname.count, 2)
         }
     }
 }

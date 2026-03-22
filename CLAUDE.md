@@ -147,7 +147,7 @@ private var networkMonitor = NetworkMonitor()
 
 ## 테스트 구조
 
-- 프레임워크: Swift Testing (`@Test`, `#expect`, `@MainActor struct`)
+- 프레임워크: XCTest (`XCTestCase`, `XCTAssert*`, `@MainActor final class`)
 - 위치: `Tests/ranchatTests/`
 - Mock: `Tests/ranchatTests/Mock/` — UseCase, Repository, WebSocketService Mock 포함
 - ViewModel 테스트는 `makeVM()` 헬퍼 함수로 Mock UseCase를 조합해 생성합니다.

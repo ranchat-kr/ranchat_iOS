@@ -3,11 +3,11 @@
 //  ranchatTests
 //
 
-import Testing
+import XCTest
 @testable import ranchat
 
 @MainActor
-struct RoomListViewModelTests {
+final class RoomListViewModelTests: XCTestCase {
 
     private func makeIdHelper(userId: String = "test-user-id") -> IdHelper {
         let idHelper = IdHelper()
@@ -15,7 +15,7 @@ struct RoomListViewModelTests {
         return idHelper
     }
 
-    @Test func test_getRoomList_loadsRooms() async {
+    func test_getRoomList_loadsRooms() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
             Room(id: 1, title: "Room 1", type: .normal, latestMessage: "안녕하세요", latestMessageAt: Date()),
@@ -27,12 +27,12 @@ struct RoomListViewModelTests {
 
         await vm.getRoomList()
 
-        #expect(vm.roomItems.count == 2)
-        #expect(vm.isInitialized == true)
-        #expect(vm.showNetworkErrorDialog == false)
+        XCTAssertEqual(vm.roomItems.count, 2)
+        XCTAssertTrue(vm.isInitialized)
+        XCTAssertFalse(vm.showNetworkErrorDialog)
     }
 
-    @Test func test_getRoomList_whenNetworkError_showsDialog() async {
+    func test_getRoomList_whenNetworkError_showsDialog() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.shouldThrow = true
 
@@ -41,11 +41,11 @@ struct RoomListViewModelTests {
 
         await vm.getRoomList()
 
-        #expect(vm.showNetworkErrorDialog == true)
-        #expect(vm.roomItems.isEmpty)
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertTrue(vm.roomItems.isEmpty)
     }
 
-    @Test func test_getRoomList_whenUserIdNil_doesNotLoad() async {
+    func test_getRoomList_whenUserIdNil_doesNotLoad() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
             Room(id: 1, title: "Room 1", type: .normal, latestMessage: "Hi", latestMessageAt: Date())
@@ -56,11 +56,11 @@ struct RoomListViewModelTests {
 
         await vm.getRoomList()
 
-        #expect(vm.roomItems.isEmpty)
-        #expect(mockUseCase.callCount == 0)
+        XCTAssertTrue(vm.roomItems.isEmpty)
+        XCTAssertEqual(mockUseCase.callCount, 0)
     }
 
-    @Test func test_getRoomList_isRefresh_clearsAndReloads() async {
+    func test_getRoomList_isRefresh_clearsAndReloads() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
             Room(id: 1, title: "Room 1", type: .normal, latestMessage: "Hi", latestMessageAt: Date())
@@ -74,11 +74,11 @@ struct RoomListViewModelTests {
 
         await vm.getRoomList(isRefresh: true)
 
-        #expect(vm.roomItems.count == 1)
-        #expect(vm.roomItems.first?.id == 1)
+        XCTAssertEqual(vm.roomItems.count, 1)
+        XCTAssertEqual(vm.roomItems.first?.id, 1)
     }
 
-    @Test func test_getRoomList_pagination_incrementsPage() async {
+    func test_getRoomList_pagination_incrementsPage() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
             Room(id: 1, title: "Room 1", type: .normal, latestMessage: "Hi", latestMessageAt: Date())
@@ -88,14 +88,14 @@ struct RoomListViewModelTests {
         vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
-        #expect(vm.roomPage == 1)
+        XCTAssertEqual(vm.roomPage, 1)
 
         // 두 번째 호출 - 서버에서 같은 totalCount 반환 시 중단
         await vm.getRoomList()
-        #expect(mockUseCase.callCount == 2)
+        XCTAssertEqual(mockUseCase.callCount, 2)
     }
 
-    @Test func test_getRoomList_emptyResult_setsInitialized() async {
+    func test_getRoomList_emptyResult_setsInitialized() async {
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = []
 
@@ -104,9 +104,9 @@ struct RoomListViewModelTests {
 
         await vm.getRoomList()
 
-        #expect(vm.roomItems.isEmpty)
+        XCTAssertTrue(vm.roomItems.isEmpty)
         // totalCount(0) == roomItems.count(0) → early return (isInitialized는 set 안 됨)
         // 이 동작은 현재 구현의 명세를 그대로 반영
-        #expect(vm.isInitialized == false)
+        XCTAssertFalse(vm.isInitialized)
     }
 }
