@@ -191,19 +191,3 @@ ranchat/
     ├── Common/           # CenterLoadingView, DialogViewModifier, ...
     └── Extension/        # Font+DungGeunMo, UINavigationController+
 ```
-
-<br>
-
-## 실행 방법
-
-```bash
-# 의존성 설치
-pod install
-
-# Xcode에서 열기 (반드시 .xcworkspace 사용)
-open ranchat.xcworkspace
-```
-
-> ⚠️ `GoogleService-Info.plist` 및 Firebase 설정은 별도 제공이 필요합니다.
-
-> ⚠️ 현재 서버가 운영 중이지 않아 실제 매칭 및 채팅 기능은 동작하지 않습니다.
