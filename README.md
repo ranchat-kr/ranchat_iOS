@@ -205,3 +205,5 @@ open ranchat.xcworkspace
 ```
 
 > ⚠️ `GoogleService-Info.plist` 및 Firebase 설정은 별도 제공이 필요합니다.
+
+> ⚠️ 현재 서버가 운영 중이지 않아 실제 매칭 및 채팅 기능은 동작하지 않습니다.
