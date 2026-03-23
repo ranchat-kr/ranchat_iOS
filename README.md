@@ -88,19 +88,18 @@ graph TB
         WS["WebSocketHelper\n(STOMP, StompClientLib)"]
         Keychain["KeychainHelper"]
         NM["NetworkMonitor"]
-        IdH["IdHelper"]
         Logger["Logger"]
         WS -->|"implements"| ServiceProto
     end
 
     VM -->|"UseCase Protocol 호출"| UseCase
     Repo -->|"Protocol 구현"| RepoProto
-    VM -->|"setup(webSocketService:)"| WS
+    VM -->|"setup(webSocketService:networkMonitor:)"| WS
 
     class View,VM pres
     class UseCase,RepoProto,ServiceProto,Entity dom
     class Repo,DTO,Network dat
-    class WS,Keychain,NM,IdH,Logger infra
+    class WS,Keychain,NM,Logger infra
 ```
 
 **Clean Architecture 4계층**
@@ -152,6 +151,21 @@ init(
 ```swift
 KeychainHelper.shared.saveUserId(uuid)
 KeychainHelper.shared.getUserId()
+```
+
+**userId / roomId 관리**
+
+userId와 roomId를 런타임 세션 객체로 캐싱하던 방식을 제거했습니다.
+
+- `userId`: ViewModel init 시 Keychain에서 1회 읽어 저장. 매 렌더마다 Keychain I/O 없음
+- `roomId`: 네비게이션 파라미터로 직접 전달 (`ChattingView(roomId:)`)
+
+```swift
+// ChattingViewModel
+init(roomId: String, ...) {
+    self.roomId = roomId
+    self.currentUserId = KeychainHelper.shared.getUserId()
+}
 ```
 
 <br>

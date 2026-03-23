@@ -83,7 +83,7 @@ webSocketService.setOnMessageReceived { [weak self] message in
 ```swift
 // ranchatApp.swift
 private var webSocketHelper = WebSocketHelper()
-private var idHelper = IdHelper()
+private var idHelper = SessionContext()
 private var networkMonitor = NetworkMonitor()
 ```
 
@@ -95,13 +95,13 @@ private var networkMonitor = NetworkMonitor()
 - `ApiHelperError` (`Data/NetworkError.swift`) — `invalidURLError`, `networkError(String)`, `responseDataError`, `nilError`. Repository/UseCase에서 사용.
 - `WebSocketHelperError` (`Infrastructure/WebSocket/WebSocketHelper.swift`) — `invalidURLError`, `networkError(String)`, `responseDataError`, `connectError`, `nilError`.
 - `WebSocketServiceError` (`Domain/Service/WebSocketService.swift`) — `notConnected`, `nilParameter`.
-- `IdHelperError` (`Infrastructure/Session/IdHelper.swift`) — `invalidUserIdError`, `invalidRoomIdError`, `nilUserIdError`, `nilRoomIdError`, `nilError`.
+- `SessionContextError` (`Infrastructure/Session/SessionContext.swift`) — `nilError`.
 
 **API 응답 구조**: `ApiResponseDTO<T>` — 필드: `status`, `message`, `serverDateTime`, `data: T?`. `Status.success.rawValue`와 비교 후 `data`를 언래핑합니다 (`status == "SUCCESS"` 문자열 직접 비교 금지).
 
 **NetworkClient**: Data 계층은 Alamofire를 직접 호출하지 않고 `NetworkClient` 프로토콜(`Data/DataSource/NetworkClient.swift`)을 통해 요청합니다. 구현체는 `AlamofireNetworkClient`.
 
-**userId 흐름**: `KeychainHelper.shared.getUserId()` → `IdHelper.setUserId()` → WebSocket 메서드 파라미터로 전달. `SettingViewModel` 등 일부 ViewModel은 `IdHelper` 없이 `KeychainHelper.shared`를 직접 참조합니다. `@AppStorage` 사용 금지 (보안 이슈로 Keychain으로 마이그레이션 완료).
+**userId 흐름**: `KeychainHelper.shared.getUserId()` → `SessionContext.setUserId()` → WebSocket 메서드 파라미터로 전달. `SettingViewModel` 등 일부 ViewModel은 `SessionContext` 없이 `KeychainHelper.shared`를 직접 참조합니다. `@AppStorage` 사용 금지 (보안 이슈로 Keychain으로 마이그레이션 완료).
 
 **싱글톤**: `KeychainHelper.shared`, `DefaultData.shared`, `Logger.shared` — Infrastructure가 주 사용처이나, Presentation 계층(ViewModel, View)에서도 직접 사용됩니다.
 
