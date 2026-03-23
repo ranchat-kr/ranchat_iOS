@@ -41,8 +41,9 @@ class [Name]ViewModel {
     var networkErrorTitle = "오류"
     var networkErrorContent = "알 수 없는 오류가 발생했습니다."
 
+    // WebSocket이 필요한 화면만 선언
     var webSocketService: (any WebSocketService)?
-    var idHelper: IdHelper?
+    var idHelper: SessionContext?
     var networkMonitor: NetworkMonitor?
 
     private var useCase: any XxxUseCase
@@ -51,32 +52,44 @@ class [Name]ViewModel {
         self.useCase = useCase
     }
 
-    func setup(webSocketService: any WebSocketService, idHelper: IdHelper, networkMonitor: NetworkMonitor) {
+    // WebSocket이 필요한 화면만 구현. setup()에서 콜백 등록까지 처리.
+    func setup(webSocketService: any WebSocketService, idHelper: SessionContext, networkMonitor: NetworkMonitor) {
         self.webSocketService = webSocketService
         self.idHelper = idHelper
         self.networkMonitor = networkMonitor
+
+        webSocketService.setOnMatchingSuccess { [weak self] roomId in
+            self?.idHelper?.setRoomId(roomId)
+            // 상태 변경
+        }
+        webSocketService.setOnMessageReceived { [weak self] message in
+            self?.messageDataList.insert(message, at: 0)
+        }
     }
 }
 ```
 
-### 에러 처리
+### 에러 처리 (guard !isLoading 필수)
 ```swift
-// Task 내부 — isLoading = false는 반드시 do-catch 밖에 위치
-isLoading = true
-Task {
-    do {
-        // ...
-    } catch let apiError as ApiHelperError {
-        networkErrorTitle = apiError.dialogTitle
-        networkErrorContent = apiError.dialogContent
-        showNetworkErrorDialog = true
-        Logger.shared.log(className, #function, "...: \(apiError)", .error)
-    } catch {
-        networkErrorTitle = "오류"
-        networkErrorContent = "알 수 없는 오류가 발생했습니다."
-        showNetworkErrorDialog = true
+func someAction() {
+    guard !isLoading else { return }   // 중복 호출 방지 — 항상 첫 줄
+    isLoading = true
+
+    Task {
+        do {
+            // ...
+        } catch let apiError as ApiHelperError {
+            networkErrorTitle = apiError.dialogTitle
+            networkErrorContent = apiError.dialogContent
+            showNetworkErrorDialog = true
+            Logger.shared.log(className, #function, "...: \(apiError)", .error)
+        } catch {
+            networkErrorTitle = "오류"
+            networkErrorContent = "알 수 없는 오류가 발생했습니다."
+            showNetworkErrorDialog = true
+        }
+        isLoading = false   // do-catch 밖 Task 최하단
     }
-    isLoading = false
 }
 ```
 
@@ -104,7 +117,7 @@ final class Default[Name]Repository: [Name]Repository {
 
     func method(...) async throws -> DomainEntity {
         let response: ApiResponseDTO<[Name]DTO> = try await networkClient.request(
-            url: try APIEndpoint.[목적별메서드](),   // 예: APIEndpoint.users(), APIEndpoint.rooms()
+            url: try APIEndpoint.[목적별메서드](),   // ranchat/Data/APIEndpoint.swift 참고
             method: .get,
             params: nil
         )
@@ -113,6 +126,29 @@ final class Default[Name]Repository: [Name]Repository {
             return dto.toDomain()
         } else {
             throw ApiHelperError.networkError(response.message)
+        }
+    }
+}
+```
+
+### View (Presentation 계층)
+```swift
+struct [Name]View: View {
+    // WebSocket이 필요한 화면
+    @Environment(WebSocketHelper.self) private var webSocketHelper
+    @Environment(SessionContext.self) private var idHelper
+    @Environment(NetworkMonitor.self) private var networkMonitor
+
+    @State private var viewModel = [Name]ViewModel()
+
+    var body: some View {
+        // ...
+        .onAppear {
+            viewModel.setup(
+                webSocketService: webSocketHelper,
+                idHelper: idHelper,
+                networkMonitor: networkMonitor
+            )
         }
     }
 }
@@ -130,4 +166,6 @@ final class Default[Name]Repository: [Name]Repository {
 - Domain에서 Alamofire, DTO, Presentation 타입 import
 - ViewModel에서 Repository 직접 참조 (UseCase를 통해야 함)
 - Infrastructure에서 Presentation 타입 참조
+- `guard !isLoading` 없이 `isLoading = true` 사용
+- `isLoading = false`를 do-catch 내부에 배치 (Task 최하단에 위치해야 함)
 - `Co-Authored-By` 커밋 메시지 포함

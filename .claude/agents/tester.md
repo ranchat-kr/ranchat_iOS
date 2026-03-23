@@ -24,7 +24,7 @@ final class [Name]ViewModelTests: XCTestCase {
         someUseCase: any SomeUseCase = MockSomeUseCase()
     ) -> ([Name]ViewModel, MockWebSocketService) {
         let ws = MockWebSocketService()
-        let idHelper = IdHelper()
+        let idHelper = SessionContext()
         idHelper.setUserId("test-user")
         idHelper.setRoomId("1")
 
