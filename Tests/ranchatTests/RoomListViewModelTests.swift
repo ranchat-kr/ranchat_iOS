@@ -9,10 +9,14 @@ import XCTest
 @MainActor
 final class RoomListViewModelTests: XCTestCase {
 
-    private func makeIdHelper(userId: String = "test-user-id") -> IdHelper {
-        let idHelper = IdHelper()
-        idHelper.setUserId(userId)
-        return idHelper
+    override func setUp() async throws {
+        try await super.setUp()
+        KeychainHelper.shared.saveUserId("test-user-id")
+    }
+
+    override func tearDown() async throws {
+        KeychainHelper.shared.deleteUserId()
+        try await super.tearDown()
     }
 
     func test_getRoomList_loadsRooms() async {
@@ -23,7 +27,6 @@ final class RoomListViewModelTests: XCTestCase {
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
-        vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
 
@@ -37,7 +40,6 @@ final class RoomListViewModelTests: XCTestCase {
         mockUseCase.shouldThrow = true
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
-        vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
 
@@ -46,13 +48,14 @@ final class RoomListViewModelTests: XCTestCase {
     }
 
     func test_getRoomList_whenUserIdNil_doesNotLoad() async {
+        KeychainHelper.shared.deleteUserId()
+
         let mockUseCase = MockGetRoomsUseCase()
         mockUseCase.mockRooms = [
             Room(id: 1, title: "Room 1", type: .normal, latestMessage: "Hi", latestMessageAt: Date())
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
-        // idHelper not set
 
         await vm.getRoomList()
 
@@ -67,7 +70,6 @@ final class RoomListViewModelTests: XCTestCase {
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
-        vm.idHelper = makeIdHelper()
         vm.roomItems = [
             Room(id: 99, title: "Old", type: .normal, latestMessage: "Old", latestMessageAt: Date())
         ]
@@ -85,7 +87,6 @@ final class RoomListViewModelTests: XCTestCase {
         ]
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
-        vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
         XCTAssertEqual(vm.roomPage, 1)
@@ -100,13 +101,11 @@ final class RoomListViewModelTests: XCTestCase {
         mockUseCase.mockRooms = []
 
         let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
-        vm.idHelper = makeIdHelper()
 
         await vm.getRoomList()
 
         XCTAssertTrue(vm.roomItems.isEmpty)
         // totalCount(0) == roomItems.count(0) → early return (isInitialized는 set 안 됨)
-        // 이 동작은 현재 구현의 명세를 그대로 반영
         XCTAssertFalse(vm.isInitialized)
     }
 }

@@ -9,25 +9,30 @@ import XCTest
 @MainActor
 final class ChattingViewModelTests: XCTestCase {
 
-    private func makeIdHelper(userId: String = "test-user", roomId: String = "1") -> IdHelper {
-        let helper = IdHelper()
-        helper.setUserId(userId)
-        helper.setRoomId(roomId)
-        return helper
+    override func setUp() async throws {
+        try await super.setUp()
+        KeychainHelper.shared.saveUserId("test-user")
+    }
+
+    override func tearDown() async throws {
+        KeychainHelper.shared.deleteUserId()
+        try await super.tearDown()
     }
 
     private func makeVM(
+        roomId: String = "1",
         getRoomDetailUseCase: any GetRoomDetailUseCase = MockGetRoomDetailUseCase(),
         getMessagesUseCase: any GetMessagesUseCase = MockGetMessagesUseCase(),
         reportUserUseCase: any ReportUserUseCase = MockReportUserUseCase()
     ) -> (ChattingViewModel, MockWebSocketService) {
         let ws = MockWebSocketService()
         let vm = ChattingViewModel(
+            roomId: roomId,
             getRoomDetailUseCase: getRoomDetailUseCase,
             getMessagesUseCase: getMessagesUseCase,
             reportUserUseCase: reportUserUseCase
         )
-        vm.setup(webSocketService: ws, idHelper: makeIdHelper(), networkMonitor: NetworkMonitor())
+        vm.setup(webSocketService: ws, networkMonitor: NetworkMonitor())
         return (vm, ws)
     }
 
@@ -56,9 +61,9 @@ final class ChattingViewModelTests: XCTestCase {
         XCTAssertFalse(vm.isRoomDetailDataLoaded)
     }
 
-    func test_getRoomDetailData_whenIdHelperNil_showsDialog() async {
-        let vm = ChattingViewModel()
-        // idHelper not set
+    func test_getRoomDetailData_whenUserIdNil_showsDialog() async {
+        KeychainHelper.shared.deleteUserId()
+        let (vm, _) = makeVM()
 
         await vm.getRoomDetailData()
 

@@ -9,6 +9,16 @@ import XCTest
 @MainActor
 final class HomeViewModelTests: XCTestCase {
 
+    override func setUp() async throws {
+        try await super.setUp()
+        KeychainHelper.shared.saveUserId("test-user-id")
+    }
+
+    override func tearDown() async throws {
+        KeychainHelper.shared.deleteUserId()
+        try await super.tearDown()
+    }
+
     func test_checkRoomExist_whenRoomExists_setsIsRoomExistTrue() async {
         let mockUseCase = MockCheckRoomExistUseCase()
         mockUseCase.mockRoomExist = true
@@ -18,10 +28,6 @@ final class HomeViewModelTests: XCTestCase {
             checkRoomExistUseCase: mockUseCase,
             createRoomUseCase: MockCreateRoomUseCase()
         )
-
-        let idHelper = IdHelper()
-        idHelper.setUserId("test-user-id")
-        viewModel.idHelper = idHelper
 
         await viewModel.checkRoomExist()
 
@@ -40,10 +46,6 @@ final class HomeViewModelTests: XCTestCase {
             createRoomUseCase: MockCreateRoomUseCase()
         )
 
-        let idHelper = IdHelper()
-        idHelper.setUserId("test-user-id")
-        viewModel.idHelper = idHelper
-
         await viewModel.checkRoomExist()
 
         XCTAssertFalse(viewModel.isRoomExist)
@@ -59,24 +61,20 @@ final class HomeViewModelTests: XCTestCase {
             createRoomUseCase: MockCreateRoomUseCase()
         )
 
-        let idHelper = IdHelper()
-        idHelper.setUserId("test-user-id")
-        viewModel.idHelper = idHelper
-
         await viewModel.checkRoomExist()
 
         XCTAssertTrue(viewModel.showNetworkErrorDialog)
     }
 
     func test_checkRoomExist_whenUserIdNil_doesNotCallUseCase() async {
-        let mockUseCase = MockCheckRoomExistUseCase()
+        KeychainHelper.shared.deleteUserId()
 
+        let mockUseCase = MockCheckRoomExistUseCase()
         let viewModel = HomeViewModel(
             createUserUseCase: MockCreateUserUseCase(),
             checkRoomExistUseCase: mockUseCase,
             createRoomUseCase: MockCreateRoomUseCase()
         )
-        // idHelper not set → getUserId() returns nil
 
         await viewModel.checkRoomExist()
 
