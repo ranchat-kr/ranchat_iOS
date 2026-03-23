@@ -10,12 +10,12 @@ private enum MessageDisplayType {
 }
 
 struct ChatElementView: View {
-    @Environment(IdHelper.self) var idHelper
     let id: Int
     let userId: String
     let content: String
     let messageType: MessageType
     let createdAt: Date
+    let currentUserId: String?
 
     private static let timeFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -31,7 +31,7 @@ struct ChatElementView: View {
         case .leave:
             return .leave
         case .chat, .unknown:
-            return idHelper.getUserId() == userId ? .me : .other
+            return currentUserId == userId ? .me : .other
         }
     }
 
@@ -75,5 +75,5 @@ struct ChatElementView: View {
 }
 
 #Preview {
-    ChatElementView(id: 1, userId: "testUser", content: "안녕하세요!", messageType: .enter, createdAt: Date())
+    ChatElementView(id: 1, userId: "testUser", content: "안녕하세요!", messageType: .enter, createdAt: Date(), currentUserId: nil)
 }

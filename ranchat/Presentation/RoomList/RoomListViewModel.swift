@@ -24,9 +24,9 @@ class RoomListViewModel {
 
     var selectedRoom: Room?
     var selectedRoomIndex: Int?
+    var selectedRoomId: String = ""
 
     var webSocketService: (any WebSocketService)?
-    var idHelper: IdHelper?
     var networkMonitor: NetworkMonitor?
 
     private var getRoomsUseCase: any GetRoomsUseCase
@@ -35,9 +35,8 @@ class RoomListViewModel {
         self.getRoomsUseCase = getRoomsUseCase
     }
 
-    func setup(webSocketService: any WebSocketService, idHelper: IdHelper, networkMonitor: NetworkMonitor) {
+    func setup(webSocketService: any WebSocketService, networkMonitor: NetworkMonitor) {
         self.webSocketService = webSocketService
-        self.idHelper = idHelper
         self.networkMonitor = networkMonitor
     }
 
@@ -48,7 +47,7 @@ class RoomListViewModel {
     // MARK: - Require Network
 
     func getRoomList(isRefresh: Bool = false) async {
-        guard let userId = idHelper?.getUserId() else {
+        guard let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "userId is nil", .error)
             return
         }
@@ -102,20 +101,15 @@ class RoomListViewModel {
 
         let roomId: String = String(roomItems[at].id)
 
-        guard let webSocketService, let idHelper else {
-            Logger.shared.log(className, #function, "webSocketService or idHelper nil", .error)
-            return
-        }
-
-        idHelper.setRoomId(roomId)
-
-        guard let userId = idHelper.getUserId() else {
-            Logger.shared.log(className, #function, "userId is nil", .error)
+        guard let webSocketService,
+              let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "webSocketService or userId is nil", .error)
             return
         }
 
         do {
             try webSocketService.enterRoom(userId: userId, roomId: roomId)
+            selectedRoomId = roomId
             navigateToChat()
         } catch let apiError as ApiHelperError {
             Logger.shared.log(className, #function, "Failed to enter room: \(apiError)", .error)
@@ -146,8 +140,8 @@ class RoomListViewModel {
         let roomId: String = String(roomItems[at].id)
 
         guard let webSocketService,
-              let userId = idHelper?.getUserId() else {
-            Logger.shared.log(className, #function, "webSocketService or idHelper is nil", .error)
+              let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "webSocketService or userId is nil", .error)
             networkErrorTitle = "오류"
             networkErrorContent = "필요한 정보를 찾을 수 없습니다."
             showNetworkErrorDialog = true

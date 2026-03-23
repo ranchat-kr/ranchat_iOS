@@ -19,13 +19,13 @@ class HomeViewModel {
     var isRoomExist = false
     var isInitialized = false
     var isMatchSuccess = false
+    var matchedRoomId: String = ""
 
     var goToSetting = false
     var goToChat = false
     var goToRoomList = false
 
     var webSocketService: (any WebSocketService)?
-    var idHelper: IdHelper?
     var networkMonitor: NetworkMonitor?
 
     private var createUserUseCase: any CreateUserUseCase
@@ -42,13 +42,12 @@ class HomeViewModel {
         self.createRoomUseCase = createRoomUseCase
     }
 
-    func setup(webSocketService: any WebSocketService, idHelper: IdHelper, networkMonitor: NetworkMonitor) {
+    func setup(webSocketService: any WebSocketService, networkMonitor: NetworkMonitor) {
         self.webSocketService = webSocketService
-        self.idHelper = idHelper
         self.networkMonitor = networkMonitor
 
         webSocketService.setOnMatchingSuccess { [weak self] roomId in
-            self?.idHelper?.setRoomId(roomId)
+            self?.matchedRoomId = roomId
             self?.isMatchSuccess = true
         }
     }
@@ -67,8 +66,8 @@ class HomeViewModel {
 
     func setUser() {
         guard !isLoading else { return }
-        guard let webSocketService, let idHelper else {
-            Logger.shared.log(className, #function, "webSocketService or idHelper is nil", .error)
+        guard let webSocketService else {
+            Logger.shared.log(className, #function, "webSocketService is nil", .error)
             return
         }
 
@@ -83,16 +82,13 @@ class HomeViewModel {
                     legacyUserId = nil
                 }
 
-                if let userId = KeychainHelper.shared.getUserId() {
-                    idHelper.setUserId(userId)
-                } else {
+                if KeychainHelper.shared.getUserId() == nil {
                     let uuid = UUID.uuidV7String()
                     KeychainHelper.shared.saveUserId(uuid)
-                    idHelper.setUserId(uuid)
                     try await createUserUseCase.execute(id: uuid, name: getRandomNickname())
                 }
 
-                guard let userId = idHelper.getUserId() else {
+                guard let userId = KeychainHelper.shared.getUserId() else {
                     throw ApiHelperError.nilError
                 }
                 try webSocketService.connect(userId: userId)
@@ -124,15 +120,19 @@ class HomeViewModel {
         }
 
         guard let webSocketService,
-              let userId = idHelper?.getUserId(),
-              let roomId = idHelper?.getRoomId() else {
-            Logger.shared.log(className, #function, "webSocketService or idHelper is nil")
+              let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "webSocketService or userId is nil")
+            return
+        }
+
+        guard !matchedRoomId.isEmpty else {
+            Logger.shared.log(className, #function, "matchedRoomId is empty", .error)
             return
         }
 
         do {
             try webSocketService.cancelMatching(userId: userId)
-            try webSocketService.enterRoom(userId: userId, roomId: roomId)
+            try webSocketService.enterRoom(userId: userId, roomId: matchedRoomId)
             isMatchSuccess = false
             navigateToChat()
         } catch let apiError as ApiHelperError {
@@ -158,8 +158,8 @@ class HomeViewModel {
 
         isMatching = true
 
-        guard let webSocketService, let userId = idHelper?.getUserId() else {
-            Logger.shared.log(className, #function, "webSocketService or idHelper is nil", .error)
+        guard let webSocketService, let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "webSocketService or userId is nil", .error)
             isMatching = false
             return
         }
@@ -183,8 +183,8 @@ class HomeViewModel {
     }
 
     func checkMatching() {
-        guard let webSocketService, let idHelper else {
-            Logger.shared.log(className, #function, "webSocketService or idHelper is nil", .error)
+        guard let webSocketService else {
+            Logger.shared.log(className, #function, "webSocketService is nil", .error)
             return
         }
 
@@ -203,7 +203,7 @@ class HomeViewModel {
                     return
                 }
 
-                guard let userId = idHelper.getUserId() else {
+                guard let userId = KeychainHelper.shared.getUserId() else {
                     throw ApiHelperError.nilError
                 }
 
@@ -211,14 +211,14 @@ class HomeViewModel {
 
                 if !isMatchSuccess {
                     let roomId = try await createRoomUseCase.execute(userId: userId)
-                    idHelper.setRoomId(roomId)
+                    matchedRoomId = roomId
                 }
 
-                guard let roomId = idHelper.getRoomId() else {
+                guard !matchedRoomId.isEmpty else {
                     throw ApiHelperError.nilError
                 }
 
-                try webSocketService.enterRoom(userId: userId, roomId: roomId)
+                try webSocketService.enterRoom(userId: userId, roomId: matchedRoomId)
                 isMatchSuccess = false
                 navigateToChat()
             } catch let apiError as ApiHelperError {
@@ -238,7 +238,7 @@ class HomeViewModel {
     }
 
     func checkRoomExist() async {
-        guard let userId = idHelper?.getUserId() else {
+        guard let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "userId is nil", .error)
             return
         }

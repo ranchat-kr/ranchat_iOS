@@ -7,7 +7,7 @@ import SwiftUI
 
 struct ChatScrollView: View {
     @Binding var chattingList: [Message]
-
+    let currentUserId: String?
     var fetchMessages: () async -> Void
 
     var body: some View {
@@ -20,7 +20,8 @@ struct ChatScrollView: View {
                     userId: message.userId,
                     content: message.content,
                     messageType: message.messageType,
-                    createdAt: message.createdAt
+                    createdAt: message.createdAt,
+                    currentUserId: currentUserId
                 )
                 .scaleEffect(x: 1, y: -1)
                 .listRowSeparator(.hidden)
@@ -49,5 +50,5 @@ struct ChatScrollView: View {
 
 
 #Preview {
-    ChatScrollView(chattingList: .constant([]),  fetchMessages: {})
+    ChatScrollView(chattingList: .constant([]), currentUserId: nil, fetchMessages: {})
 }

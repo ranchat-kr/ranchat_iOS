@@ -6,7 +6,6 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
     @Environment(NetworkMonitor.self) var networkMonitor
     @State private var isAnimating = false
@@ -71,7 +70,7 @@ struct HomeView: View {
                 SettingView()
             })
             .navigationDestination(isPresented: $viewModel.goToChat, destination: {
-                ChattingView()
+                ChattingView(roomId: viewModel.matchedRoomId)
                     .onDisappear {
                         Task {
                             await viewModel.checkRoomExist()
@@ -90,7 +89,7 @@ struct HomeView: View {
         } // GeometryReader
 
         .onAppear {
-            viewModel.setup(webSocketService: webSocketHelper, idHelper: idHelper, networkMonitor: networkMonitor)
+            viewModel.setup(webSocketService: webSocketHelper, networkMonitor: networkMonitor)
             viewModel.setUser()
         }
         .onDisappear {

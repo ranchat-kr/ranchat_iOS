@@ -65,7 +65,6 @@
 		A60000000000000000000002 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000002 /* KeychainHelper.swift */; };
 		A60000000000000000000003 /* DefaultData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000003 /* DefaultData.swift */; };
 		A60000000000000000000004 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000004 /* NetworkMonitor.swift */; };
-		A60000000000000000000005 /* IdHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000005 /* IdHelper.swift */; };
 		A60000000000000000000006 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000006 /* Logger.swift */; };
 		A80000000000000000000001 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70000000000000000000001 /* HomeView.swift */; };
 		A80000000000000000000002 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70000000000000000000002 /* HomeViewModel.swift */; };
@@ -201,7 +200,6 @@
 		A50000000000000000000002 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		A50000000000000000000003 /* DefaultData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultData.swift; sourceTree = "<group>"; };
 		A50000000000000000000004 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
-		A50000000000000000000005 /* IdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdHelper.swift; sourceTree = "<group>"; };
 		A50000000000000000000006 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		A70000000000000000000001 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A70000000000000000000002 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -539,7 +537,6 @@
 		A90000000000000000000013 /* Session */ = {
 			isa = PBXGroup;
 			children = (
-				A50000000000000000000005 /* IdHelper.swift */,
 			);
 			path = Session;
 			sourceTree = "<group>";
@@ -945,7 +942,6 @@
 				A60000000000000000000002 /* KeychainHelper.swift in Sources */,
 				A60000000000000000000003 /* DefaultData.swift in Sources */,
 				A60000000000000000000004 /* NetworkMonitor.swift in Sources */,
-				A60000000000000000000005 /* IdHelper.swift in Sources */,
 				A60000000000000000000006 /* Logger.swift in Sources */,
 				A80000000000000000000001 /* HomeView.swift in Sources */,
 				A80000000000000000000002 /* HomeViewModel.swift in Sources */,

@@ -7,7 +7,6 @@ import SwiftUI
 
 struct RoomListView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
     @Environment(NetworkMonitor.self) var networkMonitor
 
@@ -41,7 +40,7 @@ struct RoomListView: View {
             .listStyle(.plain)
 
             .onAppear {
-                viewModel.setup(webSocketService: webSocketHelper, idHelper: idHelper, networkMonitor: networkMonitor)
+                viewModel.setup(webSocketService: webSocketHelper, networkMonitor: networkMonitor)
                 Task {
                     await viewModel.getRoomList()
                 }
@@ -79,7 +78,7 @@ struct RoomListView: View {
             }
         }
         .navigationDestination(isPresented: $viewModel.goToChat, destination: {
-            ChattingView()
+            ChattingView(roomId: viewModel.selectedRoomId)
                 .onDisappear {
                     Task {
                         await viewModel.getRoomList(isRefresh: true)

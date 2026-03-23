@@ -7,18 +7,24 @@ import SwiftUI
 
 struct ChattingView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(IdHelper.self) var idHelper
     @Environment(WebSocketHelper.self) var webSocketHelper
     @Environment(NetworkMonitor.self) var networkMonitor
+
+    let roomId: String
+    @State var viewModel: ChattingViewModel
     @State var isTextFieldFocused: Bool = true
     @State var isReportDialogTextFieldFocused: Bool = false
     @State var timer: Timer?
-    @State var viewModel = ChattingViewModel()
+
+    init(roomId: String) {
+        self.roomId = roomId
+        self._viewModel = State(initialValue: ChattingViewModel(roomId: roomId))
+    }
 
     var body: some View {
         ZStack {
             VStack {
-                ChatScrollView(chattingList: $viewModel.messageDataList, fetchMessages: viewModel.fetchMessageList)
+                ChatScrollView(chattingList: $viewModel.messageDataList, currentUserId: viewModel.currentUserId, fetchMessages: viewModel.fetchMessageList)
 
                 ChatInputView(inputText: $viewModel.inputText, isFocused: $isTextFieldFocused, onSend: send)
             }
@@ -69,7 +75,7 @@ struct ChattingView: View {
         }
         .onAppear {
             Task {
-                viewModel.setup(webSocketService: webSocketHelper, idHelper: idHelper, networkMonitor: networkMonitor)
+                viewModel.setup(webSocketService: webSocketHelper, networkMonitor: networkMonitor)
                 await viewModel.getRoomDetailData()
                 await viewModel.getMessageList()
                 startTimer()
@@ -149,5 +155,5 @@ struct ChattingView: View {
 }
 
 #Preview {
-    ChattingView()
+    ChattingView(roomId: "preview-room")
 }

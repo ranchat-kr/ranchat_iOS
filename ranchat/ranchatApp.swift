@@ -11,7 +11,6 @@ import FirebaseMessaging
 @main
 struct RanchatApp: App {
     private var webSocketHelper = WebSocketHelper()
-    private var idHelper = IdHelper()
     private var networkMonitor = NetworkMonitor()
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
@@ -21,7 +20,6 @@ struct RanchatApp: App {
             ContentView()
                 .preferredColorScheme(.dark)
                 .environment(webSocketHelper)
-                .environment(idHelper)
                 .environment(networkMonitor)
         }
     }
