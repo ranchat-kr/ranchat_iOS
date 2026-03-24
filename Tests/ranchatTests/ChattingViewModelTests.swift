@@ -32,7 +32,7 @@ final class ChattingViewModelTests: XCTestCase {
             getMessagesUseCase: getMessagesUseCase,
             reportUserUseCase: reportUserUseCase
         )
-        vm.setup(webSocketService: ws, networkMonitor: NetworkMonitor())
+        vm.setup(webSocketService: ws, networkMonitor: MockNetworkMonitor())
         return (vm, ws)
     }
 
@@ -171,8 +171,8 @@ final class ChattingViewModelTests: XCTestCase {
         mockDetail.mockRoomDetail = RoomDetail(
             id: 1, title: "방", type: .normal,
             participants: [
-                Participant(userId: "test-user", name: "나"),
-                Participant(userId: "other-user", name: "상대")
+                Participant(id: 1, userId: "test-user", name: "나"),
+                Participant(id: 2, userId: "other-user", name: "상대")
             ]
         )
         let (vm, _) = makeVM(getRoomDetailUseCase: mockDetail, reportUserUseCase: mockReport)
@@ -183,5 +183,72 @@ final class ChattingViewModelTests: XCTestCase {
 
         XCTAssertEqual(mockReport.callCount, 1)
         XCTAssertEqual(mockReport.lastReportType, .spam)
+    }
+
+    // MARK: - fetchMessageList
+
+    func test_fetchMessageList_appendsMessages() async {
+        let mockUseCase = MockGetMessagesUseCase()
+        mockUseCase.mockMessages = [
+            Message(id: 10, roomId: 1, userId: "u1", participantId: 1, participantName: "A",
+                    content: "fetched", messageType: .chat, contentType: .text, senderType: .user, createdAt: Date())
+        ]
+        let (vm, _) = makeVM(getMessagesUseCase: mockUseCase)
+        await vm.getMessageList()
+        let initialCount = vm.messageDataList.count
+
+        vm.totalCount = 999
+        await vm.fetchMessageList()
+
+        XCTAssertGreaterThan(vm.messageDataList.count, initialCount)
+    }
+
+    func test_fetchMessageList_whenError_rollsBackPage() async {
+        let mockUseCase = MockGetMessagesUseCase()
+        let (vm, _) = makeVM(getMessagesUseCase: mockUseCase)
+        await vm.getMessageList()
+        let pageBeforeFetch = vm.currentPage
+
+        mockUseCase.shouldThrow = true
+        vm.totalCount = 999
+        await vm.fetchMessageList()
+
+        XCTAssertEqual(vm.currentPage, pageBeforeFetch)
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+    }
+
+    // MARK: - isLoading guard
+
+    func test_getRoomDetailData_whenAlreadyLoading_doesNotCallUseCase() async {
+        let mockUseCase = MockGetRoomDetailUseCase()
+        let (vm, _) = makeVM(getRoomDetailUseCase: mockUseCase)
+        vm.isLoading = true
+
+        await vm.getRoomDetailData()
+
+        XCTAssertEqual(mockUseCase.callCount, 0)
+    }
+
+    func test_reportUser_whenAlreadyLoading_doesNotCallUseCase() async {
+        let mockReport = MockReportUserUseCase()
+        let (vm, _) = makeVM(reportUserUseCase: mockReport)
+        vm.isLoading = true
+
+        await vm.reportUser()
+
+        XCTAssertEqual(mockReport.callCount, 0)
+    }
+
+    // MARK: - sendMessage network check
+
+    func test_sendMessage_whenNetworkUnavailable_showsDialog() {
+        let (vm, _) = makeVM()
+        vm.networkMonitor = MockNetworkMonitor(isConnected: false)
+        vm.inputText = "안녕"
+
+        vm.sendMessage()
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertEqual(vm.inputText, "안녕")
     }
 }

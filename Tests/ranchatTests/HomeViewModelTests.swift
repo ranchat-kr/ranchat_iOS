@@ -94,4 +94,97 @@ final class HomeViewModelTests: XCTestCase {
             XCTAssertGreaterThanOrEqual(nickname.count, 2)
         }
     }
+
+    // MARK: - requestMatching
+
+    func test_requestMatching_whenNetworkUnavailable_showsDialog() {
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: false)
+        let vm = HomeViewModel()
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+
+        vm.requestMatching()
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertFalse(vm.isMatching)
+    }
+
+    func test_requestMatching_whenConnected_setsIsMatching() {
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = HomeViewModel()
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+
+        vm.requestMatching()
+
+        XCTAssertTrue(vm.isMatching)
+    }
+
+    func test_requestMatching_whenSocketThrows_showsDialog() {
+        let ws = MockWebSocketService()
+        ws.shouldThrow = true
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = HomeViewModel()
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+
+        vm.requestMatching()
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertFalse(vm.isMatching)
+    }
+
+    // MARK: - successMatching
+
+    func test_successMatching_whenNetworkUnavailable_showsDialog() {
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: false)
+        let vm = HomeViewModel()
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.matchedRoomId = "room-1"
+
+        vm.successMatching()
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+    }
+
+    func test_successMatching_whenMatchedRoomIdEmpty_doesNotNavigate() {
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = HomeViewModel()
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.matchedRoomId = ""
+
+        vm.successMatching()
+
+        XCTAssertFalse(vm.goToChat)
+    }
+
+    func test_successMatching_whenValid_navigatesToChat() {
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = HomeViewModel()
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.matchedRoomId = "room-1"
+
+        vm.successMatching()
+
+        XCTAssertTrue(vm.goToChat)
+        XCTAssertFalse(vm.isMatchSuccess)
+    }
+
+    // MARK: - setUser
+
+    func test_setUser_whenAlreadyLoading_doesNotCallUseCase() {
+        let mockCreate = MockCreateUserUseCase()
+        let vm = HomeViewModel(
+            createUserUseCase: mockCreate,
+            checkRoomExistUseCase: MockCheckRoomExistUseCase(),
+            createRoomUseCase: MockCreateRoomUseCase()
+        )
+        vm.isLoading = true
+
+        vm.setUser()
+
+        XCTAssertEqual(mockCreate.callCount, 0)
+    }
 }

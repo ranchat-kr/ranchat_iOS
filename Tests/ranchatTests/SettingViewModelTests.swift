@@ -9,6 +9,16 @@ import XCTest
 @MainActor
 final class SettingViewModelTests: XCTestCase {
 
+    override func setUp() async throws {
+        try await super.setUp()
+        KeychainHelper.shared.saveUserId("test-user-id")
+    }
+
+    override func tearDown() async throws {
+        KeychainHelper.shared.deleteUserId()
+        try await super.tearDown()
+    }
+
     // MARK: - isValidNickname
 
     func test_isValidNickname_emptyString_returnsFalse() {
@@ -114,5 +124,27 @@ final class SettingViewModelTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(100))
 
         XCTAssertFalse(vm.isLoading)
+    }
+
+    // MARK: - isLoading guard
+
+    func test_setUser_whenAlreadyLoading_doesNotCallUseCase() {
+        let mockGetUser = MockGetUserUseCase()
+        let vm = SettingViewModel(getUserUseCase: mockGetUser)
+        vm.isLoading = true
+
+        vm.setUser()
+
+        XCTAssertEqual(mockGetUser.callCount, 0)
+    }
+
+    func test_setNickname_whenAlreadyLoading_doesNotCallUseCase() {
+        let mockUpdateName = MockUpdateUserNameUseCase()
+        let vm = SettingViewModel(updateUserNameUseCase: mockUpdateName)
+        vm.isLoading = true
+
+        vm.setNickname()
+
+        XCTAssertEqual(mockUpdateName.callCount, 0)
     }
 }

@@ -108,4 +108,118 @@ final class RoomListViewModelTests: XCTestCase {
         // totalCount(0) == roomItems.count(0) → early return (isInitialized는 set 안 됨)
         XCTAssertFalse(vm.isInitialized)
     }
+
+    // MARK: - isLoading guard
+
+    func test_getRoomList_whenAlreadyLoading_doesNotCallUseCase() async {
+        let mockUseCase = MockGetRoomsUseCase()
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.isLoading = true
+
+        await vm.getRoomList()
+
+        XCTAssertEqual(mockUseCase.callCount, 0)
+    }
+
+    // MARK: - enterRoom
+
+    func test_enterRoom_whenNetworkUnavailable_showsDialog() {
+        let mockUseCase = MockGetRoomsUseCase()
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: false)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.roomItems = [Room(id: 1, title: "방", type: .normal, latestMessage: "hi", latestMessageAt: Date())]
+
+        vm.enterRoom(at: 0)
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertFalse(vm.goToChat)
+    }
+
+    func test_enterRoom_whenConnected_navigatesToChat() {
+        let mockUseCase = MockGetRoomsUseCase()
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.roomItems = [Room(id: 1, title: "방", type: .normal, latestMessage: "hi", latestMessageAt: Date())]
+
+        vm.enterRoom(at: 0)
+
+        XCTAssertTrue(vm.goToChat)
+        XCTAssertEqual(vm.selectedRoomId, "1")
+    }
+
+    func test_enterRoom_whenIndexOutOfBounds_doesNotNavigate() {
+        let mockUseCase = MockGetRoomsUseCase()
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.roomItems = []
+
+        vm.enterRoom(at: 0)
+
+        XCTAssertFalse(vm.goToChat)
+    }
+
+    func test_enterRoom_whenSocketThrows_showsDialog() {
+        let mockUseCase = MockGetRoomsUseCase()
+        let ws = MockWebSocketService()
+        ws.shouldThrow = true
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.roomItems = [Room(id: 1, title: "방", type: .normal, latestMessage: "hi", latestMessageAt: Date())]
+
+        vm.enterRoom(at: 0)
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertFalse(vm.goToChat)
+    }
+
+    // MARK: - exitRoom
+
+    func test_exitRoom_whenNetworkUnavailable_showsDialog() {
+        let mockUseCase = MockGetRoomsUseCase()
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: false)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.roomItems = [Room(id: 1, title: "방", type: .normal, latestMessage: "hi", latestMessageAt: Date())]
+
+        vm.exitRoom(at: 0)
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertEqual(vm.roomItems.count, 1)
+    }
+
+    func test_exitRoom_whenConnected_removesRoom() {
+        let mockUseCase = MockGetRoomsUseCase()
+        let ws = MockWebSocketService()
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.roomItems = [Room(id: 1, title: "방", type: .normal, latestMessage: "hi", latestMessageAt: Date())]
+
+        vm.exitRoom(at: 0)
+
+        XCTAssertTrue(vm.roomItems.isEmpty)
+    }
+
+    func test_exitRoom_whenSocketThrows_showsDialog() {
+        let mockUseCase = MockGetRoomsUseCase()
+        let ws = MockWebSocketService()
+        ws.shouldThrow = true
+        let nm = MockNetworkMonitor(isConnected: true)
+        let vm = RoomListViewModel(getRoomsUseCase: mockUseCase)
+        vm.setup(webSocketService: ws, networkMonitor: nm)
+        vm.roomItems = [Room(id: 1, title: "방", type: .normal, latestMessage: "hi", latestMessageAt: Date())]
+
+        vm.exitRoom(at: 0)
+
+        XCTAssertTrue(vm.showNetworkErrorDialog)
+        XCTAssertEqual(vm.roomItems.count, 1)
+    }
 }

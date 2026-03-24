@@ -31,7 +31,7 @@ final class ValidateNicknameUseCaseTests: XCTestCase {
     }
 
     func test_tenChars_returnsNone() {
-        XCTAssertEqual(useCase.execute(nickname: "열글자닉네임테스트OK", currentName: nil), .none)
+        XCTAssertEqual(useCase.execute(nickname: "열글자닉네임테스트O", currentName: nil), .none)
     }
 
     // MARK: - 공백
