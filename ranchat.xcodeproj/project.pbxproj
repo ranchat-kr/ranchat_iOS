@@ -114,6 +114,7 @@
 		BB0A0001000000000000002 /* MockGetRoomDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0A0001000000000000001 /* MockGetRoomDetailUseCase.swift */; };
 		BB0B0001000000000000002 /* MockGetMessagesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0B0001000000000000001 /* MockGetMessagesUseCase.swift */; };
 		BB0C0001000000000000002 /* MockReportUserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0C0001000000000000001 /* MockReportUserUseCase.swift */; };
+		BB0E0001000000000000002 /* MockNetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0E0001000000000000001 /* MockNetworkMonitor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -251,6 +252,7 @@
 		BB0A0001000000000000001 /* MockGetRoomDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGetRoomDetailUseCase.swift; sourceTree = "<group>"; };
 		BB0B0001000000000000001 /* MockGetMessagesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGetMessagesUseCase.swift; sourceTree = "<group>"; };
 		BB0C0001000000000000001 /* MockReportUserUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReportUserUseCase.swift; sourceTree = "<group>"; };
+		BB0E0001000000000000001 /* MockNetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkMonitor.swift; sourceTree = "<group>"; };
 		E83E75C74D523359A5F76593 /* Pods-ranchatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ranchatTests.debug.xcconfig"; path = "Target Support Files/Pods-ranchatTests/Pods-ranchatTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -712,6 +714,7 @@
 				BB0A0001000000000000001 /* MockGetRoomDetailUseCase.swift */,
 				BB0B0001000000000000001 /* MockGetMessagesUseCase.swift */,
 				BB0C0001000000000000001 /* MockReportUserUseCase.swift */,
+				BB0E0001000000000000001 /* MockNetworkMonitor.swift */,
 				B10000000000000000000001 /* MockCheckRoomExistUseCase.swift */,
 				B10000000000000000000002 /* MockCreateRoomUseCase.swift */,
 				B10000000000000000000003 /* MockCreateUserUseCase.swift */,
@@ -991,6 +994,7 @@
 				BB0A0001000000000000002 /* MockGetRoomDetailUseCase.swift in Sources */,
 				BB0B0001000000000000002 /* MockGetMessagesUseCase.swift in Sources */,
 				BB0C0001000000000000002 /* MockReportUserUseCase.swift in Sources */,
+				BB0E0001000000000000002 /* MockNetworkMonitor.swift in Sources */,
 				B20000000000000000000001 /* MockCheckRoomExistUseCase.swift in Sources */,
 				B20000000000000000000002 /* MockCreateRoomUseCase.swift in Sources */,
 				B20000000000000000000003 /* MockCreateUserUseCase.swift in Sources */,

@@ -38,7 +38,7 @@ class ChattingViewModel {
     var totalCount: Int = 0
 
     var webSocketService: (any WebSocketService)?
-    var networkMonitor: NetworkMonitor?
+    var networkMonitor: (any NetworkMonitorProtocol)?
 
     private var getRoomDetailUseCase: any GetRoomDetailUseCase
     private var getMessagesUseCase: any GetMessagesUseCase
@@ -57,7 +57,7 @@ class ChattingViewModel {
         self.reportUserUseCase = reportUserUseCase
     }
 
-    func setup(webSocketService: any WebSocketService, networkMonitor: NetworkMonitor) {
+    func setup(webSocketService: any WebSocketService, networkMonitor: any NetworkMonitorProtocol) {
         self.webSocketService = webSocketService
         self.networkMonitor = networkMonitor
 
@@ -69,7 +69,8 @@ class ChattingViewModel {
     // MARK: - Require Network
 
     func getRoomDetailData() async {
-        guard let userId = KeychainHelper.shared.getUserId() else {
+        guard !isLoading else { return }
+        guard let userId = currentUserId else {
             Logger.shared.log(className, #function, "userId is nil", .error)
             setError(.nilError)
             return
@@ -91,6 +92,7 @@ class ChattingViewModel {
     }
 
     func getMessageList() async {
+        guard !isLoading else { return }
         isLoading = true
         do {
             let messagePage = try await getMessagesUseCase.execute(roomId: roomId, page: currentPage, size: pageSize * 2)
@@ -132,14 +134,12 @@ class ChattingViewModel {
         if message.isEmpty { return }
 
         if !(networkMonitor?.isConnected ?? false) {
-            networkErrorTitle = "네트워크 오류"
-            networkErrorContent = "인터넷 연결을 확인해주세요."
-            showNetworkErrorDialog = true
+            showNetworkUnavailableError()
             return
         }
 
         guard let webSocketService,
-              let userId = KeychainHelper.shared.getUserId() else {
+              let userId = currentUserId else {
             Logger.shared.log(className, #function, "webSocketService or userId is nil", .error)
             setError(.nilError)
             return
@@ -155,7 +155,8 @@ class ChattingViewModel {
     }
 
     func reportUser() async {
-        guard let userId = KeychainHelper.shared.getUserId() else {
+        guard !isLoading else { return }
+        guard let userId = currentUserId else {
             Logger.shared.log(className, #function, "userId is nil", .error)
             setError(.nilError)
             return
@@ -189,16 +190,14 @@ class ChattingViewModel {
 
     func exitRoom() async {
         if !(networkMonitor?.isConnected ?? false) {
-            networkErrorTitle = "네트워크 오류"
-            networkErrorContent = "인터넷 연결을 확인해주세요."
-            showNetworkErrorDialog = true
+            showNetworkUnavailableError()
             return
         }
 
         isLoading = true
 
         guard let webSocketService,
-              let userId = KeychainHelper.shared.getUserId() else {
+              let userId = currentUserId else {
             Logger.shared.log(className, #function, "webSocketService or userId is nil", .error)
             setError(.nilError)
             isLoading = false
@@ -218,9 +217,7 @@ class ChattingViewModel {
 
     func tempExit() {
         if !(networkMonitor?.isConnected ?? false) {
-            networkErrorTitle = "네트워크 오류"
-            networkErrorContent = "인터넷 연결을 확인해주세요."
-            showNetworkErrorDialog = true
+            showNetworkUnavailableError()
             return
         }
 
@@ -251,7 +248,7 @@ class ChattingViewModel {
 
     func activateParticipant() {
         guard let webSocketService,
-              let userId = KeychainHelper.shared.getUserId() else {
+              let userId = currentUserId else {
             Logger.shared.log(className, #function, "webSocketService or userId is nil")
             return
         }
@@ -274,6 +271,12 @@ class ChattingViewModel {
     private func setUnknownError() {
         networkErrorTitle = "오류"
         networkErrorContent = "알 수 없는 오류가 발생했습니다."
+        showNetworkErrorDialog = true
+    }
+
+    private func showNetworkUnavailableError() {
+        networkErrorTitle = "네트워크 오류"
+        networkErrorContent = "인터넷 연결을 확인해주세요."
         showNetworkErrorDialog = true
     }
 }

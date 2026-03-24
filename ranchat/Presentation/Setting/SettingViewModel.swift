@@ -42,6 +42,7 @@ class SettingViewModel {
     }
 
     func setUser() {
+        guard !isLoading else { return }
         guard let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "userId is nil", .error)
             networkErrorTitle = "오류"
@@ -71,6 +72,7 @@ class SettingViewModel {
     }
 
     func setNickname() {
+        guard !isLoading else { return }
         guard let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "userId is nil", .error)
             networkErrorTitle = "오류"

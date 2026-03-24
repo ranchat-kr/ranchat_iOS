@@ -27,7 +27,7 @@ class RoomListViewModel {
     var selectedRoomId: String = ""
 
     var webSocketService: (any WebSocketService)?
-    var networkMonitor: NetworkMonitor?
+    var networkMonitor: (any NetworkMonitorProtocol)?
 
     private var getRoomsUseCase: any GetRoomsUseCase
 
@@ -35,7 +35,7 @@ class RoomListViewModel {
         self.getRoomsUseCase = getRoomsUseCase
     }
 
-    func setup(webSocketService: any WebSocketService, networkMonitor: NetworkMonitor) {
+    func setup(webSocketService: any WebSocketService, networkMonitor: any NetworkMonitorProtocol) {
         self.webSocketService = webSocketService
         self.networkMonitor = networkMonitor
     }
@@ -47,6 +47,7 @@ class RoomListViewModel {
     // MARK: - Require Network
 
     func getRoomList(isRefresh: Bool = false) async {
+        guard !isLoading else { return }
         guard let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "userId is nil", .error)
             return
@@ -70,27 +71,19 @@ class RoomListViewModel {
             }
             roomItems.append(contentsOf: roomPage.items)
             self.isInitialized = true
-            isLoading = false
         } catch let apiError as ApiHelperError {
             Logger.shared.log(className, #function, "Failed to get room list: \(apiError)", .error)
-            networkErrorTitle = apiError.dialogTitle
-            networkErrorContent = apiError.dialogContent
-            showNetworkErrorDialog = true
-            isLoading = false
+            setError(apiError)
         } catch {
             Logger.shared.log(className, #function, "Failed to get room list: \(error.localizedDescription)", .error)
-            networkErrorTitle = "오류"
-            networkErrorContent = "알 수 없는 오류가 발생했습니다."
-            showNetworkErrorDialog = true
-            isLoading = false
+            setUnknownError()
         }
+        isLoading = false
     }
 
     func enterRoom(at: Int) {
         if !(networkMonitor?.isConnected ?? false) {
-            networkErrorTitle = "네트워크 오류"
-            networkErrorContent = "인터넷 연결을 확인해주세요."
-            showNetworkErrorDialog = true
+            showNetworkUnavailableError()
             return
         }
 
@@ -113,22 +106,16 @@ class RoomListViewModel {
             navigateToChat()
         } catch let apiError as ApiHelperError {
             Logger.shared.log(className, #function, "Failed to enter room: \(apiError)", .error)
-            networkErrorTitle = apiError.dialogTitle
-            networkErrorContent = apiError.dialogContent
-            showNetworkErrorDialog = true
+            setError(apiError)
         } catch {
             Logger.shared.log(className, #function, "Failed to enter room: \(error.localizedDescription)", .error)
-            networkErrorTitle = "오류"
-            networkErrorContent = "알 수 없는 오류가 발생했습니다."
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
     }
 
     func exitRoom(at: Int) {
         if !(networkMonitor?.isConnected ?? false) {
-            networkErrorTitle = "네트워크 오류"
-            networkErrorContent = "인터넷 연결을 확인해주세요."
-            showNetworkErrorDialog = true
+            showNetworkUnavailableError()
             return
         }
 
@@ -142,9 +129,7 @@ class RoomListViewModel {
         guard let webSocketService,
               let userId = KeychainHelper.shared.getUserId() else {
             Logger.shared.log(className, #function, "webSocketService or userId is nil", .error)
-            networkErrorTitle = "오류"
-            networkErrorContent = "필요한 정보를 찾을 수 없습니다."
-            showNetworkErrorDialog = true
+            setUnknownError()
             return
         }
 
@@ -156,14 +141,28 @@ class RoomListViewModel {
             }
         } catch let apiError as ApiHelperError {
             Logger.shared.log(className, #function, "Failed to exit room: \(apiError)", .error)
-            networkErrorTitle = apiError.dialogTitle
-            networkErrorContent = apiError.dialogContent
-            showNetworkErrorDialog = true
+            setError(apiError)
         } catch {
             Logger.shared.log(className, #function, "Failed to exit room: \(error.localizedDescription)", .error)
-            networkErrorTitle = "오류"
-            networkErrorContent = "알 수 없는 오류가 발생했습니다."
-            showNetworkErrorDialog = true
+            setUnknownError()
         }
+    }
+
+    private func setError(_ error: ApiHelperError) {
+        networkErrorTitle = error.dialogTitle
+        networkErrorContent = error.dialogContent
+        showNetworkErrorDialog = true
+    }
+
+    private func setUnknownError() {
+        networkErrorTitle = "오류"
+        networkErrorContent = "알 수 없는 오류가 발생했습니다."
+        showNetworkErrorDialog = true
+    }
+
+    private func showNetworkUnavailableError() {
+        networkErrorTitle = "네트워크 오류"
+        networkErrorContent = "인터넷 연결을 확인해주세요."
+        showNetworkErrorDialog = true
     }
 }

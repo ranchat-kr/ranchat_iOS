@@ -8,8 +8,12 @@
 import Foundation
 import Network
 
+protocol NetworkMonitorProtocol {
+    var isConnected: Bool { get }
+}
+
 @Observable
-final class NetworkMonitor {
+final class NetworkMonitor: NetworkMonitorProtocol {
     private let networkMonitor = NWPathMonitor()
     private let workerQueue = DispatchQueue(label: "Monitor")
     var isConnected = false
