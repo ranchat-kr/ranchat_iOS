@@ -4,6 +4,8 @@
 
 ![Swift](https://img.shields.io/badge/Swift-5.9-orange) ![iOS](https://img.shields.io/badge/iOS-17.4+-blue) ![Xcode](https://img.shields.io/badge/Xcode-16.0+-lightgrey)
 
+[![Play Store](https://img.shields.io/badge/Play_Store-Download-414141?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.kihyeonkim.rantalk)
+
 <br>
 
 ## 스크린샷
@@ -112,8 +114,8 @@ ranchat/
 ├── ContentView.swift
 ├── Domain/
 │   ├── Entity/
-│   ├── Repository/
-│   ├── Service/
+│   ├── Repository/           # Repository Protocols
+│   ├── Service/              # WebSocketService Protocol
 │   └── UseCase/
 │       ├── User/
 │       ├── Room/
@@ -121,11 +123,11 @@ ranchat/
 │       └── Notification/
 ├── Data/
 │   ├── DTO/
-│   ├── DataSource/
+│   ├── DataSource/           # NetworkClient
 │   ├── LocalStorage/
 │   └── Repository/
 ├── Infrastructure/
-│   ├── WebSocket/
+│   ├── WebSocket/            # WebSocketHelper (STOMP)
 │   ├── Keychain/
 │   ├── Network/
 │   ├── Session/
