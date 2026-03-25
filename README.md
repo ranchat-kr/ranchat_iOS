@@ -102,72 +102,6 @@ graph TB
     class WS,Keychain,NM,Logger infra
 ```
 
-**Clean Architecture 4계층**
-
-| 계층 | 위치 | 역할 | 의존 규칙 |
-|---|---|---|---|
-| Domain | `ranchat/Domain/` | 비즈니스 로직, UseCase, Repository 프로토콜 | Foundation만 |
-| Data | `ranchat/Data/` | REST API, DTO 변환, Repository 구현 | Domain, Alamofire |
-| Infrastructure | `ranchat/Infrastructure/` | WebSocket, Keychain, NetworkMonitor | Domain 서비스 프로토콜 |
-| Presentation | `ranchat/Presentation/` | SwiftUI View, @Observable ViewModel | Domain UseCase/Entity |
-
-**WebSocket Callback 패턴**
-
-`WebSocketHelper(Infrastructure)`가 `ChattingViewModel(Presentation)`을 직접 참조하는 계층 위반을 callback 패턴으로 해결했습니다.
-
-```swift
-// Before (위반 — Infrastructure → Presentation 직접 참조)
-class WebSocketHelper {
-    weak var chattingViewModel: ChattingViewModel?
-}
-
-// After (callback 역전)
-protocol WebSocketService {
-    func setOnMessageReceived(_ handler: @escaping @MainActor (Message) -> Void)
-}
-
-// ViewModel에서 등록
-webSocketService.setOnMessageReceived { [weak self] message in
-    self?.messageDataList.insert(message, at: 0)
-}
-```
-
-**UseCase 의존성 주입**
-
-ViewModel은 UseCase 프로토콜만 의존해 프로덕션과 테스트 코드 변경 없이 교체 가능합니다.
-
-```swift
-// 프로덕션은 Default, 테스트는 Mock UseCase 주입
-init(
-    checkRoomExistUseCase: any CheckRoomExistUseCase = DefaultCheckRoomExistUseCase(),
-    createRoomUseCase: any CreateRoomUseCase = DefaultCreateRoomUseCase()
-) { ... }
-```
-
-**보안**
-
-`@AppStorage`(UserDefaults 평문)로 저장하던 userId를 iOS Keychain Services로 마이그레이션했습니다.
-
-```swift
-KeychainHelper.shared.saveUserId(uuid)
-KeychainHelper.shared.getUserId()
-```
-
-**userId / roomId 관리**
-
-userId와 roomId를 런타임 세션 객체로 캐싱하던 방식을 제거했습니다.
-
-- `userId`: ViewModel init 시 Keychain에서 1회 읽어 저장. 매 렌더마다 Keychain I/O 없음
-- `roomId`: 네비게이션 파라미터로 직접 전달 (`ChattingView(roomId:)`)
-
-```swift
-// ChattingViewModel
-init(roomId: String, ...) {
-    self.roomId = roomId
-    self.currentUserId = KeychainHelper.shared.getUserId()
-}
-```
-
 <br>
 
 ## 프로젝트 구조
@@ -178,8 +112,8 @@ ranchat/
 ├── ContentView.swift
 ├── Domain/
 │   ├── Entity/
-│   ├── Repository/           # Repository Protocols
-│   ├── Service/              # WebSocketService Protocol
+│   ├── Repository/
+│   ├── Service/
 │   └── UseCase/
 │       ├── User/
 │       ├── Room/
@@ -187,11 +121,11 @@ ranchat/
 │       └── Notification/
 ├── Data/
 │   ├── DTO/
-│   ├── DataSource/           # NetworkClient
+│   ├── DataSource/
 │   ├── LocalStorage/
 │   └── Repository/
 ├── Infrastructure/
-│   ├── WebSocket/            # WebSocketHelper (STOMP)
+│   ├── WebSocket/
 │   ├── Keychain/
 │   ├── Network/
 │   ├── Session/
