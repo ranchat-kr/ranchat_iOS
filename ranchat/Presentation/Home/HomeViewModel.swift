@@ -60,6 +60,24 @@ class HomeViewModel {
         goToRoomList = true
     }
 
+    func handlePushNotification(roomId: String) {
+        guard let webSocketService,
+              let userId = KeychainHelper.shared.getUserId() else {
+            Logger.shared.log(className, #function, "webSocketService or userId is nil", .error)
+            return
+        }
+
+        do {
+            try webSocketService.enterRoom(userId: userId, roomId: roomId)
+            matchedRoomId = roomId
+            navigateToChat()
+        } catch let apiError as ApiHelperError {
+            setError(apiError)
+        } catch {
+            setUnknownError()
+        }
+    }
+
     func navigateToSetting() {
         goToSetting = true
     }

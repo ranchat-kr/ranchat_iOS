@@ -107,8 +107,12 @@ struct HomeView: View {
                 viewModel.successMatching()
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .pushNotificationReceived)) { _ in
-            viewModel.navigateToRoomList()
+        .onReceive(NotificationCenter.default.publisher(for: .pushNotificationReceived)) { notification in
+            if let roomId = notification.userInfo?["roomId"] as? String {
+                viewModel.handlePushNotification(roomId: roomId)
+            } else {
+                viewModel.navigateToRoomList()
+            }
         }
         .dialog(
             isPresented: $viewModel.showNetworkErrorDialog,
