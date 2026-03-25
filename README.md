@@ -2,7 +2,7 @@
 
 > 랜덤 매칭 기반 익명 실시간 채팅 iOS 앱
 
-![Swift](https://img.shields.io/badge/Swift-5.9-orange) ![iOS](https://img.shields.io/badge/iOS-17.4+-blue) ![Xcode](https://img.shields.io/badge/Xcode-16.0+-lightgrey)
+![Swift](https://img.shields.io/badge/Swift-5.0-orange) ![iOS](https://img.shields.io/badge/iOS-17.4+-blue) ![Xcode](https://img.shields.io/badge/Xcode-16.0+-lightgrey)
 
 [![Play Store](https://img.shields.io/badge/Play_Store-Download-414141?logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.kihyeonkim.rantalk)
 
