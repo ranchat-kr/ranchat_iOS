@@ -53,58 +53,6 @@
 
 <br>
 
-## 아키텍처
-
-```mermaid
-%%{init: {'theme': 'neutral'}}%%
-graph TB
-    classDef pres  fill:#bfdbfe,stroke:#3b82f6,color:#1e3a5f
-    classDef dom   fill:#bbf7d0,stroke:#16a34a,color:#14532d
-    classDef dat   fill:#fed7aa,stroke:#ea580c,color:#7c2d12
-    classDef infra fill:#e9d5ff,stroke:#7c3aed,color:#3b0764
-
-    subgraph Presentation["📱 Presentation Layer"]
-        View["Views (SwiftUI)\n(HomeView · RoomListView\nChattingView · SettingView)"]
-        VM["ViewModels (@Observable)\n(HomeVM · RoomListVM\nChattingVM · SettingVM)"]
-        View --> VM
-    end
-
-    subgraph Domain["🏛️ Domain Layer (순수 Swift)"]
-        UseCase["UseCases\n(User · Room · Chat · Notification)"]
-        RepoProto["Repository Protocols\n(UserRepository · RoomRepository\nChatRepository · NotificationRepository)"]
-        ServiceProto["WebSocketService Protocol"]
-        Entity["Entities\n(User · Room · Message · RoomDetail\nReportType · NicknameError 등)"]
-        UseCase --> RepoProto
-        UseCase --> Entity
-    end
-
-    subgraph Data["🗄️ Data Layer"]
-        Repo["Repositories\n(DefaultUserRepository\nDefaultRoomRepository 등)"]
-        DTO["DTOs (+toDomain())\n(UserDTO · RoomDTO · MessageDTO 등)"]
-        Network["NetworkClient\n(AlamofireNetworkClient)"]
-        Repo --> DTO
-        Repo --> Network
-    end
-
-    subgraph Infrastructure["⚙️ Infrastructure Layer"]
-        WS["WebSocketHelper\n(STOMP, StompClientLib)"]
-        Keychain["KeychainHelper"]
-        NM["NetworkMonitor"]
-        Logger["Logger"]
-        WS -->|"implements"| ServiceProto
-    end
-
-    VM -->|"UseCase Protocol 호출"| UseCase
-    Repo -->|"Protocol 구현"| RepoProto
-    VM -->|"setup(webSocketService:networkMonitor:)"| WS
-
-    class View,VM pres
-    class UseCase,RepoProto,ServiceProto,Entity dom
-    class Repo,DTO,Network dat
-    class WS,Keychain,NM,Logger infra
-```
-
-<br>
 
 ## 프로젝트 구조
 
