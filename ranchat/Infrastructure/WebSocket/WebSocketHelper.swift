@@ -246,6 +246,11 @@ extension WebSocketHelper: StompClientLibDelegate {
         } catch {
             Logger.shared.log(className, #function, "Failed to subscribe to matching success: \(error.localizedDescription)", .error)
         }
+
+        if let destination = receivingMessageDestination {
+            stompClient.subscribe(destination: destination)
+            Logger.shared.log(className, #function, "Re-subscribed to message destination: \(destination)")
+        }
     }
 
     func serverDidSendReceipt(client: StompClientLib!, withReceiptId receiptId: String) {
